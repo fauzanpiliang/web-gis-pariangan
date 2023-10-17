@@ -6,14 +6,14 @@ use CodeIgniter\Files\File;
 
 class ManagePackageController extends BaseController
 {
-    protected $model, $modelActivities, $modelPariangan,  $modelFp, $validation, $helpers = ['auth', 'url', 'filesystem'];
+    protected $model, $modelservices, $modelPariangan,  $modelFp, $validation, $helpers = ['auth', 'url', 'filesystem'];
     protected $title = 'Manage-Packages | Tourism Village';
     public function __construct()
     {
         $this->validation = \Config\Services::validation();
         $this->model = new \App\Models\packageModel();
         $this->modelPariangan = new \App\Models\parianganModel();
-        $this->modelActivities = new \App\Models\activitiesModel();
+        $this->modelservices = new \App\Models\serviceModel();
         $this->modelFp = new \App\Models\facilityPackageModel();
     }
     public function index()
@@ -30,13 +30,13 @@ class ManagePackageController extends BaseController
         $objectData = $this->model->getPackage($id)->getRow();
         $parianganData = $this->modelPariangan->getPariangan();
         $facilityPackage = $this->modelFp->getFacilityPackage($id)->getResult();
-        $activitiesData = $this->modelActivities->getPackageActivity($id)->getResult();
+        $servicesData = $this->modelservices->getPackageActivity($id)->getResult();
         $data = [
             'title' => $this->title,
             'objectData' => $objectData,
             'parianganData' => $parianganData,
             'facilityPackage' => $facilityPackage,
-            'activitiesData' => $activitiesData
+            'servicesData' => $servicesData
 
         ];
         return view('admin-detail/detail_package', $data);
@@ -45,15 +45,15 @@ class ManagePackageController extends BaseController
     public function edit($id = null)
     {
         $objectData = $this->model->getPackage($id)->getRow();
-        $activitiesData  = $this->modelActivities->getActivities()->getResult();
-        $activitiesPackage = $this->modelActivities->getPackageActivity($id)->getResult();
+        $servicesData  = $this->modelservices->getservices()->getResult();
+        $servicesPackage = $this->modelservices->getPackageActivity($id)->getResult();
         $facilityPackages = $this->modelFp->getFacilityPackage($id)->getResult();
         $data = [
             'title' => $this->title,
             'config' => config('Auth'),
             'objectData' => $objectData,
-            'activitiesData' => $activitiesData,
-            'activitiesPackage' => $activitiesPackage,
+            'servicesData' => $servicesData,
+            'servicesPackage' => $servicesPackage,
             'facilityPackages' => $facilityPackages
         ];
         return view('admin-edit/edit_package', $data);
@@ -101,13 +101,13 @@ class ManagePackageController extends BaseController
         }
         $insert =  $this->model->updatePackage($id, $updateRequest);
         if ($insert) {
-            // insert activities
-            $deletePackage = $this->modelActivities->deleteDetailPackage($id);
+            // insert services
+            $deletePackage = $this->modelservices->deleteDetailPackage($id);
             if ($deletePackage) {
-                $activities_id = $this->request->getPost('activities');
-                if ($activities_id) {
-                    foreach ($activities_id as $activity_id) {
-                        $this->modelActivities->updatePackageActivities($id, $activity_id);
+                $services_id = $this->request->getPost('services');
+                if ($services_id) {
+                    foreach ($services_id as $activity_id) {
+                        $this->modelservices->updatePackageservices($id, $activity_id);
                     }
                 }
             }
@@ -133,10 +133,10 @@ class ManagePackageController extends BaseController
     }
     public function insert()
     {
-        $activitiesData = $this->modelActivities->getActivities()->getResult();
+        $servicesData = $this->modelservices->getServices()->getResult();
         $data = [
             'title' => $this->title,
-            'activitiesData' => $activitiesData
+            'servicesData' => $servicesData
         ];
         return view('admin-insert/insert_package', $data);
     }
@@ -184,11 +184,11 @@ class ManagePackageController extends BaseController
         }
         $insert =  $this->model->addPackage($insertRequest);
         if ($insert) {
-            // insert activities
-            $activities_id = $this->request->getPost('activities');
-            if ($activities_id) {
-                foreach ($activities_id as $activity_id) {
-                    $this->modelActivities->addPackageActivities(['package_id' => $id, 'activities_id' => $activity_id]);
+            // insert services
+            $services_id = $this->request->getPost('services');
+            if ($services_id) {
+                foreach ($services_id as $activity_id) {
+                    $this->modelservices->addPackageservices(['package_id' => $id, 'services_id' => $activity_id]);
                 }
             }
 
@@ -213,14 +213,14 @@ class ManagePackageController extends BaseController
     {
         // ---------------------Data request------------------------------------
         $request = $this->request->getPost();
-        $id = $this->modelActivities->get_new_id();
+        $id = $this->modelservices->get_new_id();
         $insertRequest = [
             'id' => $id,
             'name' => $this->request->getPost('name'),
             'description' => $this->request->getPost('description')
         ];
 
-        $insert =  $this->modelActivities->addActivities($insertRequest);
+        $insert =  $this->modelservices->addservices($insertRequest);
         // ----------------Gallery-----------------------------------------
         if ($insert) {
             // check if gallery have empty string then make it become empty array
@@ -236,12 +236,12 @@ class ManagePackageController extends BaseController
                     $filepath = WRITEPATH . 'uploads/' . $folder;
                     $filenames = get_filenames($filepath);
                     $fileImg = new File($filepath . '/' . $filenames[0]);
-                    $fileImg->move(FCPATH . 'media/photos/activities');
+                    $fileImg->move(FCPATH . 'media/photos/services');
                     delete_files($filepath);
                     rmdir($filepath);
                     $gallery[] = $fileImg->getFilename();
                 }
-                $insertGallery =  $this->modelActivities->addGallery($id, $gallery);
+                $insertGallery =  $this->modelservices->addGallery($id, $gallery);
             } else {
                 $insertGallery = true;
             }

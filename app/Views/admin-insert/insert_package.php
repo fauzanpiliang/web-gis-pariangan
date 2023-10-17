@@ -111,19 +111,19 @@
                         <div class="row align-items-center">
                             <div class="col-12 mb-3">
 
-                                <a class="btn btn-outline-success btn-sm my-2" title="add new activity" data-bs-toggle="modal" data-bs-target="#addModal">
-                                    <i class="fa fa-plus"> </i>Add new activity
+                                <a class="btn btn-outline-success btn-sm my-2" title="add new service" data-bs-toggle="modal" data-bs-target="#addModal">
+                                    <i class="fa fa-plus"> </i>Add new service
                                 </a>
-                                <h5 class="card-title my-2 text-secondary">List activities</h5>
+                                <h5 class="card-title my-2 text-secondary">List services</h5>
                                 <table class="table table-borderless">
                                     <tbody>
-                                        <?php foreach ($activitiesData as $activity) : ?>
+                                        <?php foreach ($servicesData as $service) : ?>
                                             <tr>
                                                 <td>
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" value="<?= $activity->id; ?>" name="activities[]" multiple>
+                                                        <input class="form-check-input" type="checkbox" value="<?= $service->id; ?>" name="services[]" multiple>
                                                         <label class="form-check-label" for="flexCheckDefault">
-                                                            <?= $activity->name; ?>
+                                                            <?= $service->name; ?>
                                                         </label>
                                                     </div>
                                                 </td>
@@ -139,18 +139,18 @@
         </div>
     </form>
 
-    <!-- Add activity Modal-->
+    <!-- Add service Modal-->
     <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <form class="form form-vertical" action="<?= base_url('manage_package/save_activity/') . '/' . 'null'; ?>" method="post">
+            <form class="form form-vertical" action="<?= base_url('manage_package/save_service/') . '/' . 'null'; ?>" method="post">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Adding new activity</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Adding new service</h5>
                     </div>
                     <div class="modal-body">
                         <!-- Form data nonspasial -->
                         <div class="form-group">
-                            <label for="name" class="col col-form-label">Activity name</label>
+                            <label for="name" class="col col-form-label">service name</label>
                             <div class="col">
                                 <input type="text" class="form-control" name="name" autocomplete="off" required>
                             </div>
@@ -162,8 +162,8 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="galleryActivity" class="form-label">Gallery</label>
-                            <input class="form-control" accept="image/*" type="file" name="gallery[]" id="galleryActivity" multiple>
+                            <label for="galleryservice" class="form-label">Gallery</label>
+                            <input class="form-control" accept="image/*" type="file" name="gallery[]" id="galleryservice" multiple>
                         </div>
 
                     </div>
@@ -231,18 +231,18 @@
         }
     });
 
-    // add new activity gallery
+    // add new service gallery
     // Get a reference to the file input element
-    const photoActivity = document.querySelector('input[id="galleryActivity"]');
+    const photoservice = document.querySelector('input[id="galleryservice"]');
 
     // Create a FilePond instance
-    const pondActivity = FilePond.create(photoActivity, {
+    const pondservice = FilePond.create(photoservice, {
         imageResizeTargetHeight: 720,
         imageResizeUpscale: false,
         credits: false,
     })
 
-    pondActivity.setOptions({
+    pondservice.setOptions({
         server: {
             timeout: 3600000,
             process: {

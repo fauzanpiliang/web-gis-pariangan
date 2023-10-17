@@ -186,8 +186,6 @@ $routes->group('manage_pariangan', function ($routes) {
     $routes->post('save_insert', 'ManageParianganController::save_insert', ['filter' => 'role:admin']);
 });
 
-
-
 // 4. Route manage event
 $routes->group('manage_event', function ($routes) {
     $routes->get('/', 'ManageEventController::index', ['filter' => 'role:admin']);
@@ -278,6 +276,15 @@ $routes->group('manage_product', function ($routes) {
     $routes->get('insert', 'ManageProductController::insert', ['filter' => 'role:admin']);
     $routes->post('save_insert', 'ManageProductController::save_insert', ['filter' => 'role:admin']);
     $routes->get('delete/(:segment)', 'ManageProductController::delete/$1', ['filter' => 'role:admin']);
+});
+// 11. Route service package
+$routes->group('manage_service', function ($routes) {
+    $routes->get('/', 'ManageServiceController::index', ['filter' => 'role:admin']);
+    $routes->get('index', 'ManageServiceController::index', ['filter' => 'role:admin']);
+    $routes->post('save_update/(:segment)', 'ManageServiceController::save_update/$1', ['filter' => 'role:admin']);
+    $routes->get('insert', 'ManageServiceController::insert', ['filter' => 'role:admin']);
+    $routes->post('save_insert', 'ManageServiceController::save_insert', ['filter' => 'role:admin']);
+    $routes->get('delete/(:segment)', 'ManageServiceController::delete/$1', ['filter' => 'role:admin']);
 });
 
 // 9. Route manage activities package

@@ -24,8 +24,8 @@ class atractionModel extends Model
     atraction.close,
     atraction.employe,
     atraction.price,
-    atraction.contact_person,
     atraction.description,
+    atraction.contact_person,
     atraction.video_url';
     protected $coords = "ST_Y(ST_Centroid(atraction.geom)) AS lat ,ST_X(ST_Centroid(atraction.geom)) AS lng ";
     protected $geom_area = "ST_AsGeoJSON(atraction.geom_area) AS geoJSON";

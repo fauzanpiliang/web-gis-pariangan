@@ -13,7 +13,7 @@
         <div class="card-header py-3">
             <h5 class="m-0 font-weight-bold text-primary text-center">List Package</h5>
             <a href="<?= base_url('manage_package/insert') ?> " title="Add new package" role="button" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> Add</a>
-            <a href="<?= base_url('manage_activities') ?> " title="Manage activities" role="button" class="btn btn-primary btn-sm"><i class="fa fa-cog"></i> Manage activities</a>
+            <a href="<?= base_url('manage_service') ?> " title="Manage service" role="button" class="btn btn-primary btn-sm"><i class="fa fa-cog"></i> Manage services</a>
         </div>
         <div class="card-body">
             <div class="table-responsive">

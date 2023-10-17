@@ -168,7 +168,7 @@ class ManageAtractionController extends BaseController
             'employe' => $this->request->getPost('employe'),
             'price' => $this->request->getPost('price'),
             'contact_person' => $this->request->getPost('contact_person'),
-            'description' => $this->request->getPost('description')
+            'description' => $this->request->getPost('description'),
         ];
         $geojson = $this->request->getPost('geojson');
         if (!$geojson) {
