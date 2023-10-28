@@ -17,7 +17,7 @@
                 </a>
                 <ul class="submenu">
                     <!-- Pariangan mangrove Menu -->
-                    <div class="sidebar-item <?= current_url() === base_url('grave') ? 'active' : ''; ?>" id="graveMenu">
+                    <div class="sidebar-item " id="graveMenu">
                         <a class='sidebar-link' onclick="showObject('atraction','01')" style="cursor: pointer;">
                             <i class="iconify" data-icon="mdi:grave-stone" data-width="25" data-height="25"></i>
                             <span>Long Grave of Tantejo Gurhano</span>
@@ -33,7 +33,7 @@
                     </li>
 
                     <!-- Masjid Islah -->
-                    <li id="mosqueMenu">
+                    <li class="sidebar-item" id="mosqueMenu">
                         <a class='sidebar-link' onclick="showObject('atraction','05')" style="cursor: pointer;">
                             <i class="iconify" data-icon="mdi:mosque" data-width="25" data-height="25"></i>
                             <span>Islah Mosque</span>
@@ -94,17 +94,21 @@
             </li>
 
             <li class="sidebar-item  has-sub 
-            <?= (current_url() == base_url('manage_users') || current_url() == base_url('manage_pariangan') || current_url() == base_url('manage_atraction') || current_url() == base_url('manage_package') || current_url() == base_url('manage_product') || current_url() == base_url('manage_event') || current_url() == base_url('manage_culinary_place') || current_url() == base_url('manage_souvenir_place') || current_url() == base_url('manage_worship_place') || current_url() == base_url('manage_facility')) ? 'active' : '' ?>" id="adminMenu">
+            <?= (current_url() == base_url('manage_users') || current_url() == base_url('manage_pariangan') || current_url() == base_url('manage_atraction') || current_url() == base_url('manage_package') || current_url() == base_url('manage_product') || current_url() == base_url('manage_event') || current_url() == base_url('manage_culinary_place') || current_url() == base_url('manage_souvenir_place') || current_url() == base_url('manage_worship_place') || current_url() == base_url('manage_facility') || current_url() == base_url('manage_reservation') || current_url() == base_url('manage_homestay')) ? 'active' : '' ?>" id="adminMenu">
                 <a href="" class='sidebar-link'>
                     <i class="iconify" data-icon="fa6-solid:gear" data-width="25" data-height="25"></i>
                     <span>Manage menu</span>
                 </a>
                 <ul class="submenu 
-                <?php if (current_url() == base_url('manage_users') || current_url() == base_url('manage_pariangan') || current_url() == base_url('manage_atraction') || current_url() == base_url('manage_package') || current_url() == base_url('manage_product') || current_url() == base_url('manage_event') || current_url() == base_url('manage_culinary_place') || current_url() == base_url('manage_souvenir_place') || current_url() == base_url('manage_worship_place') || current_url() == base_url('manage_facility')) : echo 'active';
+                <?php if (current_url() == base_url('manage_users') || current_url() == base_url('manage_pariangan') || current_url() == base_url('manage_atraction') || current_url() == base_url('manage_package') || current_url() == base_url('manage_product') || current_url() == base_url('manage_event') || current_url() == base_url('manage_culinary_place') || current_url() == base_url('manage_souvenir_place') || current_url() == base_url('manage_worship_place') || current_url() == base_url('manage_facility') || current_url() == base_url('manage_reservation') || current_url() == base_url('manage_homestay')) : echo 'active';
                 endif; ?>">
                     <li class="submenu-item sidebar-link  <?php if (current_url() == base_url('manage_users')) echo 'active'; ?>">
                         <i class="iconify" data-icon="clarity:users-solid" data-width="25" data-height="25"></i>
                         <a role="button" href="<?= base_url('manage_users') ?>">Admin</a>
+                    </li>
+                    <li class="submenu-item sidebar-link  <?php if (current_url() == base_url('manage_reservation')) echo 'active'; ?>">
+                        <i class="iconify" data-icon="material-symbols:order-play-outline" data-width="25" data-height="25"></i>
+                        <a role="button" href="<?= base_url('manage_reservation') ?>">Reservation</a>
                     </li>
                     <li class="submenu-item sidebar-link  <?php if (current_url() == base_url('manage_pariangan')) echo 'active'; ?>">
                         <i class="iconify" data-icon="fontisto:holiday-village" data-width="25" data-height="25"></i>
@@ -141,6 +145,10 @@
                     <li class="submenu-item sidebar-link  <?php if (current_url() == base_url('manage_facility')) echo 'active'; ?>">
                         <i class="iconify" data-icon="mdi:tools" data-width="25" data-height="25"></i>
                         <a role="button" href="<?= base_url('manage_facility') ?>">Facility</a>
+                    </li>
+                    <li class="submenu-item sidebar-link  <?php if (current_url() == base_url('manage_homestay')) echo 'active'; ?>">
+                        <i class="iconify" data-icon="mdi:tools" data-width="25" data-height="25"></i>
+                        <a role="button" href="<?= base_url('manage_homestay') ?>">Homestay</a>
                     </li>
                 </ul>
             </li>

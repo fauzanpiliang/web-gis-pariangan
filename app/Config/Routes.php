@@ -60,6 +60,8 @@ $routes->get('/register', 'AuthController::register');
 $routes->group('user', function ($routes) {
     $routes->get('profile', 'User::profile', ['filter' => 'role:user,admin']);
     $routes->get('edit_profile', 'User::edit_profile', ['filter' => 'role:user,admin']);
+    $routes->get('reservation/(:segment)', 'User::reservation/$1', ['filter' => 'role:user']);
+    $routes->get('checkout/(:segment)', 'User::checkout/$1', ['filter' => 'role:user']);
     $routes->get('save_update/(:segment)', 'User::save_update/$1', ['filter' => 'role:user,admin']);
     $routes->post('save_update/(:segment)', 'User::save_update/$1', ['filter' => 'role:user,admin']);
     $routes->get('change_password', 'User::change_password', ['filter' => 'role:user,admin']);
@@ -99,6 +101,9 @@ $routes->group('list_object', function ($routes) {
     $routes->get('facility', 'ListObjectController::facility');
     $routes->get('facility/(:segment)', 'ListObjectController::facility/$1');
 
+    $routes->get('homestay', 'ListObjectController::homestay');
+    $routes->get('homestay/(:segment)', 'ListObjectController::homestay/$1');
+
     $routes->get('detail_object/(:segment)', 'ListObjectController::detail_object/$1');
 
     $routes->get('search_main_nearby/(:segment)', 'ListObjectController::search_main_nearby/$1');
@@ -128,6 +133,7 @@ $routes->group('review', function ($routes) {
     $routes->post('event', 'RatingReviewController::rating_event');
     $routes->post('comment_event', 'RatingReviewController::comment_event');
     $routes->get('get_event_comment', 'RatingReviewController::get_event_comment');
+    $routes->post('package', 'RatingReviewController::rating_comment_package');
 });
 
 // Menu package
@@ -135,6 +141,7 @@ $routes->group('package', function ($routes) {
     $routes->get('/', 'packageController::packages');
     $routes->get('detail/(:segment)', 'packageController::package/$1');
     $routes->get('getActivityGallery/(:segment)', 'packageController::getActivityGallery/$1');
+    $routes->get('objects/package_day/(:segment)', 'packageController::getObjectsByPackageDayId/$1');
 });
 
 // Menu product
@@ -251,7 +258,19 @@ $routes->group('manage_facility', function ($routes) {
     $routes->get('delete/(:segment)', 'ManageFacilityController::delete/$1', ['filter' => 'role:admin']);
 });
 
-// 9. Route manage package
+// 9. Route manage facility
+$routes->group('manage_homestay', function ($routes) {
+    $routes->get('/', 'ManageHomestayController::index', ['filter' => 'role:admin']);
+    $routes->get('index', 'ManageHomestayController::index', ['filter' => 'role:admin']);
+    $routes->get('detail/(:segment)', 'ManageHomestayController::detail/$1', ['filter' => 'role:admin']);
+    $routes->get('edit/(:segment)', 'ManageHomestayController::edit/$1', ['filter' => 'role:admin']);
+    $routes->post('save_update/(:segment)', 'ManageHomestayController::save_update/$1', ['filter' => 'role:admin']);
+    $routes->get('insert', 'ManageHomestayController::insert', ['filter' => 'role:admin']);
+    $routes->post('save_insert', 'ManageHomestayController::save_insert', ['filter' => 'role:admin']);
+    $routes->get('delete/(:segment)', 'ManageHomestayController::delete/$1', ['filter' => 'role:admin']);
+});
+
+// 10. Route manage package
 $routes->group('manage_package', function ($routes) {
     $routes->get('/', 'ManagePackageController::index', ['filter' => 'role:admin']);
     $routes->get('index', 'ManagePackageController::index', ['filter' => 'role:admin']);
@@ -261,12 +280,9 @@ $routes->group('manage_package', function ($routes) {
     $routes->get('insert', 'ManagePackageController::insert', ['filter' => 'role:admin']);
     $routes->post('save_insert', 'ManagePackageController::save_insert', ['filter' => 'role:admin']);
     $routes->get('delete/(:segment)', 'ManagePackageController::delete/$1', ['filter' => 'role:admin']);
-
-    // activity
-    $routes->post('save_activity/(:segment)', 'ManagePackageController::save_activity/$1', ['filter' => 'role:admin']);
 });
 
-// 10. Route manage product
+// 11. Route manage product
 $routes->group('manage_product', function ($routes) {
     $routes->get('/', 'ManageProductController::index', ['filter' => 'role:admin']);
     $routes->get('index', 'ManageProductController::index', ['filter' => 'role:admin']);
@@ -277,7 +293,7 @@ $routes->group('manage_product', function ($routes) {
     $routes->post('save_insert', 'ManageProductController::save_insert', ['filter' => 'role:admin']);
     $routes->get('delete/(:segment)', 'ManageProductController::delete/$1', ['filter' => 'role:admin']);
 });
-// 11. Route service package
+// 12. Route service package
 $routes->group('manage_service', function ($routes) {
     $routes->get('/', 'ManageServiceController::index', ['filter' => 'role:admin']);
     $routes->get('index', 'ManageServiceController::index', ['filter' => 'role:admin']);
@@ -287,17 +303,29 @@ $routes->group('manage_service', function ($routes) {
     $routes->get('delete/(:segment)', 'ManageServiceController::delete/$1', ['filter' => 'role:admin']);
 });
 
-// 9. Route manage activities package
-$routes->group('manage_activities', function ($routes) {
-    $routes->get('/', 'ManageActivitiesController::index', ['filter' => 'role:admin']);
-    $routes->get('index', 'ManageActivitiesController::index', ['filter' => 'role:admin']);
-    $routes->post('save_update', 'ManageActivitiesController::save_update', ['filter' => 'role:admin']);
-    $routes->post('save_insert', 'ManageActivitiesController::save_insert', ['filter' => 'role:admin']);
-    $routes->get('delete/(:segment)', 'ManageActivitiesController::delete/$1', ['filter' => 'role:admin']);
-    $routes->get('activity/(:segment)', 'ManageActivitiesController::activity/$1', ['filter' => 'role:admin']);
+// 13. menu  reservation
+$routes->group('reservation', function ($routes) {
+    $routes->get('/', 'ReservationController::index', ['filter' => 'role:user']);
+    $routes->get('index', 'ReservationController::index', ['filter' => 'role:user']);
+    $routes->post('create', 'ReservationController::create', ['filter' => 'role:user,admin']);
+    $routes->delete('delete/(:segment)', 'ReservationController::delete/$1', ['filter' => 'role:user,admin']);
+    $routes->get('check/(:segment)/(:segment)', 'ReservationController::check/$1/$2', ['filter' => 'role:user,admin']);
+});
 
-    // save activity from package form
-    $routes->post('save_activity/(:segment)', 'ManagePackageController::save_activity/$1', ['filter' => 'role:admin']);
+// 14. Manage reservation
+$routes->group('manage_reservation', function ($routes) {
+    $routes->get('/', 'ManageReservationController::index', ['filter' => 'role:admin']);
+    $routes->get('index', 'ManageReservationController::index', ['filter' => 'role:admin']);
+    $routes->patch('save_update/(:segment)', 'ManageReservationController::save_update/$1', ['filter' => 'role:admin']);
+    $routes->get('insert', 'ManageReservationController::insert', ['filter' => 'role:admin']);
+    $routes->post('save_insert', 'ManageReservationController::save_insert', ['filter' => 'role:admin']);
+});
+
+// 14. Manage reservation
+$routes->group('pdf', function ($routes) {
+    $routes->get('/(:segment)', 'PdfGenerator::index/$1', ['filter' => 'role:user,admin']);
+    $routes->get('index/(:segment)', 'PdfGenerator::index/$1', ['filter' => 'role:user,admin']);
+    $routes->post('invoice-data', 'PdfGenerator::getInvoiceData', ['filter' => 'role:user,admin']);
 });
 
 // Mobile route

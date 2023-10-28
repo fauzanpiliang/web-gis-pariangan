@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 
 class ratingModel extends Model
 {
-    protected $table = 'rating';
+    protected $table = 'review_atraction';
     protected $primaryKey = 'id';
     protected $atraction_id = 'atraction_id';
     protected $user_id = 'user_id';
@@ -15,7 +15,7 @@ class ratingModel extends Model
     public function getRatingId($user_id, $object, $object_id)
     {
         $query = $this->db->table($this->table)
-            ->select('rating.id as rating')
+            ->select('id as rating')
             ->where('user_id', $user_id)
             ->where($object, $object_id)
             ->get();
@@ -54,7 +54,7 @@ class ratingModel extends Model
     public function check($user_id, $object, $object_id)
     {
         $query = $this->db->table($this->table)
-            ->select('rating.id')
+            ->select('id')
             ->where('user_id', $user_id)
             ->where($object, $object_id)
             ->get();

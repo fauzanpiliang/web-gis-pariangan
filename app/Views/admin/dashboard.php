@@ -79,6 +79,21 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-3">
+                        <div class="card  shadow-sm efek" id="reservation">
+                            <div class="card-content">
+                                <a href="<?= base_url('manage_reservation') ?>">
+                                    <img class="card-img-top img-fluid" src="<?= base_url('assets/images/dashboard-images/reservasi.jpg') ?>" alt="Card image cap">
+                                    <div class="card-body">
+                                        <h4 class="card-title">Reservation</h4>
+                                        <p class="card-text">Manage reservation</p>
+                                        <p class="card-text"> Total reservation : <?= $reservationData->id; ?></p>
+                                        <small class="text-muted">Click to go <i class="fa fa-arrow-right fa-xs"></i> </small>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="col-md-3">
                         <div class="card  shadow-sm efek" id="event">
@@ -164,11 +179,26 @@
                         <div class="card  shadow-sm efek" id="f">
                             <div class="card-content">
                                 <a href="<?= base_url('manage_facility') ?>">
-                                    <img class="card-img-top img-fluid" src="<?= base_url('assets/images/dashboard-images/Homestay_panduko_rajo.jpg') ?>" alt="Card image cap">
+                                    <img class="card-img-top img-fluid" src="<?= base_url('assets/images/dashboard-images/facility.jpg') ?>" alt="Card image cap">
                                     <div class="card-body">
                                         <h4 class="card-title">Facility</h4>
                                         <p class="card-text"> Manage facility</p>
                                         <p class="card-text"> Total facility : <?= $fData->id; ?></p>
+                                        <small class="text-muted">Click to go <i class="fa fa-arrow-right fa-xs"></i> </small>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card  shadow-sm efek" id="f">
+                            <div class="card-content">
+                                <a href="<?= base_url('manage_homestay') ?>">
+                                    <img class="card-img-top img-fluid" src="<?= base_url('assets/images/dashboard-images/Homestay_panduko_rajo.jpg') ?>" alt="Card image cap">
+                                    <div class="card-body">
+                                        <h4 class="card-title">Homestay</h4>
+                                        <p class="card-text"> Manage homestay</p>
+                                        <p class="card-text"> Total homestay : <?= $hData->id; ?></p>
                                         <small class="text-muted">Click to go <i class="fa fa-arrow-right fa-xs"></i> </small>
                                     </div>
                                 </a>

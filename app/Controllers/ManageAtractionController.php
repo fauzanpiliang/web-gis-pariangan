@@ -25,9 +25,9 @@ class ManageAtractionController extends BaseController
     }
     public function detail($id = null)
     {
-       
+
         $objectData = $this->model->getAtraction($id)->getRow();
-        
+
         $galleryData = $this->model->getGallery($id)->getResult();
         $parianganData = $this->modelPariangan->getPariangan();
         $data = [
@@ -38,7 +38,7 @@ class ManageAtractionController extends BaseController
             'galleryData' => $galleryData,
             'parianganData' => $parianganData
         ];
-       
+
         return view('admin-detail/detail_atraction', $data);
     }
 
@@ -171,6 +171,7 @@ class ManageAtractionController extends BaseController
             'description' => $this->request->getPost('description'),
         ];
         $geojson = $this->request->getPost('geojson');
+
         if (!$geojson) {
             $geojson = 'null';
         }

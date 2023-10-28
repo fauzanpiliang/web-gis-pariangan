@@ -17,7 +17,10 @@
     <!-- Third Party Icon -->
     <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <!-- datatable -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <!-- Third Party CSS and JS -->
+
     <link rel="stylesheet" href="<?= base_url('assets/css/shared/iconly.css'); ?>">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,200,0,0" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -61,6 +64,9 @@
 
 <!-- Template JS -->
 <script src="<?= base_url('/assets/js/app.js') ?>"></script>
+<!-- <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.jshttps://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"></script> -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
 <!-- Custom JS -->
 <?= $this->renderSection('script') ?>
 

@@ -10,20 +10,15 @@ class packageModel extends Model
 {
     protected $table = 'package';
 
-    protected $table_activities = 'detail_package';
     protected $columns = '
     package.id,
     package.name,
-    package.min_capacity,
+    package.capacity,
     package.price,
-    package.contact_person,
-    package.brosur_url as url,
+    package.cp,
+    package.url,
     package.description';
 
-    protected $columns_activities = '
-    activities.id,
-    activities.name,
-    activities.description';
 
     public function get_new_id()
     {

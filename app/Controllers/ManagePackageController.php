@@ -7,14 +7,26 @@ use CodeIgniter\Files\File;
 class ManagePackageController extends BaseController
 {
     protected $model, $modelservices, $modelPariangan,  $modelFp, $validation, $helpers = ['auth', 'url', 'filesystem'];
+    protected $atractionModel, $culinaryModel, $worshipModel, $souvenirModel, $homestayModel, $packageDayModel, $detailPackageModel;
+    protected $serviceModel, $detailServicePackageModel;
+    protected $modelRating;
     protected $title = 'Manage-Packages | Tourism Village';
     public function __construct()
     {
         $this->validation = \Config\Services::validation();
         $this->model = new \App\Models\packageModel();
         $this->modelPariangan = new \App\Models\parianganModel();
+        $this->packageDayModel = new \App\Models\packageDayModel();
+        $this->detailPackageModel = new \App\Models\DetailPackageModel();
+        $this->detailServicePackageModel = new \App\Models\DetailServicePackageModel();
+        $this->atractionModel = new \App\Models\atractionModel();
+        $this->culinaryModel = new \App\Models\culinaryPlaceModel();
+        $this->worshipModel = new \App\Models\worshipPlaceModel();
+        $this->souvenirModel = new \App\Models\souvenirPlaceModel();
+        $this->homestayModel = new \App\Models\homestayModel();
         $this->modelservices = new \App\Models\serviceModel();
         $this->modelFp = new \App\Models\facilityPackageModel();
+        $this->modelRating  =  new \App\Models\ratingModel();
     }
     public function index()
     {
@@ -31,6 +43,21 @@ class ManagePackageController extends BaseController
         $parianganData = $this->modelPariangan->getPariangan();
         $facilityPackage = $this->modelFp->getFacilityPackage($id)->getResult();
         $servicesData = $this->modelservices->getPackageActivity($id)->getResult();
+
+        if ($this->request->isAJAX()) {
+            $user_id = $this->request->getGet('user_id');
+            if ($id) {
+                $countRating = $this->modelRating->getRating($id, 'id_package')->getRow();
+                $userTotal = $this->modelRating->getUserTotal($id, 'id_package')->getRow();
+                $userRating = $this->modelRating->getUserRating($user_id, 'id_package', $id)->getRow();
+            }
+            $data = [
+                'countRating' =>  $countRating,
+                'userTotal' =>  $userTotal,
+                'userRating' => $userRating
+            ];
+            return json_encode($data);
+        }
         $data = [
             'title' => $this->title,
             'objectData' => $objectData,
@@ -44,99 +71,180 @@ class ManagePackageController extends BaseController
 
     public function edit($id = null)
     {
-        $objectData = $this->model->getPackage($id)->getRow();
-        $servicesData  = $this->modelservices->getservices()->getResult();
-        $servicesPackage = $this->modelservices->getPackageActivity($id)->getResult();
-        $facilityPackages = $this->modelFp->getFacilityPackage($id)->getResult();
+        // 
+        $package = $this->model->getPackage($id)->getRowArray();
+        // $homestayData = $this->HomestayModel->get_list_hm_api()->getResultArray();
+        $serviceData = $this->modelservices->getServices()->getResultArray();
+
+        $packageService = $this->detailServicePackageModel->get_service_by_package_api($id)->getResultArray();
+
+        $selectedService = array();
+        foreach ($packageService as $service) {
+            $selectedService[] = $service['name'];
+        }
+
+        $packageDay = $this->packageDayModel->get_pd_by_package_id_api($id)->getResultArray();
+        $no = 0;
+        foreach ($packageDay as $day) {
+            $packageDay[$no]['detailPackage'] = $this->detailPackageModel->get_objects_by_package_day_id($day['day'])->getResultArray();
+            $no++;
+        }
+
+        $objectData = [];
+
+
+        $atractionData = $this->atractionModel->getAtractions();
+        foreach ($atractionData as $atraction) {
+            $atraction->id = 'A' . $atraction->id;
+            $objectData[] = $atraction;
+        }
+        $culinaryData = $this->culinaryModel->getCulinaryPlaces();
+        foreach ($culinaryData as $culinary) {
+            $culinary->id = 'C' . $culinary->id;
+            $objectData[] = $culinary;
+        }
+        $souvenirData = $this->souvenirModel->getSouvenirPlaces();
+        foreach ($souvenirData as $souvenir) {
+            $souvenir->id = 'S' . $souvenir->id;
+            $objectData[] = $souvenir;
+        }
+        $worshipData = $this->worshipModel->getWorshipPlaces();
+        foreach ($worshipData as $worship) {
+            $worship->id = 'S' . $worship->id;
+            $objectData[] = $worship;
+        }
+        $homestayData = $this->homestayModel->getHomestays();
+        foreach ($homestayData as $homestay) {
+            $homestay->id = 'H' . $homestay->id;
+            $objectData[] = $homestay;
+        }
+
+
+        $package['service_package'] =  $selectedService;
+        $package['gallery'] = [$package['url']];
+        $package['video_url'] = null;
+
         $data = [
-            'title' => $this->title,
-            'config' => config('Auth'),
+            'title' => 'Edit Package',
+            'data' => $package,
+            // 'homestayData' => $homestayData,
+            'packageDayData' => $packageDay,
             'objectData' => $objectData,
-            'servicesData' => $servicesData,
-            'servicesPackage' => $servicesPackage,
-            'facilityPackages' => $facilityPackages
+            'serviceData' => $serviceData
         ];
         return view('admin-edit/edit_package', $data);
     }
 
     public function save_update($id = null)
     {
-        // ---------------------Data request------------------------------------
+        // 
         $request = $this->request->getPost();
-
-        foreach ($request['gallery'] as $key => $value) {
-            if (!strlen($value)) {
-                unset($request['gallery'][$key]);
-            }
+        $url = null;
+        if (isset($request['gallery'])) {
+            $folder = $request['gallery'][0];
+            $filepath = WRITEPATH . 'uploads/' . $folder;
+            $filename = get_filenames($filepath)[0];
+            $fileImg = new File($filepath . '/' . $filename);
+            $fileImg->move(FCPATH . 'media/photos');
+            delete_files($filepath);
+            rmdir($filepath);
+            $url = $fileImg->getFilename();
         }
-        if ($request['gallery']) {
-            $folders = $request['gallery'];
-            foreach ($folders as $folder) {
-                $filepath = WRITEPATH . 'uploads/' . $folder;
-                $filenames = get_filenames($filepath);
-                $fileImg = new File($filepath . '/' . $filenames[0]);
-                $fileImg->move(FCPATH . 'media/photos/package');
-                delete_files($filepath);
-                rmdir($filepath);
-                $gallery = $fileImg->getFilename();
-            }
-        } else {
-            $gallery = '';
-        }
-        $updateRequest = [
-            'id' => $id,
-            'name' => $this->request->getPost('name'),
-            'price' => $this->request->getPost('price'),
-            'min_capacity' => $this->request->getPost('min_capacity'),
-            'contact_person' => $this->request->getPost('contact_person'),
-            'brosur_url' => $gallery,
-            'description' => $this->request->getPost('description')
+        $requestData = [
+            'name' => $request['name'],
+            // 'id_homestay' => $request['id_homestay'],
+            'price' => empty($request['price']) ? "0" : $request['price'],
+            'capacity' => $request['capacity'],
+            'cp' => $request['cp'],
+            'url' => $url,
+            'description' => $request['description'],
         ];
 
-        // unset empty value
-        foreach ($updateRequest as $key => $value) {
-            if (empty($value)) {
-                unset($updateRequest[$key]);
-            }
-        }
-        $insert =  $this->model->updatePackage($id, $updateRequest);
-        if ($insert) {
-            // insert services
-            $deletePackage = $this->modelservices->deleteDetailPackage($id);
-            if ($deletePackage) {
-                $services_id = $this->request->getPost('services');
-                if ($services_id) {
-                    foreach ($services_id as $activity_id) {
-                        $this->modelservices->updatePackageservices($id, $activity_id);
+        $updateTp = $this->model->updatePackage($id, $requestData);
+        if (isset($request['packageDetailData'])) {
+            $deletePackageDay = $this->packageDayModel->delete_pd_by_package_id($id);
+
+            foreach ($request['packageDetailData'] as $packageDay) {
+                $packageDayId = $this->packageDayModel->get_new_id_api();
+                $requestPackageDay = [
+                    'day' => $packageDayId,
+                    'id_package' => $id,
+                    'description' => $packageDay['packageDayDescription']
+                ];
+                $addPackageDay = $this->packageDayModel->add_pd_api($requestPackageDay);
+
+                if ($addPackageDay) {
+                    if (isset($packageDay['detailPackage'])) {
+                        foreach ($packageDay['detailPackage'] as $detailPackage) {
+                            $detailPackageId = $this->detailPackageModel->get_new_id_api();
+                            $requestDetailPackage = [
+                                'activity' => $detailPackageId,
+                                'id_day' => $packageDayId,
+                                'id_package' => $id,
+                                'id_object' => $detailPackage['id_object'],
+                                'activity_type' => $detailPackage['activity_type'],
+                                'description' => $detailPackage['description']
+                            ];
+                            $addDetailPackage =  $this->detailPackageModel->add_dp_api($requestDetailPackage);
+                        }
+                    } else {
+                        $rollbackPackageDay = $this->packageDayModel->delete_pd_by_day_id($packageDayId);
                     }
                 }
             }
-            // inserrt facility package
-            $deleteFacilityPackages = $this->modelFp->deleteFacilityPackage($id);
-            if ($deleteFacilityPackages) {
-                $facility_packages = $this->request->getPost('facility_package');
-                if ($facility_packages) {
-                    foreach ($facility_packages as $fp) {
-                        $id_fp = $this->modelFp->get_new_id();
-                        $this->modelFp->addFacilityPackage(['id' => $id_fp, 'package_id' => $id, 'name' => $fp]);
-                    }
-                }
-            }
         }
-        if ($insert) {
-            session()->setFlashdata('success', 'Success! Data updated.');
-            return redirect()->to(site_url('manage_package/edit/') . $id);
+
+        $addService = true;
+
+        if (isset($request['service_package'])) {
+            $services = $request['service_package'];
+            $addService = $this->detailServicePackageModel->update_service_api($id, $services);
+        }
+
+        if ($updateTp && $addService) {
+            return redirect()->to(base_url('manage_package'));
         } else {
-            session()->setFlashdata('failed', 'Failed! Failed to update data.');
-            return redirect()->to(site_url('manage_package/edit/') . $id);
+            return redirect()->back()->withInput();
         }
+
+        // 
+
     }
     public function insert()
     {
-        $servicesData = $this->modelservices->getServices()->getResult();
+        // $homestayData = $this->HomestayModel->get_list_hm_api()->getResultArray();
+        $serviceData = $this->modelservices->getServices()->getResultArray();
+        $objectData = [];
+
+
+        $atractionData = $this->atractionModel->getAtractions();
+        foreach ($atractionData as $atraction) {
+            $atraction->id = 'A' . $atraction->id;
+            $objectData[] = $atraction;
+        }
+        $culinaryData = $this->culinaryModel->getCulinaryPlaces();
+        foreach ($culinaryData as $culinary) {
+            $culinary->id = 'C' . $culinary->id;
+            $objectData[] = $culinary;
+        }
+        $souvenirData = $this->souvenirModel->getSouvenirPlaces();
+        foreach ($souvenirData as $souvenir) {
+            $souvenir->id = 'S' . $souvenir->id;
+            $objectData[] = $souvenir;
+        }
+        $worshipData = $this->worshipModel->getWorshipPlaces();
+        foreach ($worshipData as $worship) {
+            $worship->id = 'S' . $worship->id;
+            $objectData[] = $worship;
+        }
+
+
         $data = [
             'title' => $this->title,
-            'servicesData' => $servicesData
+            // 'homestayData' => $homestayData,
+            'packageDayData' => null,
+            'objectData' => $objectData,
+            'serviceData' => $serviceData
         ];
         return view('admin-insert/insert_package', $data);
     }
@@ -145,125 +253,76 @@ class ManagePackageController extends BaseController
 
         // ---------------------Data request------------------------------------
         $request = $this->request->getPost();
-        $id = $this->model->get_new_id();
 
-        foreach ($request['gallery'] as $key => $value) {
-            if (!strlen($value)) {
-                unset($request['gallery'][$key]);
-            }
+
+        $id_package = $this->model->get_new_id();
+
+        $url = null;
+        if (isset($request['gallery'])) {
+            $folder = $request['gallery'][0];
+            $filepath = WRITEPATH . 'uploads/' . $folder;
+            $filename = get_filenames($filepath)[0];
+            $fileImg = new File($filepath . '/' . $filename);
+            $fileImg->move(FCPATH . 'media/photos');
+            delete_files($filepath);
+            rmdir($filepath);
+            $url = $fileImg->getFilename();
         }
-        if ($request['gallery']) {
-            $folders = $request['gallery'];
-            foreach ($folders as $folder) {
-                $filepath = WRITEPATH . 'uploads/' . $folder;
-                $filenames = get_filenames($filepath);
-                $fileImg = new File($filepath . '/' . $filenames[0]);
-                $fileImg->move(FCPATH . 'media/photos/package');
-                delete_files($filepath);
-                rmdir($filepath);
-                $gallery = $fileImg->getFilename();
-            }
-        } else {
-            $gallery = '';
-        }
-        $insertRequest = [
-            'id' => $id,
-            'name' => $this->request->getPost('name'),
-            'price' => $this->request->getPost('price'),
-            'min_capacity' => $this->request->getPost('min_capacity'),
-            'contact_person' => $this->request->getPost('contact_person'),
-            'brosur_url' => $gallery,
-            'description' => $this->request->getPost('description')
+
+        $requestData = [
+            'id' => $id_package,
+            'name' => $request['name'],
+            // 'id_homestay' => $request['id_homestay'],
+            'price' => empty($request['price']) ? "0" : $request['price'],
+            'capacity' => $request['capacity'],
+            'cp' => $request['cp'],
+            'url' => $url,
+            'description' => $request['description'],
         ];
 
-        // unset empty value
-        foreach ($insertRequest as $key => $value) {
-            if (empty($value)) {
-                unset($insertRequest[$key]);
-            }
-        }
-        $insert =  $this->model->addPackage($insertRequest);
-        if ($insert) {
-            // insert services
-            $services_id = $this->request->getPost('services');
-            if ($services_id) {
-                foreach ($services_id as $activity_id) {
-                    $this->modelservices->addPackageservices(['package_id' => $id, 'services_id' => $activity_id]);
-                }
-            }
 
-            // inserrt facility package
-            $facility_packages = $this->request->getPost('facility_package');
-            if ($facility_packages) {
-                foreach ($facility_packages as $fp) {
-                    $id_fp = $this->modelFp->get_new_id();
-                    $this->modelFp->addFacilityPackage(['id' => $id_fp, 'package_id' => $id, 'name' => $fp]);
+        $addtp = $this->model->addPackage($requestData);
+        if (isset($request['packageDetailData'])) {
+            foreach ($request['packageDetailData'] as $packageDay) {
+                $packageDayId = $this->packageDayModel->get_new_id_api();
+                $requestPackageDay = [
+                    'day' => $packageDayId,
+                    'id_package' => $id_package,
+                    'description' => $packageDay['packageDayDescription']
+                ];
+                $addPackageDay = $this->packageDayModel->add_pd_api($requestPackageDay);
+
+                if ($addPackageDay) {
+                    foreach ($packageDay['detailPackage'] as $detailPackage) {
+                        $detailPackageId = $this->detailPackageModel->get_new_id_api();
+                        $requestDetailPackage = [
+                            'activity' => $detailPackageId,
+                            'id_day' => $packageDayId,
+                            'id_package' => $id_package,
+                            'id_object' => $detailPackage['id_object'],
+                            'activity_type' => $detailPackage['activity_type'],
+                            'description' => $detailPackage['description']
+                        ];
+                        $addDetailPackage =  $this->detailPackageModel->add_dp_api($requestDetailPackage);
+                    }
                 }
             }
         }
-        if ($insert) {
-            session()->setFlashdata('success', 'Success! Data Added.');
-            return redirect()->to(site_url('manage_package'));
+
+        $addService = true;
+        if (isset($request['service_package'])) {
+            $services = $request['service_package'];
+            $addService = $this->detailServicePackageModel->add_service_api($id_package, $services);
+        }
+
+
+        if ($addtp && $addService) {
+            return redirect()->to(base_url('manage_package'));
         } else {
-            session()->setFlashdata('failed', 'Failed! Failed to add data.');
-            return redirect()->to(site_url('manage_package/insert'));
+            return redirect()->back()->withInput();
         }
     }
-    public function save_activity($id_package = null)
-    {
-        // ---------------------Data request------------------------------------
-        $request = $this->request->getPost();
-        $id = $this->modelservices->get_new_id();
-        $insertRequest = [
-            'id' => $id,
-            'name' => $this->request->getPost('name'),
-            'description' => $this->request->getPost('description')
-        ];
 
-        $insert =  $this->modelservices->addservices($insertRequest);
-        // ----------------Gallery-----------------------------------------
-        if ($insert) {
-            // check if gallery have empty string then make it become empty array
-            foreach ($request['gallery'] as $key => $value) {
-                if (!strlen($value)) {
-                    unset($request['gallery'][$key]);
-                }
-            }
-            if ($request['gallery']) {
-                $folders = $request['gallery'];
-                $gallery = array();
-                foreach ($folders as $folder) {
-                    $filepath = WRITEPATH . 'uploads/' . $folder;
-                    $filenames = get_filenames($filepath);
-                    $fileImg = new File($filepath . '/' . $filenames[0]);
-                    $fileImg->move(FCPATH . 'media/photos/services');
-                    delete_files($filepath);
-                    rmdir($filepath);
-                    $gallery[] = $fileImg->getFilename();
-                }
-                $insertGallery =  $this->modelservices->addGallery($id, $gallery);
-            } else {
-                $insertGallery = true;
-            }
-        }
-        $url = $this->request->getPost('url');
-        if ($url == 'edit') {
-            if ($insert && $insertGallery) {
-                session()->setFlashdata('success', 'Success! New activity added.');
-                return redirect()->to(site_url('manage_package/edit/') . $id_package);
-            } else {
-                session()->setFlashdata('failed', 'Failed! Failed to add new activity.');
-                return redirect()->to(site_url('manage_package/edit/') . $id_package);
-            }
-        }
-        if ($insert && $insertGallery) {
-            session()->setFlashdata('success', 'Success! New activity added.');
-            return redirect()->to(site_url('manage_package/insert'));
-        } else {
-            session()->setFlashdata('failed', 'Failed! Failed to add new activity.');
-            return redirect()->to(site_url('manage_package/insert'));
-        }
-    }
     public function delete($id)
     {
         $delete =  $this->model->deletePackage($id);

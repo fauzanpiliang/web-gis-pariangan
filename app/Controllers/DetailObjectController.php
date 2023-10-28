@@ -5,7 +5,7 @@ namespace App\Controllers;
 class DetailObjectController extends BaseController
 {
 
-    protected $modelRating, $modelPariangan, $modelEvent, $modelAtraction, $modelSouvenir, $modelCulinary, $modelWorship, $modelFacility;
+    protected $modelRating, $modelPariangan, $modelEvent, $modelAtraction, $modelSouvenir, $modelCulinary, $modelWorship, $modelFacility, $modelPackage;
     protected $title =  'List Object | Tourism Village';
     public function __construct()
     {
@@ -17,6 +17,7 @@ class DetailObjectController extends BaseController
         $this->modelCulinary = new \App\Models\culinaryPlaceModel();
         $this->modelWorship = new \App\Models\worshipPlaceModel();
         $this->modelFacility = new \App\Models\facilityModel();
+        $this->modelPackage = new \App\Models\packageModel();
     }
 
     public function atraction($id = null)
@@ -57,6 +58,7 @@ class DetailObjectController extends BaseController
     public function event($id = null)
     {
         $objectData = $this->modelEvent->getEvent($id)->getRow();
+
         $galleryData = $this->modelEvent->getGallery($id)->getResult();
         $parianganData =  $this->modelPariangan->getPariangan();
 
@@ -75,6 +77,7 @@ class DetailObjectController extends BaseController
             ];
             return json_encode($data);
         }
+
         if (is_object($objectData)) {
             $data = [
                 'title' => $this->title,
@@ -167,6 +170,25 @@ class DetailObjectController extends BaseController
                 'parianganData' => $this->modelPariangan->getPariangan()
             ];
             return view('user-menu/detail_object', $data);
+        } else {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+    }
+    public function package($id = null)
+    {
+        $objectData = $this->modelPackage->getPackage($id)->getRow();
+        $galleryData = $this->modelPackage->getGallery($id)->getResult();
+
+        if (is_object($objectData)) {
+            $data = [
+                'title' => $this->title,
+                'config' => config('Auth'),
+                'objectData' => $objectData,
+                'galleryData'   => $galleryData,
+                'url' => 'package',
+                'parianganData' => $this->modelPariangan->getPariangan()
+            ];
+            return view('user-menu/detail_package', $data);
         } else {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }

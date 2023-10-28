@@ -7,33 +7,37 @@ use CodeIgniter\Model;
 
 class reviewModel extends Model
 {
-    protected $table = 'comment';
+    protected $table = 'review_atraction';
     protected $primaryKey = 'id';
 
     public function getObjectComment($object, $object_id)
     {
         $query = $this->db->table($this->table)
-            ->select('comment.comment,users.username as name , comment.created_at as date')
-            ->join('rating', 'rating.id = comment.rating_id')
-            ->join('users', 'users.id = rating.user_id')
+            ->select('review_atraction.comment,users.username as name , review_atraction.created_date as date')
+            ->join('users', 'users.id = review_atraction.user_id')
             ->where($object, $object_id)
-            ->orderBy('comment.created_at', 'ASC')
+            ->orderBy('review_atraction.created_date', 'ASC')
             ->get();
         return $query;
     }
     public function getUserComment($user_id, $object, $object_id)
     {
         $query = $this->db->table($this->table)
-            ->select('comment')
-            ->join('rating', 'rating.id = comment.rating_id')
-            ->where('rating.user_id', $user_id)
-            ->where('rating.' + $object, $object_id)
+            ->select('review_atraction')
+            ->join('review_atraction', 'review_atraction.id = review_atraction.review_atraction_id')
+            ->where('review_atraction.user_id', $user_id)
+            ->where('review_atraction.' + $object, $object_id)
             ->get();
         return $query;
     }
-    public function addComment($rating_id, $comment)
+    public function addComment($user_id, $id, $comment)
     {
-        $query = $this->db->table($this->table)->insert(['comment.rating_id' => $rating_id, 'comment.comment' => $comment]);
+        $query = $this->db->table($this->table)->insert(['review_atraction.user_id' => $user_id, 'review_atraction.id' => $id, 'review_atraction.comment' => $comment]);
+        return $query;
+    }
+    public function updateComment($user_id, $id, $comment)
+    {
+        $query = $this->db->table($this->table)->update(['review_atraction.user_id' => $user_id, 'review_atraction.comment' => $comment], ['review_atraction.id' => $id]);
         return $query;
     }
 }

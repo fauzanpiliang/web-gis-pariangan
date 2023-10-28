@@ -176,12 +176,14 @@ class ManageEventController extends BaseController
             'description' => $this->request->getPost('description')
         ];
         $geojson = $this->request->getPost('geojson');
+
         if (!$geojson) {
             $geojson = 'null';
         }
 
         $lat = $this->request->getPost('latitude');
         $lng = $this->request->getPost('longitude');
+
         if ($validateRules) {
             // ------------------Video----------------------
             if ($request['video']) {
@@ -197,7 +199,9 @@ class ManageEventController extends BaseController
                 $insertRequest['video_url'] = null;
             }
 
+
             $insert =  $this->model->addEvent($id, $insertRequest, floatval($lng), floatval($lat), $geojson);
+
             if ($insert) {
                 // ----------------Gallery-----------------------------------------
                 // check if gallery have empty string then make it become empty array

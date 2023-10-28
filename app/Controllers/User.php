@@ -10,10 +10,14 @@ class User extends BaseController
 {
 
     protected  $model, $validation, $config, $helpers = ['auth', 'url', 'filesystem'];
+    protected $packageModel, $reservationModel, $reservationStatusModel;
     // Constructor
     public function __construct()
     {
         $this->model = new \App\Models\usersModel();
+        $this->packageModel = new \App\Models\packageModel();
+        $this->reservationModel = new \App\Models\reservationModel();
+        $this->reservationStatusModel = new \App\Models\reservationStatusModel();
         $this->validation =  \Config\Services::validation();
         $this->config = config('Auth');
     }
@@ -25,6 +29,56 @@ class User extends BaseController
             'validation' => \Config\Services::validation()
         ];
         return view('user/profile', $data);
+    }
+    public function reservation($id = null)
+    {
+
+        $users_reservation = $this->reservationModel->get_r_by_id_user_api($id)->getResultArray();
+
+        $no = 0;
+        // reservation status dan paket
+        foreach ($users_reservation as $item) {
+            $reservation_status_id = $item['id_reservation_status'];
+            $package_id = $item['id_package'];
+            $reservationStatus = $this->reservationStatusModel->get_s_by_id_api($reservation_status_id)->getRowArray();
+            $package = $this->packageModel->getPackage($package_id)->getRowArray();
+            $users_reservation[$no]['status'] = $reservationStatus['status'];
+            $users_reservation[$no]['package_name'] = $package['name'];
+            $no++;
+        }
+
+
+        $data = [
+            'title' => 'User Reservation',
+            'data' => $users_reservation,
+        ];
+
+        return view('user/reservation', $data);
+    }
+    public function checkout($id = null)
+    {
+
+        $users_reservation = $this->reservationModel->get_r_by_id_user_api($id)->getResultArray();
+
+        $no = 0;
+        // reservation status dan paket
+        foreach ($users_reservation as $item) {
+            $reservation_status_id = $item['id_reservation_status'];
+            $package_id = $item['id_package'];
+            $reservationStatus = $this->reservationStatusModel->get_s_by_id_api($reservation_status_id)->getRowArray();
+            $package = $this->packageModel->getPackage($package_id)->getRowArray();
+            $users_reservation[$no]['status'] = $reservationStatus['status'];
+            $users_reservation[$no]['package_name'] = $package['name'];
+            $no++;
+        }
+
+
+        $data = [
+            'title' => 'User Reservation',
+            'data' => $users_reservation,
+        ];
+
+        return view('user/reservation', $data);
     }
     public function edit_profile()
     {

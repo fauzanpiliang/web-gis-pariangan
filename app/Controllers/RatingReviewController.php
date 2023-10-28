@@ -8,10 +8,12 @@ class RatingReviewController extends BaseController
 {
     protected $modelReview;
     protected $modelComment;
+    protected $modelReservation;
     public function __construct()
     {
         $this->modelReview = new \App\Models\ratingModel();
         $this->modelComment = new \App\Models\reviewModel();
+        $this->modelReservation = new \App\Models\reservationModel();
     }
     public function rating_atraction()
     {
@@ -47,13 +49,13 @@ class RatingReviewController extends BaseController
 
         // Check if rating_id is there or not 
         if ($rating_id != null) {
-            $addComment = $this->modelComment->addComment($rating_id->rating, $comment);
+            $addComment = $this->modelComment->updateComment($user_id, $rating_id->rating, $comment);
             return json_encode($addComment);
         } else {
-            $addRating = $this->modelReview->addRating(['rating.user_id' => $user_id, 'rating.atraction_id' => $atraction_id]);
+            $addRating = $this->modelReview->addRating(['review_atraction.user_id' => $user_id, 'review_atraction.atraction_id' => $atraction_id]);
             $rating_id = $this->modelReview->getRatingId($user_id, 'atraction_id', $atraction_id)->getRow();
             if ($addRating) {
-                $addComment = $this->modelComment->addComment($rating_id->rating, $comment);
+                $addComment = $this->modelComment->addComment($user_id, $rating_id->rating, $comment);
                 return json_encode($addComment);
             }
         }
@@ -99,13 +101,13 @@ class RatingReviewController extends BaseController
 
         // Check if rating_id is there or not 
         if ($rating_id != null) {
-            $addComment = $this->modelComment->addComment($rating_id->rating, $comment);
+            $addComment = $this->modelComment->updateComment($user_id, $rating_id->rating, $comment);
             return json_encode($addComment);
         } else {
-            $addRating = $this->modelReview->addRating(['rating.user_id' => $user_id, 'rating.event_id' => $event_id]);
+            $addRating = $this->modelReview->addRating(['review_atraction.user_id' => $user_id, 'review_atraction.event_id' => $event_id]);
             $rating_id = $this->modelReview->getRatingId($user_id, 'event_id', $event_id)->getRow();
             if ($addRating) {
-                $addComment = $this->modelComment->addComment($rating_id->rating, $comment);
+                $addComment = $this->modelComment->addComment($user_id, $rating_id->rating, $comment);
                 return json_encode($addComment);
             }
         }
@@ -115,5 +117,27 @@ class RatingReviewController extends BaseController
         $object_id = $this->request->getVar('object_id');
         $comment = $this->modelComment->getObjectComment('event_id', $object_id)->getResult();
         return json_encode($comment);
+    }
+    public function rating_comment_package()
+    {
+        $data = $this->request->getPOST();
+        $reservation_id = $data['id_reservation'];
+        $user_id = $data['id_user'];
+        $comment = $data['comment'];
+        $rating = $data['rating'];
+        // dd($data);
+        $requestData = [
+            'rating' =>  $rating,
+            'comment' => $comment
+        ];
+
+        $updateRating = $this->modelReservation->update_r_api($reservation_id, $requestData);
+        if ($updateRating) {
+            session()->setFlashdata('success', 'Thanks for your rated.');
+            return redirect()->to(site_url('user/reservation/' . $user_id));
+        } else {
+            session()->setFlashdata('failed', 'Failed to rate, please try again');
+            return redirect()->to(site_url('user/reservation/' . $user_id));
+        }
     }
 }

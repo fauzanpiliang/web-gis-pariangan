@@ -11,7 +11,7 @@
                             <div class="row g-0">
                                 <div class="col-md-4 p-2">
                                     <a class="hover-efek" role="button" data-bs-toggle="modal" data-bs-target="#exampleModal<?= $data->id ?>">
-                                        <img src="<?= base_url('media/photos/package') . '/' . $data->url ?>" class="img-fluid rounded-start" alt="...">
+                                        <img src="<?= base_url('media/photos') . '/' . $data->url ?>" class="img-fluid rounded-start" alt="...">
                                     </a>
                                 </div>
                                 <div class="col-md-8">
@@ -42,7 +42,7 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body text-center">
-                                    <img class="img-fluid w-100" src="<?= base_url('media/photos/package/'); ?>/<?= $data->url; ?>" alt="Card image cap">
+                                    <img class="img-fluid w-100" src="<?= base_url('media/photos'); ?>/<?= $data->url; ?>" alt="Card image cap">
                                     <p class="card-text my-4" style="text-align: justify;">
                                         <?= $data->description; ?>
                                     </p>

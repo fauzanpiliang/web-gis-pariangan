@@ -17,7 +17,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-border" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <?php $no = 1; ?>
                         <tr>
@@ -33,7 +33,7 @@
                                 <td><?= $no++; ?></td>
                                 <td><?= $package->name; ?></td>
                                 <td class="text-center">
-                                    <a class="btn btn-outline-primary btn-sm" title="Detail package" href="<?= base_url('manage_package/detail/' . $package->id); ?>"><i class="fa fa-eye"></i> </a>
+                                    <a class="btn btn-outline-primary btn-sm" title="Detail package" href="<?= base_url('manage_package/edit/' . $package->id); ?>"><i class="fa fa-info"></i> </a>
                                     <a class="btn btn-outline-danger btn-sm" title="Delete Event" data-bs-toggle="modal" data-bs-target="#deleteModal<?= $package->id; ?>">
                                         <i class="fa fa-trash"></i>
                                     </a>
@@ -65,4 +65,9 @@
     </div>
 </div>
 <!-- /.container-fluid -->
+<?= $this->endSection() ?>
+<?= $this->section('script') ?>
+<script>
+    new DataTable("#dataTable")
+</script>
 <?= $this->endSection() ?>

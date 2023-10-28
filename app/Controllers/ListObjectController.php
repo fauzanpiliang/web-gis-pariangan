@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 class ListObjectController extends BaseController
 {
-    protected $modelPariangan, $modelEvent, $modelAtraction, $modelSouvenir, $modelCulinary, $modelWorship, $modelFacility;
+    protected $modelPariangan, $modelEvent, $modelAtraction, $modelSouvenir, $modelCulinary, $modelWorship, $modelFacility, $modelHomestay;
     protected $title =  'List Object | Tourism Village';
     public function __construct()
     {
@@ -15,6 +15,7 @@ class ListObjectController extends BaseController
         $this->modelCulinary = new \App\Models\culinaryPlaceModel();
         $this->modelWorship = new \App\Models\worshipPlaceModel();
         $this->modelFacility = new \App\Models\facilityModel();
+        $this->modelHomestay = new \App\Models\homestayModel();
     }
 
     public function index()
@@ -230,6 +231,40 @@ class ListObjectController extends BaseController
         }
         return json_encode($data);
     }
+    public function homestay($id = null)
+    {
+        if ($id) {
+            $objectData = $this->modelHomestay->getHomestay($id)->getResult();
+            $galleryData = $this->modelHomestay->getGallery($id)->getResult();
+            $data['objectData'] = $objectData;
+            $data['url'] = 'homestay';
+            $data['galleryData'] = $galleryData;
+        } else {
+            $objectData = $this->modelHomestay->getHomestays();
+            $data = [
+                'objectData' => $objectData,
+                'url' => 'homestay'
+            ];
+        }
+        return json_encode($data);
+    }
+    public function package($id = null)
+    {
+        if ($id) {
+            $objectData = $this->modelFacility->getFacility($id)->getResult();
+            $galleryData = $this->modelFacility->getGallery($id)->getResult();
+            $data['objectData'] = $objectData;
+            $data['url'] = 'package';
+            $data['galleryData'] = $galleryData;
+        } else {
+            $objectData = $this->modelFacility->getFacilities();
+            $data = [
+                'objectData' => $objectData,
+                'url' => 'package'
+            ];
+        }
+        return json_encode($data);
+    }
 
     public function search_main_nearby($distance = null)
     {
@@ -253,6 +288,7 @@ class ListObjectController extends BaseController
         $wp = $_GET['wp'];
         $sp = $_GET['sp'];
         $f =  $_GET['f'];
+        $h = $_GET['h'];
 
         $lat = $_GET['lat'];
         $lng = $_GET['lng'];
@@ -272,6 +308,10 @@ class ListObjectController extends BaseController
         if ($f == 'true') {
             $data['fData']  = $this->modelFacility->getRadiusValue($lng, $lat, $distance)->getResult();
             $data['fUrl'] = 'facility';
+        }
+        if ($h == 'true') {
+            $data['hData']  = $this->modelHomestay->getRadiusValue($lng, $lat, $distance)->getResult();
+            $data['hUrl'] = 'homestay';
         }
         if ($data) {
             return json_encode($data);

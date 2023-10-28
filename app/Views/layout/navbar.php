@@ -37,9 +37,10 @@
                     </a>
                 <?php endif ?>
             </div>
-            <?php if (in_groups('admin')) : ?>
-                <div class="col order-md-2 order-last mb-md-0 mb-3">
-                    <div class="float-end">
+
+            <div class="col order-md-2 order-last mb-md-0 mb-3">
+                <div class="float-end">
+                    <?php if (in_groups('admin') || in_groups('user')) : ?>
                         <div class="btn-group mb-1">
                             <div class="dropdown">
                                 <a class="" role="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -58,29 +59,34 @@
                                     </div>
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <?php if (in_groups('admin') || in_groups('user')) : ?>
-                                        <a class="dropdown-item <?php if (current_url() == base_url('user/profile')) echo 'active'; ?>" href="<?= base_url('user/profile') ?>">
+
+                                    <a class="dropdown-item <?php if (current_url() == base_url('user/profile')) echo 'active'; ?>" href="<?= base_url('user/profile') ?>">
+                                        <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                        Profile
+                                    </a>
+                                    <?php if (in_groups('user')) : ?>
+                                        <a class="dropdown-item <?php if (current_url() == base_url('user/reservation')  . '/' . user()->id) echo 'active'; ?>" href="<?= base_url('user/reservation') . '/' . user()->id ?>">
                                             <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                            Profile
+                                            My Reservation
                                         </a>
                                     <?php endif; ?>
-                                    <?php if (in_groups('admin') || in_groups('user')) : ?>
-                                        <a class="dropdown-item" href="<?= base_url('logout') ?>">
-                                            <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                            Logout
-                                        </a>
-                                    <?php else : ?>
-                                        <a class="dropdown-item" href="<?= base_url('login') ?>">
-                                            <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                            Login
-                                        </a>
-                                    <?php endif; ?>
+                                    <a class="dropdown-item" href="<?= base_url('logout') ?>">
+                                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                        Logout
+                                    </a>
+
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    <?php else : ?>
+                        <a class="btn btn-primary" href="<?= base_url('login') ?>">
+                            <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                            Login
+                        </a>
+                    <?php endif; ?>
                 </div>
-            <?php endif; ?>
+            </div>
+
         </div>
     </div>
 </div>

@@ -43,6 +43,12 @@
                                     Facility
                                 </label>
                             </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="hCheck">
+                                <label class="form-check-label" for="flexCheckDefault">
+                                    Homestay
+                                </label>
+                            </div>
                             <output id="sliderVal"></output>
                             <input id="radiusSlider" type="range" onchange="supportNearby(this.value)" class="form-range autofocus" min="0" max="2000" step="10" value="0">
                         </div>

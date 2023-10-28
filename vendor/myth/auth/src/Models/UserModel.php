@@ -121,4 +121,21 @@ class UserModel extends Model
 
         return $data;
     }
+    public function get_users()
+    {
+
+        $query = $this->db->table($this->table)
+            ->select("*")
+            ->get();
+        return $query;
+    }
+    public function get_u_by_id_api($id = null)
+    {
+
+        $query = $this->db->table($this->table)
+            ->select("*")
+            ->where('id', $id)
+            ->get();
+        return $query;
+    }
 }

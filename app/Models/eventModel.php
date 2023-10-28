@@ -102,6 +102,7 @@ class eventModel extends Model
     // ----------------------------------------------Admin--------------------------------------
     public function addEvent($id, $data, $lng, $lat, $geojson = null)
     {
+
         $query = $this->db->table($this->table)->insert($data);
         if ($query) {
             $spasial = $this->db->table($this->table)
