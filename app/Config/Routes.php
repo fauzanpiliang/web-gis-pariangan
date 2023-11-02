@@ -139,6 +139,8 @@ $routes->group('review', function ($routes) {
 // Menu package
 $routes->group('package', function ($routes) {
     $routes->get('/', 'packageController::packages');
+    $routes->get('costum/new', 'packageController::newCostume');
+    $routes->post('saveCostume', 'packageController::saveCostume', ['filter' => 'role:user']);
     $routes->get('detail/(:segment)', 'packageController::package/$1');
     $routes->get('getActivityGallery/(:segment)', 'packageController::getActivityGallery/$1');
     $routes->get('objects/package_day/(:segment)', 'packageController::getObjectsByPackageDayId/$1');
@@ -305,9 +307,9 @@ $routes->group('manage_service', function ($routes) {
 
 // 13. menu  reservation
 $routes->group('reservation', function ($routes) {
-    $routes->get('/', 'ReservationController::index', ['filter' => 'role:user']);
-    $routes->get('index', 'ReservationController::index', ['filter' => 'role:user']);
+    $routes->get('show/(:segment)', 'ReservationController::show/$1', ['filter' => 'role:user,admin']);
     $routes->post('create', 'ReservationController::create', ['filter' => 'role:user,admin']);
+    $routes->put('update/(:segment)', 'ReservationController::update/$1', ['filter' => 'role:user,admin']);
     $routes->delete('delete/(:segment)', 'ReservationController::delete/$1', ['filter' => 'role:user,admin']);
     $routes->get('check/(:segment)/(:segment)', 'ReservationController::check/$1/$2', ['filter' => 'role:user,admin']);
 });
@@ -324,8 +326,10 @@ $routes->group('manage_reservation', function ($routes) {
 // 14. Manage reservation
 $routes->group('pdf', function ($routes) {
     $routes->get('/(:segment)', 'PdfGenerator::index/$1', ['filter' => 'role:user,admin']);
-    $routes->get('index/(:segment)', 'PdfGenerator::index/$1', ['filter' => 'role:user,admin']);
     $routes->post('invoice-data', 'PdfGenerator::getInvoiceData', ['filter' => 'role:user,admin']);
+    $routes->get('invoice/(:segment)', 'PdfGenerator::invoice/$1', ['filter' => 'role:user,admin']);
+    $routes->post('ticket-data', 'PdfGenerator::getTicketData', ['filter' => 'role:user,admin']);
+    $routes->get('ticket/(:segment)', 'PdfGenerator::ticket/$1', ['filter' => 'role:user,admin']);
 });
 
 // Mobile route

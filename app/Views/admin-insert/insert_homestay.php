@@ -39,6 +39,12 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <label for="price" class=" col col-form-label">Price</label>
+                                    <div class="col">
+                                        <input type="text" class="form-control" name="price" required autocomplete="off">
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label for="area_size" class=" col col-form-label">Area size</label>
                                     <div class="col">
                                         <input type="number" class="form-control" name="area_size" autocomplete="off">

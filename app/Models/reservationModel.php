@@ -42,6 +42,7 @@ class reservationModel extends Model
         $query = $this->db->table($this->table)
             ->select('*')
             ->where('id', $id)
+            ->orderBy('id', 'DESC')
             ->get();
         return $query;
     }

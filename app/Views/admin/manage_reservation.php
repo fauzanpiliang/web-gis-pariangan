@@ -1,6 +1,6 @@
 <?= $this->extend('layout/template.php') ?>
 <?= $this->section('content') ?>
-<!-- Modal reservation -->
+<!-- Modal  -->
 <div class="modal fade text-left" id="reservationModal" tabindex="-1" aria-labelledby="myModalLabel1" style="display: none;" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable" role="document">
         <div class="modal-content">
@@ -28,7 +28,7 @@
             <li class="breadcrumb-item active" aria-current="page">List reservation</li>
         </ol>
     </nav>
-    <!-- DataTales  -->
+    <!-- DataTbales  -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h5 class="m-0 font-weight-bold text-primary text-center">List reservation Package</h5>
@@ -45,11 +45,12 @@
                             <th>Username</th>
                             <th>Request date</th>
                             <th>Status</th>
+                            <th>Progress</th>
                             <th class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($objectData as $reservation) : ?>
+                        <?php foreach ($data as $reservation) : ?>
                             <?php
                             $reservationId = $reservation['id'];
                             $packageName = $reservation['package_name'];
@@ -58,7 +59,20 @@
                             $reservationIdStatus = $reservation['id_reservation_status'];
                             $reservationStatus = $reservation['status'];
                             $dateNow = date("Y-m-d");
+                            $depositDate = $reservation['deposit_date'];
 
+                            $proggres = "";
+                            if ($reservationIdStatus == 1) {
+                                $proggres = "Check Reservation!";
+                            } else if ($reservationIdStatus == 2 && $depositDate == null) {
+                                $proggres = "Waiting payment document";
+                            } else if ($reservationIdStatus == 2 && $depositDate != null) {
+                                $proggres = "Check Payment!";
+                            } else if ($reservationIdStatus == 3) {
+                                $proggres = "Canceled";
+                            } else if ($reservationIdStatus == 4) {
+                                $proggres = "Transaction Success";
+                            }
                             ?>
                             <tr>
                                 <td><?= $no++; ?></td>
@@ -71,57 +85,21 @@
                                     <span class="<?php if ($reservationIdStatus == "1") {
                                                         echo "badge bg-warning";
                                                     } elseif ($reservationIdStatus == "2") {
+                                                        echo "badge bg-primary";
+                                                    } else if ($reservationIdStatus == "4") {
                                                         echo "badge bg-success";
                                                     } else {
                                                         echo "badge bg-danger";
                                                     } ?>"> <?= $reservationStatus; ?></span>
                                 </td>
-                                <td class="text-center">
-
-                                    <?php if ($requestDate > $dateNow) : ?>
-                                        <a class="btn btn-outline-success btn-sm  <?= ($reservationIdStatus == "2") ? "d-none" : "" ?>" title="confirm" data-bs-toggle="modal" data-bs-target="#confirmModal<?= $reservationId; ?>">
-                                            <i class="fa fa-check"></i>
-                                        </a>
-                                        <a class="btn btn-outline-danger btn-sm" title="cancel" data-bs-toggle="modal" data-bs-target="#deleteModal<?= $reservationId; ?>">
-                                            <i class="fa fa-x"></i>
-                                        </a>
-                                    <?php endif; ?>
-                                    <!-- Delete Modal-->
-                                    <div class="modal fade" id="deleteModal<?= $reservationId; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Cancel Reservation</h5>
-                                                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">×</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">Are you sure cancel <b>" <?= $reservationId; ?> - <?= $packageName; ?> from <?= $username; ?> "</b> reservation?</div>
-                                                <div class="modal-footer">
-                                                    <a class="btn btn-danger" onclick="cancelReservation('<?= $reservationId; ?>')">Cancel</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Confirm Modal-->
-                                    <div class="modal fade" id="confirmModal<?= $reservationId; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Confirm Reservation</h5>
-                                                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">×</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body"> Confirm this <b>" <?= $reservationId; ?> - <?= $packageName; ?> from <?= $username; ?> "</b> reservation?</div>
-                                                <div class="modal-footer">
-                                                    <a class="btn btn-success" onclick="confirmReservation('<?= $reservationId; ?>')">Confirm</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <td>
+                                    <?= $proggres; ?>
                                 </td>
-
+                                <td class="text-center">
+                                    <a class="btn btn-outline-success btn-sm " title="confirm" data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="showInfoReservation('<?= $reservationId ?>')">
+                                        <i class="fa fa-info"></i>
+                                    </a>
+                                </td>
                             </tr>
 
                         <?php endforeach; ?>
@@ -137,50 +115,227 @@
 <script>
     new DataTable("#dataTable")
 
-    function cancelReservation(id) {
+    function showInfoReservation(id) {
+        let statusData = JSON.parse('<?= json_encode($statusData) ?>')
+        let result
+        let reservationStatus, reservationInfo
         $.ajax({
-            url: "<?= base_url('manage_reservation/save_update') ?>" + "/" + `${id}`,
-            type: "PATCH",
-            data: {
-                id_reservation_status: "3"
-            },
+            url: `<?= base_url('reservation/show'); ?>/${id}`,
+            type: "GET",
             async: false,
+            contentType: "application/json",
             success: function(response) {
-                Swal.fire(
-                    'Reservation cancel',
-                    '',
-                    'danger'
-                ).then(() => {
-                    window.location.replace("<?= base_url('manage_reservation') ?>")
-                });
+                result = JSON.parse(response)
+
             },
-            error: function(e) {
-                console.log(e.responseText)
+            error: function(err) {
+                console.log(err.responseText)
             }
+        });
+
+        reservationStatus = result['id_reservation_status']
+        if (reservationStatus == '1') {
+            reservationInfo =
+                `<a class ="btn btn-success" onclick="changeReservationStatus('${id}',2)"> Confirm reservation </a>`
+
+        } else {
+            reservationInfo = ''
+        }
+
+
+        $('#modalTitle').html("Reservation Info")
+        $('#modalBody').html(`
+        <div class="p-2">
+               
+                <div id="userRating">
+    
+                </div>
+                <div  id="userPayment">
+    
+                </div>
+                <div class="mb-2 shadow-sm p-4 rounded">
+                    <p class="text-center fw-bold text-dark"> Reservation Information </p>
+                    <table class="table table-borderless text-dark ">
+                        <tbody>
+                            <tr>
+                                <td class="fw-bold">Request By</td>
+                                <td>${result['username']}</td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="fw-bold">Request Package </td>
+                                <td>${result['package_name']}</td>
+                            </tr>
+                                                
+                            <tr>
+                                <td class="fw-bold">Request Date</td>
+                                <td>${result['request_date']}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Total people</td>
+                                <td>${result['number_people']}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Costum package</td>
+                                <td class="${result['package_costum'] == '1' ? 'badge bg-success' : ''}">${result['package_costum'] == '2' ? 'no' : 'yes'}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Additional Information</td>
+                                <td>${result['comment']!= null ? result['comment'] : '-'}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Price </td>
+                                <td >${rupiah(result['package_price'])}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold"> </td>
+                                <td>${reservationInfo}</td>
+                            </tr>           
+                        </tbody>
+                    </table>
+                </div>    
+                <div class="shadow-sm p-4 rounded">
+                     <p class="text-center fw-bold text-dark"> Reservation Status </p>
+                     <fieldset class="form-group mb-4">
+                        <label for="statusReservation" class="mb-2"> Status reservation </label>
+                        <select class="form-select" id="statusReservation" required>
+                                
+                      </fieldset>
+                </div>
+            </div>
+        `)
+
+        // user status
+        $("#statusReservation").html(`<option value="${result['id_reservation_status']}"> ${result['status']} ( current status )</option>`)
+        for (i in statusData) {
+            if (statusData[i].id != result['id_reservation_status']) {
+                $("#statusReservation").append(`
+                <option  value="${statusData[i].id}">  ${statusData[i].status} </option>
+                `)
+            }
+        }
+        $("#statusReservation").on("change", function() {
+            let statusReservation = $("#statusReservation").val()
+            changeReservationStatus(id, statusReservation)
+
         })
+
+        // user payment
+        if (result['proof_of_deposit'] != null) {
+            let depositDate = result['deposit_date']
+            let deposit = result['deposit']
+            let proofDeposit = result['proof_of_deposit']
+
+            $("#userPayment").addClass("mb-2 shadow-sm p-4 rounded")
+            $("#userPayment").html(`
+                <p class="text-center fw-bold text-dark"> Payment Information </p>
+                <p> Deposit on : ${depositDate} </p>
+                <p> Deposit : ${rupiah(deposit)} </p>
+                <div class="mb-2">
+                    <img class="img-fluid img-thumbnail rounded" src="${'<?= base_url() ?>' + '/media/photos/reservation/' + proofDeposit }" width="100%">
+                </div>
+               
+            `)
+
+            if (result['id_reservation_status'] == '4') {
+                $("#userPayment").append(`
+                <div class="text-end">
+                <span class="badge bg-success"> payed </span>
+                </div>
+                `)
+            } else {
+                $("#userPayment").append(`
+                <div class="text-end">
+                <a class="btn btn-success" onclick="changeReservationStatus('${id}',4,'payment')"> Accept payment</a>
+                </div>
+                `)
+            }
+        }
+
+
+        // user rating
+        if (result['rating'] != null) {
+            let rating = result['rating']
+            let updatedRating = result['updated_at']
+            let review = result['review'] != null ? result['review'] : ''
+            console.log(result['rating'])
+            $("#userRating").addClass("mb-2 shadow-sm p-4 rounded")
+            $("#userRating").html(`
+                <p class="text-center fw-bold text-dark"> Rated And Reviewed </p>
+                <p> Rated on : ${updatedRating} </p>
+                <div class="star-containter mb-3 text-start">
+                <i class="fa-solid fa-star fs-10" id="star-1" ></i>
+                <i class="fa-solid fa-star fs-10" id="star-2" ></i>
+                <i class="fa-solid fa-star fs-10" id="star-3" ></i>
+                <i class="fa-solid fa-star fs-10" id="star-4" ></i>
+                <i class="fa-solid fa-star fs-10" id="star-5" ></i>
+                </div>
+                <p> ${review} </p>
+            `)
+            setStar(rating)
+        }
+
+
+        $('#modalFooter').html(``)
+    }
+    const rupiah = (number) => {
+        return new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR"
+        }).format(number);
     }
 
-    function confirmReservation(id) {
+    function setStar(star) {
+        $("#star-rating").val(star)
+        switch (star) {
+            case '1':
+                $("#star-1").addClass('star-checked')
+                $("#star-2,#star-3,#star-4,#star-5").removeClass('star-checked')
+                break
+            case '2':
+                $("#star-1,#star-2").addClass('star-checked')
+                $("#star-3,#star-4,#star-5").removeClass('star-checked')
+                break
+            case '3':
+                $("#star-1,#star-2,#star-3").addClass('star-checked')
+                $("#star-4,#star-5").removeClass('star-checked')
+                break
+            case '4':
+                $("#star-1,#star-2,#star-3,#star-4").addClass('star-checked')
+                $("#star-5").removeClass('star-checked')
+                break
+            case '5':
+                $("#star-1,#star-2,#star-3,#star-4,#star-5").addClass('star-checked')
+                break
+        }
+    }
+
+    function changeReservationStatus(id, status, paymentDate = null) {
+
+        let requestData = {
+            id_reservation_status: status, //status
+            payment_date: paymentDate
+        }
+        console.log(requestData)
         $.ajax({
-            url: "<?= base_url('manage_reservation/save_update') ?>" + "/" + `${id}`,
-            type: "PATCH",
-            data: {
-                id_reservation_status: "2"
-            },
+            url: `<?= base_url('reservation/update'); ?>/${id}`,
+            type: "PUT",
+            data: requestData,
             async: false,
+            contentType: "application/json",
             success: function(response) {
                 Swal.fire(
-                    'Reservation confirmed',
+                    'Reservation updated',
                     '',
                     'success'
                 ).then(() => {
-                    window.location.replace("<?= base_url('manage_reservation') ?>")
+                    window.location.reload()
                 });
             },
-            error: function(e) {
-                console.log(e.responseText)
+            error: function(err) {
+                console.log(err.responseText)
             }
-        })
+        });
     }
 </script>
 <script>
@@ -291,19 +446,18 @@
                     comment: comment
                 }
                 $.ajax({
-                    url: `<?= base_url('reservation'); ?>/create`,
+                    url: `<?= base_url('web/reservation/create'); ?>`,
                     type: "POST",
                     data: requestData,
                     async: false,
                     contentType: "application/json",
                     success: function(response) {
-                        console.log(response)
                         Swal.fire(
                             'Success to make reservation request',
                             '',
                             'success'
                         ).then(() => {
-                            window.location.replace('<?= base_url('manage_reservation') ?>')
+                            window.location.replace('<?= base_url() ?>' + '/dashboard/reservation/')
                         });
 
                     },
@@ -347,7 +501,7 @@
     function checkIsDateDuplicate(user_id, reservation_date) {
         let result
         $.ajax({
-            url: `<?= base_url('reservation') ?>/check/${user_id}/${reservation_date}`,
+            url: `<?= base_url('web') ?>/check/${user_id}/${reservation_date}`,
             type: "GET",
             async: false,
             success: function(response) {

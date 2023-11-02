@@ -30,7 +30,7 @@ class ManagePackageController extends BaseController
     }
     public function index()
     {
-        $objectData = $this->model->getPackages();
+        $objectData = $this->model->getPackages('costume');
         $data = [
             'title' => $this->title,
             'objectData' => $objectData
@@ -73,7 +73,7 @@ class ManagePackageController extends BaseController
     {
         // 
         $package = $this->model->getPackage($id)->getRowArray();
-        // $homestayData = $this->HomestayModel->get_list_hm_api()->getResultArray();
+
         $serviceData = $this->modelservices->getServices()->getResultArray();
 
         $packageService = $this->detailServicePackageModel->get_service_by_package_api($id)->getResultArray();
@@ -212,7 +212,7 @@ class ManagePackageController extends BaseController
     }
     public function insert()
     {
-        // $homestayData = $this->HomestayModel->get_list_hm_api()->getResultArray();
+
         $serviceData = $this->modelservices->getServices()->getResultArray();
         $objectData = [];
 
@@ -236,6 +236,11 @@ class ManagePackageController extends BaseController
         foreach ($worshipData as $worship) {
             $worship->id = 'S' . $worship->id;
             $objectData[] = $worship;
+        }
+        $homestayData = $this->homestayModel->getHomestays();
+        foreach ($homestayData as $homestay) {
+            $homestay->id = 'H' . $homestay->id;
+            $objectData[] = $homestay;
         }
 
 
@@ -322,6 +327,7 @@ class ManagePackageController extends BaseController
             return redirect()->back()->withInput();
         }
     }
+
 
     public function delete($id)
     {

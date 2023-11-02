@@ -123,12 +123,12 @@ class RatingReviewController extends BaseController
         $data = $this->request->getPOST();
         $reservation_id = $data['id_reservation'];
         $user_id = $data['id_user'];
-        $comment = $data['comment'];
+        $review = $data['review'];
         $rating = $data['rating'];
         // dd($data);
         $requestData = [
             'rating' =>  $rating,
-            'comment' => $comment
+            'review' => $review
         ];
 
         $updateRating = $this->modelReservation->update_r_api($reservation_id, $requestData);

@@ -10,7 +10,7 @@ class homestayModel extends Model
 {
     protected $table = 'homestay';
     protected $table_gallery = 'homestay_gallery';
-    protected $columns = 'id,name,area_size,open,close,description';
+    protected $columns = 'homestay.id,homestay.name,homestay.area_size,homestay.open,homestay.close,homestay.price,homestay.description';
     protected $coords = "ST_Y(ST_Centroid(homestay.geom)) AS lat ,ST_X(ST_Centroid(homestay.geom)) AS lng ";
     protected $geom_area = "ST_AsGeoJSON(homestay.geom_area) AS geoJSON";
 

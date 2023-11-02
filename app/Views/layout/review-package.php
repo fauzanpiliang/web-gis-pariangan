@@ -14,15 +14,10 @@
                                     <td>
                                         <?php if (isset($review['rating'])) : ?>
                                             <div class="star-containter mb-3">
-                                                <i class="fa-solid fa-star fs-10" id="star-1"></i>
-                                                <i class="fa-solid fa-star fs-10" id="star-2"></i>
-                                                <i class="fa-solid fa-star fs-10" id="star-3"></i>
-                                                <i class="fa-solid fa-star fs-10" id="star-4"></i>
-                                                <i class="fa-solid fa-star fs-10" id="star-5"></i>
+                                                <?php for ($i = 0; $i < $review['rating']; $i++) : ?>
+                                                    <i class="fa-solid fa-star fs-10 star-checked"></i>
+                                                <?php endfor; ?>
                                             </div>
-                                            <script>
-                                                setStar("<?= $review['rating']; ?>")
-                                            </script>
                                         <?php endif; ?>
                                         <p class="mb-0"><?= $review['name']; ?> </p>
                                         <p class="fw-light"><?= $review['date']; ?></p>

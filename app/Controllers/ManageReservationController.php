@@ -45,7 +45,7 @@ class ManageReservationController extends BaseController
         }
         $data = [
             'title' => $this->title,
-            'objectData' => $contents,
+            'data' => $contents,
             'userData' => $userData,
             'packageData' => $packageData,
             'statusData' => $statusData

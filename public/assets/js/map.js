@@ -120,6 +120,7 @@ function showSupportModal(data, url) {
 }
 //loping all marker
 function loopingAllMarker(datas, url) {
+    
     showPanelList(datas, url) // show list panel
     for (let i = 0; i < datas.length; i++) { addMarkerToMap(datas[i], url) }
 }
@@ -804,18 +805,19 @@ function showEvent() {
         dataType: "json",
         success: function (response) {
             moveCamera()
-         
-            panTo({ lat: parseFloat(response.objectData[0].lat), lng: parseFloat(response.objectData[0].lng) })
             $('#rowObjectArround').css("display", "none")
             clearMarker()
             clearRadius()
             clearRoute()
           
             if (response.objectData && response.url) {
-                if (response.objectData[0].id = '01') {
-                    activeMenu('event')
-                } 
+                if(response.objectData.length > 0){
+                    panTo({ lat: parseFloat(response.objectData[0].lat), lng: parseFloat(response.objectData[0].lng) })
+               
+                }
+                activeMenu('event')
                 return loopingAllMarker(response.objectData, response.url)
+                  
             }
         },
         error: function (xhr, ajaxOptions, thrownError) {

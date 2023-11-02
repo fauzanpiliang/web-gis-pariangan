@@ -38,6 +38,12 @@
                                         <input type="text" class="form-control" name="name" value="<?= $objectData->name; ?>" required>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label for="price" class=" col col-form-label">Price</label>
+                                    <div class="col">
+                                        <input type="text" class="form-control" name="price" value="<?= $objectData->price; ?>" required>
+                                    </div>
+                                </div>
 
                                 <div class="form-group">
                                     <label for="area_size" class="col col-form-label">Area size</label>

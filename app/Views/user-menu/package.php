@@ -3,7 +3,9 @@
 <div class="container-fluid">
     <div class="card p-2 shadow-sm">
         <div class="card-header text-center card-title  mb-2">LIST TOURISM PACKAGE</div>
+
         <div class="card-body">
+            <a class="btn btn-primary" onclick="checkLogin()"><i class="fa fa-plus"></i> Create costume package</a>
             <div class="row d-flex">
                 <?php foreach ($objectData as $data) : ?>
                     <div class="col-md-12">
@@ -60,4 +62,16 @@
         </div>
     </div>
 </div>
+<?= $this->endSection() ?>
+<?= $this->section('script') ?>
+<script>
+    function checkLogin() {
+        <?php if (in_groups('user')) : ?>
+            window.location.href = '<?= base_url('/package/costum/new') ?>'
+
+        <?php else : ?>
+            Swal.fire('Please login as user to create costume package', '', 'warning');
+        <?php endif; ?>
+    }
+</script>
 <?= $this->endSection() ?>
