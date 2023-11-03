@@ -8,6 +8,11 @@
     .filepond--root {
         width: 100%;
     }
+
+    .input-no-border {
+        border: 0;
+        outline: 0;
+    }
 </style>
 <?= $this->endSection() ?>
 <?= $this->section('content') ?>
@@ -82,6 +87,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title text-center">Detail package</h4>
+                            <h5 class="card-title text-start">Total package price : <input id="totalPrice" readonly class="input-no-border" name="price" value="0"></h5>
                             <input type="hidden" required id="checkDetailPackage">
                         </div>
                         <div class="card-body">
@@ -196,11 +202,12 @@
         return result
     }
 
-    function removeObject(noDay, noDetail) {
-        console.log("masuk sini")
+    function removeObject(noDay, noDetail, objectPrice) {
         $(`#${noDay}-${noDetail}`).remove()
         let current = $(`#lastNoDetail${noDay}`).val()
         $(`#lastNoDetail${noDay}`).val(current - 1)
+        totalPrice -= parseInt(objectPrice)
+        $("#totalPrice").val(totalPrice)
 
     }
     //open modal package day
@@ -264,21 +271,24 @@
         <input type="text" id="detail-package-day" class="form-control" name="detail-package-day" value="${noDay}" readonly placeholder="object" required>
        
         <div class="form-group mb-4">
-                    <label for="detail-package-id-object" class="mb-2">Object</label>
-                    <select class="form-select" id="detail-package-id-object" name="detail-package-id-object">
+                    <label for="select-object" class="mb-2">Object</label>
+                    <select class="form-select" onchange="addObjectValue(this.value)" required>
+                                     <option >Pilih objek</option>
                                     <?php if ($objectData) : ?>
                                         <?php $no = 0; ?>       
                                         <?php foreach ($objectData as $object) : ?>
-                                           
-                                    <option value="<?= esc($object->id); ?>" <?= ($no == 0) ? 'selected' : ''; ?>> <?= $object->id ?> - <?= esc($object->name); ?></option>
+                                            
+                                    <option value="<?= esc(json_encode($object)); ?>"> <?= $object->id ?> - <?= esc($object->name); ?></option>
                                         
                                             <?php $no++; ?>       
                                         <?php endforeach; ?>
                                     <?php else : ?>
-                                        <option value="">Object not found</option>
+                                       
                                     <?php endif; ?>
                      </select>
         </div>
+        <input id="detail-package-id-object" type="hidden" required>
+        <input id="detail-package-price-object" type="hidden" type="number" value="0"  required>
         <div class="form-group mb-4">
                     <label for="detail-package-activity-type" class="mb-2">Activity type</label>
                     <input type="text" id="detail-package-activity-type" class="form-control" name="detail-package-activity-type" placeholder="activity type" required>
@@ -300,24 +310,41 @@
         )
     }
 
+    function addObjectValue(object) {
+        let objectData = JSON.parse(object)
+        let objectId = objectData.id
+        let objectPrice = objectData.price == null ? 0 : parseInt(objectData.price)
+        $("#detail-package-id-object").val(objectId)
+        $("#detail-package-price-object").val(objectPrice)
+    }
+
+    let totalPrice = 0
+
     function saveDetailPackageDay(noDay) {
         //get data from modal input
         let noDetail = parseInt($(`#lastNoDetail${noDay}`).val())
-        console.log(noDetail)
+        let object_price = $("#detail-package-price-object").val() == null ? 0 : parseInt($("#detail-package-price-object").val())
+        totalPrice += parseInt(object_price)
+        $("#totalPrice").val(totalPrice)
+
         let object_id = $("#detail-package-id-object").val()
         let activity_type = $("#detail-package-activity-type").val()
         let description = $("#detail-package-description").val()
+        if (!object_id) {
+            alert('please select object')
+        } else {
+            $(`#body-detail-package-${noDay}`).append(`
+            <tr id="${noDay}-${noDetail}"> 
+              <td><input class="form-control" value="${object_id}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][id_object]" required readonly></td>
+              <td><input class="form-control" value="${activity_type}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_type]"></td>
+              <td><input class="form-control" value="${description}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][description]" required></td>
+              <td><a class="btn btn-danger" onclick="removeObject('${noDay}','${ noDetail }','${object_price}')"> <i class="fa fa-x"></i> </a></td>
+            </tr>     
+            `)
+            $(`#lastNoDetail${noDay}`).val(noDetail + 1)
+            $('#checkDetailPackage').val('oke')
 
-        $(`#body-detail-package-${noDay}`).append(`
-        <tr id="${noDay}-${noDetail}"> 
-          <td><input class="form-control" value="${object_id}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][id_object]" required readonly></td>
-          <td><input class="form-control" value="${activity_type}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_type]"></td>
-          <td><input class="form-control" value="${description}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][description]" required></td>
-          <td><a class="btn btn-danger" onclick="removeObject('${noDay}','${ noDetail }')"> <i class="fa fa-x"></i> </a></td>
-        </tr>     
-        `)
-        $(`#lastNoDetail${noDay}`).val(noDetail + 1)
-        $('#checkDetailPackage').val('oke')
+        }
     }
 </script>
 

@@ -100,6 +100,9 @@
                     <li class="nav-item">
                         <a class="nav-link text-secondary" href="#MyCertificates">AWARDS</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-success" href="/login">LOGIN</a>
+                    </li>
                 </ul>
             </div>
         </div>

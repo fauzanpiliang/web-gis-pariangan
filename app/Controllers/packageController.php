@@ -237,6 +237,7 @@ class packageController extends BaseController
                 'id' => $id,
                 'id_user' => $request['id_user'],
                 'id_package' => $id_package,
+                'total_price' => empty($request['price']) ? "0" : $request['price'],
                 'id_reservation_status' => '1',
                 'request_date' => $request['reservationData']['reservation_date'],
                 'number_people' => $request['reservationData']['number_people'],
