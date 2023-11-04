@@ -34,9 +34,8 @@
     </div>
 </div>
 <script>
-    function changeAreaGeom() {
+     function changeAreaGeom() {
         let areaLevel = $("#area_geom").val()
-        clearAreaGeom()
         if (areaLevel == 'country') {
 
             let indonesiaGeom = {
@@ -19497,15 +19496,7 @@
                 }]
             }
             addAreaPolygon(indonesiaGeom, '#000000')
-            // zoom to show all the features
-            let lat = -3.746453
-            let lng = 115.436232
-            let latlng = new google.maps.LatLng(lat, lng)
-            map.setCenter(latlng)
-            map.panTo(latlng)
-            moveCamera(4.7)
-
-
+        
         } else if (areaLevel == 'province') {
             let sumbarGeom = {
                 type: 'Feature',
@@ -19757,15 +19748,7 @@
                     ]
                 }
             }
-
             addAreaPolygon(sumbarGeom, '#000000')
-            // zoom to show all the features
-            let lat = -0.853399
-            let lng = 100.027286
-            let latlng = new google.maps.LatLng(lat, lng)
-            map.setCenter(latlng)
-            map.panTo(latlng)
-            moveCamera(7)
         } else if (areaLevel == 'city') {
             let tanahDatarGeom = {
                 "type": "FeatureCollection",
@@ -41719,14 +41702,6 @@
             }
 
             addAreaPolygon(tanahDatarGeom, '#000000')
-
-            // zoom to show all the features
-            let lat = -0.432728
-            let lng = 100.576532
-            let latlng = new google.maps.LatLng(lat, lng)
-            map.setCenter(latlng)
-            map.panTo(latlng)
-            moveCamera(10)
         } else if (areaLevel == 'subdistric') {
             let kecamatanParianganGeom = {
                 "type": "Feature",
@@ -42458,14 +42433,6 @@
                 }
             }
             addAreaPolygon(kecamatanParianganGeom, '#000000')
-
-            // zoom to show all the features
-            let lat = -0.446468
-            let lng = 100.487273
-            let latlng = new google.maps.LatLng(lat, lng)
-            map.setCenter(latlng)
-            map.panTo(latlng)
-            moveCamera(12)
         } else {
 
             let latlng = new google.maps.LatLng(latPariangan, lngPariangan)

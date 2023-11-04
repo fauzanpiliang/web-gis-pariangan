@@ -417,15 +417,7 @@ function clearGeom(pass = null) {
         geomArray = []
     }
 }
-// clear pariangan geom on map
-function clearAreaGeom(pass = null) {
-    if (geomAreaArray) {
-        geomAreaArray.forEach(geomArea => {
-            geomArea.setMap(null)
-        });
-        geomAreaArray = []
-    }
-}
+
 // Construct pariangan the polygon.
 function addParianganPolygon(geoJson, color, opacity) {
     const a = { type: 'Feature', geometry: geoJson }
@@ -443,19 +435,38 @@ function addParianganPolygon(geoJson, color, opacity) {
 }
 // Construct the polygon.
 function addAreaPolygon(geoJson, color, opacity) {
-    const geom = new google.maps.Data()
-    geom.addGeoJson(geoJson)
-    geom.setStyle({
-        fillColor: '#00b300',
-        strokeWeight: 0.5,
-        strokeColor: color,
-        fillOpacity: 0.1,
-        clickable: false
-    })
-  
-    geomAreaArray.push(geom)
-    geom.setMap(map)
+    clearAreaGeom()
+        // Load GeoJSON.
+        map.data.addGeoJson(geoJson);
+        map.data.setStyle({
+            fillColor: '#00b300',
+            strokeWeight: 0.5,
+            strokeColor: color,
+            fillOpacity: 0.1,
+            clickable: false
+        })
+        var bounds = new google.maps.LatLngBounds();
+    
+        // Loop through features
+        map.data.forEach(function(feature) {
+          var geo = feature.getGeometry();
+    
+          geo.forEachLatLng(function(LatLng) {
+            bounds.extend(LatLng);
+          });
+        });
+        map.fitBounds(bounds);
 }
+
+// clear pariangan geom on map
+function clearAreaGeom() {
+    if(map.data){
+        map.data.forEach(function(feature) {
+            map.data.remove(feature)
+        })
+    }
+}
+
 
 // move camera
 function moveCamera(z = 17) {
