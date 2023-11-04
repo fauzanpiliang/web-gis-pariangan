@@ -152,7 +152,7 @@ class ManagePackageController extends BaseController
         }
         $requestData = [
             'name' => $request['name'],
-            // 'id_homestay' => $request['id_homestay'],
+            'date' => empty($request['date']) ? null : $request['date'],
             'price' => empty($request['price']) ? "0" : $request['price'],
             'capacity' => $request['capacity'],
             'cp' => $request['cp'],
@@ -277,14 +277,14 @@ class ManagePackageController extends BaseController
         $requestData = [
             'id' => $id_package,
             'name' => $request['name'],
-            // 'id_homestay' => $request['id_homestay'],
+            'date' => empty($request['date']) ? null : $request['date'],
             'price' => empty($request['price']) ? "0" : $request['price'],
             'capacity' => $request['capacity'],
             'cp' => $request['cp'],
             'url' => $url,
             'description' => $request['description'],
         ];
-
+        // dd($requestData);
 
         $addtp = $this->model->addPackage($requestData);
         if (isset($request['packageDetailData'])) {

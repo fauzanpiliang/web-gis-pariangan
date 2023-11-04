@@ -1,6 +1,7 @@
 <?= $this->extend('layout/template.php') ?>
 <?= $this->section('content') ?>
 <script src="<?= base_url('/assets/js/map.js') ?>"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 <!-- Modal reservation -->
 <div class="modal fade text-left " id="reservationModal" tabindex="-1" aria-labelledby="myModalLabel1" style="display: none;" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable " role="document">
@@ -35,7 +36,11 @@
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title text-center">Tourism Package Information</h4>
-                    <a class="btn btn-primary" onclick="showReservationModal()" data-bs-toggle="modal" data-bs-target="#reservationModal"> Reservation <i class="fa fa-ticket"></i> </a>
+                    <?php if ($data['date'] != null) : ?>
+                        <a class="btn btn-primary" onclick="showReservationModalDate('<?= $data['date'] ?>')" data-bs-toggle="modal" data-bs-target="#reservationModal"> Reservation <i class="fa fa-ticket"></i> </a>
+                    <?php else : ?>
+                        <a class="btn btn-primary" onclick="showReservationModal()" data-bs-toggle="modal" data-bs-target="#reservationModal"> Reservation <i class="fa fa-ticket"></i> </a>
+                    <?php endif; ?>
                     <div class="text-center">
                         <span class="material-symbols-outlined rating-color" id="s-1">star</span>
                         <span class="material-symbols-outlined rating-color" id="s-2">star</span>
@@ -54,11 +59,11 @@
                                         <td class="fw-bold">Name</td>
                                         <td><?= esc($data['name']); ?></td>
                                     </tr>
-                                    <?php if (isset($data['id_homestay'])) : ?>
-                                        <?php if ($data['id_homestay'] != null) : ?>
+                                    <?php if (isset($data['date'])) : ?>
+                                        <?php if ($data['date'] != null) : ?>
                                             <tr>
-                                                <td class="fw-bold">Homestay </td>
-                                                <td><?= esc($data['homestay_name']); ?></td>
+                                                <td class="fw-bold">Date </td>
+                                                <td><?= esc($data['date']); ?></td>
                                             </tr>
                                         <?php endif; ?>
                                     <?php endif; ?>
@@ -232,6 +237,7 @@
     <?php endif; ?>
 
     function getObjectsByPackageDayId(id_day) {
+
         $.ajax({
             url: `<?= base_url('package'); ?>/objects/package_day/${id_day}`,
             type: "GET",
@@ -246,13 +252,13 @@
         });
     }
 
+
     function getObjectById(objects = null) {
         let objectNumber = 1
         let flightPlanCoordinates = []
         clearMarker()
-        clearRadius()
         clearRoutes()
-
+        let boundObject = new google.maps.LatLngBounds();
         objects.forEach(object => {
             let id_object = object['id_object']
 
@@ -284,10 +290,11 @@
                 async: false,
                 dataType: 'json',
                 success: function(response) {
-                    console.log()
                     if (response.objectData.length > 0) {
                         let data = response.objectData[0]
+                        let latlng = new google.maps.LatLng(data.lat, data.lng)
                         showObjectOnMap(objectNumber, data)
+                        boundObject.extend(latlng)
                     }
 
                 }
@@ -295,8 +302,9 @@
             objectNumber++
         })
 
+        map.fitBounds(boundObject)
+        map.setCenter(boundObject.getCenter())
     }
-
     // Display marker for loaded object
     function showObjectOnMap(objectNumber, data, anim = true) {
         let id = data.id
@@ -320,12 +328,12 @@
         marker.addListener('click', () => {
             openInfoWindow(marker, infoMarkerData(data, url = null))
         });
-        markerArray[id] = marker;
+        markerArray.push(marker);
         if (objectNumber == 1) {
             latBefore = lat
             lngBefore = lng
+
         } else {
-            // boundToObject()
             routeAll(lat, lng)
         }
     }
@@ -352,6 +360,7 @@
                 routeArray.push(directionsRenderer);
             }
         });
+
     }
 
     function clearRoutes() {
@@ -410,6 +419,67 @@
                     <div class="form-group mb-2">
                         <label for="reservation_date" class="mb-2"> Select reservation date </label>
                         <input type="date" id="reservation_date" class="form-control" required >
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="number_people" class="mb-2"> Number of people </label>
+                        <input type="number" id="number_people" placeholder="masimum capacity is <?= esc($data['capacity']) ?>" class="form-control" required >
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="comment" class="mb-2"> Additional information </label>
+                        <input type="text" id="comment" class="form-control" >
+                    </div>
+                </div>
+            </div>
+            `)
+            $('#modalFooter').html(`<a class="btn btn-success" onclick="makeReservation(${<?= user()->id ?>})"> Make reservation </a>`)
+        <?php else : ?>
+            $('#modalTitle').html('Login required')
+            $('#modalBody').html('Login as user for reservation')
+            $('#modalFooter').html(`<a class="btn btn-primary" href="/login"> Login </a> <a class="btn btn-primary" href="/regiter"> Register </a>`)
+        <?php endif; ?>
+    }
+
+    function showReservationModalDate(date) {
+        <?php if (in_groups('user')) : ?>
+            $('#modalTitle').html("Reservation form")
+            $('#modalBody').html(`
+            <div class=" p-2">
+                <div class="mb-2 shadow-sm p-4 rounded">
+                    <p class="text-center fw-bold text-dark"> Package Information </p>
+                    <table class="table table-borderless text-dark ">
+                                        <tbody>
+                                        <?php if ($data['url'] != null) : ?>
+                                            <tr>
+                                                <td colspan="2"><img class="img-fluid img-thumbnail rounded" src="<?= base_url('media/photos') . '/' . $data['url'] ?>" width="100%"></td>
+                                            </tr>
+                                            <?php endif; ?>
+                                            <tr>
+                                                <td class="fw-bold">Name</td>
+                                                <td><?= esc($data['name']); ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">Price</td>
+                                                <td><?= 'Rp ' . number_format(esc($data['price']), 0, ',', '.'); ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">Maks Capacity</td>
+                                                <td><?= esc($data['capacity']) ?> people</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">Contact Person</td>
+                                                <td><?= esc($data['cp']); ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">Day total</td>
+                                                <td><?= esc(count($data['package_day'])); ?></td>
+                                            </tr>
+                                        </tbody>
+                    </table>
+                </div>
+                <div class="shadow p-4 rounded">
+                    <div class="form-group mb-2">
+                        <label for="reservation_date" class="mb-2"> Select reservation date </label>
+                        <input value="${date}" readonly type="date" id="reservation_date" class="form-control" required >
                     </div>
                     <div class="form-group mb-2">
                         <label for="number_people" class="mb-2"> Number of people </label>

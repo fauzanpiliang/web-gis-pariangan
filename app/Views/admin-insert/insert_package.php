@@ -52,6 +52,10 @@
                                 <label for="name" class="mb-2">Tourism Package Name <span class="text-danger">*</span></label>
                                 <input type="text" id="name" class="form-control" name="name" placeholder="Tourism Package Name" value="" required>
                             </div>
+                            <div class="form-group mb-4">
+                                <label for="date" class="mb-2">Date <span>( optional )</span></label>
+                                <input type="date" id="date" class="form-control" name="date" placeholder="date" value="null">
+                            </div>
                             <?php if (isset($homestayData)) : ?>
                                 <fieldset class="form-group mb-4">
                                     <label for="id_homestay" class="mb-2">Homestay</label>
@@ -115,6 +119,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title text-center">Detail package</h4>
+                            <input type="hidden" required id="checkDetailPackage">
                         </div>
                         <div class="card-body">
                             <button type="button" onclick="openPackageDayModal(`${noDay}`)" class="btn btn-outline-primary block" data-bs-toggle="modal" data-bs-target="#modalPackage"> New package day
@@ -182,6 +187,15 @@
 <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
 <script src="<?= base_url('assets/js/extensions/form-element-select.js'); ?>"></script>
 <script>
+    function checkRequired(event) {
+        let checkDetailPackage = $('#checkDetailPackage').val()
+
+        if (!checkDetailPackage) {
+            event.preventDefault();
+            Swal.fire('You dont have any activities, please add 1 at least', '', 'warning');
+        }
+    }
+
     function removeObject(noDay, noDetail) {
         console.log("masuk sini")
         $(`#${noDay}-${noDetail}`).remove()
@@ -304,6 +318,7 @@
         </tr>     
         `)
         $(`#lastNoDetail${noDay}`).val(noDetail + 1)
+        $('#checkDetailPackage').val('oke')
     }
 </script>
 

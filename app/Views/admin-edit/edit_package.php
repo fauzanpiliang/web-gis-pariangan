@@ -52,6 +52,10 @@
                                 <label for="name" class="mb-2">Tourism Package Name <span class="text-danger">*</span></label>
                                 <input type="text" id="name" value="<?= $data['name'] ?>" class="form-control" name="name" placeholder="Tourism Package Name" value="" required>
                             </div>
+                            <div class="form-group mb-4">
+                                <label for="date" class="mb-2">Date <span>( optional )</span></label>
+                                <input type="date" id="date" value="<?= $data['date'] ?>" class="form-control" name="date" placeholder="Date">
+                            </div>
                             <?php if (isset($homestayData)) : ?>
                                 <fieldset class="form-group mb-4">
                                     <label for="id_homestay" class="mb-2">Homestay</label>
