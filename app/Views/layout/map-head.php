@@ -26,6 +26,7 @@
                         <option value="province" selected>Province</option>
                         <option value="city">City/Regency</option>
                         <option value="subdistric">Sub District</option>
+                        <option value="village">Tourism Village</option>
                     </select>
                 </div>
             </div>
@@ -42457,14 +42458,20 @@
                 }
             }
             addAreaPolygon(kecamatanParianganGeom, '#000000')
-            
-             // zoom to show all the features
-             let lat = -0.446468
+
+            // zoom to show all the features
+            let lat = -0.446468
             let lng = 100.487273
             let latlng = new google.maps.LatLng(lat, lng)
             map.setCenter(latlng)
             map.panTo(latlng)
             moveCamera(12)
+        } else {
+
+            let latlng = new google.maps.LatLng(latPariangan, lngPariangan)
+            map.setCenter(latlng)
+            map.panTo(latlng)
+            moveCamera(14)
         }
     }
 </script>

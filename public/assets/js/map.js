@@ -273,6 +273,7 @@ function initMap() {
 }
 function showMap() {
     map = new google.maps.Map(document.getElementById("map"), { center: { lat: latPariangan, lng: lngPariangan }, zoom: 6.8, clickableIcons: false});
+    map.setOptions({ styles: mapStyles })
     addParianganPolygon(geomPariangan, '#ffffff')
     addAreaPolygon(geomSumbar, '#000000')
     // remove unecessary button when in mobile
@@ -442,7 +443,6 @@ function addParianganPolygon(geoJson, color, opacity) {
 }
 // Construct the polygon.
 function addAreaPolygon(geoJson, color, opacity) {
-    console.log(geoJson)
     const geom = new google.maps.Data()
     geom.addGeoJson(geoJson)
     geom.setStyle({
