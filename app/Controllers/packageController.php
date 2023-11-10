@@ -73,18 +73,19 @@ class packageController extends BaseController
         // review
         $list_review = $this->reservationModel->getObjectComment($id)->getResultArray();
 
-        // service
+        // service include
         $list_service = $this->detailServicePackageModel->get_service_by_package_api($id)->getResultArray();
         $services = array();
         foreach ($list_service as $service) {
             $services[] = $service['name'];
         }
+        // service exclude
+        $list_service = $this->detailServicePackageModel->get_service_by_package_api_exclude($id)->getResultArray();
+        $servicesExclude = array();
+        foreach ($list_service as $service) {
+            $servicesExclude[] = $service['name'];
+        }
 
-        // package homestay
-        // if ($package['id_homestay'] != null) {
-        //     $homestayData = $this->HomestayModel->get_hm_by_id_api($package['id_homestay'])->getRowArray();
-        //     $package['homestay_name'] = $homestayData['name'];
-        // }
 
         // package day
         $package_day = $this->packageDayModel->get_pd_by_package_id_api($id)->getResultArray();
@@ -97,6 +98,7 @@ class packageController extends BaseController
 
         $package['avg_rating'] = $objectRating;
         $package['services'] = $services;
+        $package['servicesExclude'] = $servicesExclude;
         $package['reviews'] = $list_review;
         $package['package_day'] = $package_day;
         $package['gallery'] = [$package['url']];
@@ -154,7 +156,7 @@ class packageController extends BaseController
         }
         $worshipData = $this->worshipModel->getWorshipPlaces();
         foreach ($worshipData as $worship) {
-            $worship->id = 'S' . $worship->id;
+            $worship->id = 'W' . $worship->id;
             $objectData[] = $worship;
         }
         $homestayData = $this->homestayModel->getHomestays();
@@ -232,14 +234,12 @@ class packageController extends BaseController
         // create reservation
         $addR = true;
         if (isset($request['reservationData'])) {
-            $id = $this->reservationModel->get_new_id_api();
             $requestData = [
-                'id' => $id,
                 'id_user' => $request['id_user'],
                 'id_package' => $id_package,
+                'request_date' => $request['reservationData']['reservation_date'],
                 'total_price' => empty($request['price']) ? "0" : $request['price'],
                 'id_reservation_status' => '1',
-                'request_date' => $request['reservationData']['reservation_date'],
                 'number_people' => $request['reservationData']['number_people'],
                 'comment' => $request['reservationData']['comment']
             ];

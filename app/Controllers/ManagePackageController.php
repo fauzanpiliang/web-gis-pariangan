@@ -76,11 +76,18 @@ class ManagePackageController extends BaseController
 
         $serviceData = $this->modelservices->getServices()->getResultArray();
 
+        // get include service package
         $packageService = $this->detailServicePackageModel->get_service_by_package_api($id)->getResultArray();
-
         $selectedService = array();
         foreach ($packageService as $service) {
             $selectedService[] = $service['name'];
+        }
+
+        // get exclude service package
+        $packageServiceExclude = $this->detailServicePackageModel->get_service_by_package_api_exclude($id)->getResultArray();
+        $selectedServiceExclude = array();
+        foreach ($packageServiceExclude as $service) {
+            $selectedServiceExclude[] = $service['name'];
         }
 
         $packageDay = $this->packageDayModel->get_pd_by_package_id_api($id)->getResultArray();
@@ -110,7 +117,7 @@ class ManagePackageController extends BaseController
         }
         $worshipData = $this->worshipModel->getWorshipPlaces();
         foreach ($worshipData as $worship) {
-            $worship->id = 'S' . $worship->id;
+            $worship->id = 'W' . $worship->id;
             $objectData[] = $worship;
         }
         $homestayData = $this->homestayModel->getHomestays();
@@ -121,6 +128,7 @@ class ManagePackageController extends BaseController
 
 
         $package['service_package'] =  $selectedService;
+        $package['service_package_exclude'] = $selectedServiceExclude;
         $package['gallery'] = [$package['url']];
         $package['video_url'] = null;
 
@@ -139,13 +147,14 @@ class ManagePackageController extends BaseController
     {
         // 
         $request = $this->request->getPost();
+
         $url = null;
         if (isset($request['gallery'])) {
             $folder = $request['gallery'][0];
             $filepath = WRITEPATH . 'uploads/' . $folder;
             $filename = get_filenames($filepath)[0];
             $fileImg = new File($filepath . '/' . $filename);
-            $fileImg->move(FCPATH . 'media/photos');
+            $fileImg->move(FCPATH . 'media/photos/package');
             delete_files($filepath);
             rmdir($filepath);
             $url = $fileImg->getFilename();
@@ -194,14 +203,21 @@ class ManagePackageController extends BaseController
             }
         }
 
+        // service include
         $addService = true;
 
         if (isset($request['service_package'])) {
             $services = $request['service_package'];
-            $addService = $this->detailServicePackageModel->update_service_api($id, $services);
+            $addService = $this->detailServicePackageModel->update_service_api($id, $services, 'include');
+        }
+        // service include
+        $addServiceExclude = true;
+        if (isset($request['service_package_exclude'])) {
+            $servicesExclude = $request['service_package_exclude'];
+            $addServiceExclude = $this->detailServicePackageModel->update_service_api($id, $servicesExclude, 'exclude');
         }
 
-        if ($updateTp && $addService) {
+        if ($updateTp && $addService && $addServiceExclude) {
             return redirect()->to(base_url('manage_package'));
         } else {
             return redirect()->back()->withInput();
@@ -234,7 +250,7 @@ class ManagePackageController extends BaseController
         }
         $worshipData = $this->worshipModel->getWorshipPlaces();
         foreach ($worshipData as $worship) {
-            $worship->id = 'S' . $worship->id;
+            $worship->id = 'W' . $worship->id;
             $objectData[] = $worship;
         }
         $homestayData = $this->homestayModel->getHomestays();
@@ -268,7 +284,7 @@ class ManagePackageController extends BaseController
             $filepath = WRITEPATH . 'uploads/' . $folder;
             $filename = get_filenames($filepath)[0];
             $fileImg = new File($filepath . '/' . $filename);
-            $fileImg->move(FCPATH . 'media/photos');
+            $fileImg->move(FCPATH . 'media/photos/package');
             delete_files($filepath);
             rmdir($filepath);
             $url = $fileImg->getFilename();
@@ -314,14 +330,22 @@ class ManagePackageController extends BaseController
             }
         }
 
+        // service include
         $addService = true;
         if (isset($request['service_package'])) {
             $services = $request['service_package'];
-            $addService = $this->detailServicePackageModel->add_service_api($id_package, $services);
+            $addService = $this->detailServicePackageModel->add_service_api($id_package, $services, 'include');
+        }
+
+        // service exclude
+        $addServiceExclude = true;
+        if (isset($request['service_package_exclude'])) {
+            $servicesExclude = $request['service_package_exclude'];
+            $addServiceExclude = $this->detailServicePackageModel->add_service_api($id_package, $servicesExclude, 'exclude');
         }
 
 
-        if ($addtp && $addService) {
+        if ($addtp && $addService && $addServiceExclude) {
             return redirect()->to(base_url('manage_package'));
         } else {
             return redirect()->back()->withInput();

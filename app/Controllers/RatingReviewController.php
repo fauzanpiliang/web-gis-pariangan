@@ -121,8 +121,9 @@ class RatingReviewController extends BaseController
     public function rating_comment_package()
     {
         $data = $this->request->getPOST();
-        $reservation_id = $data['id_reservation'];
         $user_id = $data['id_user'];
+        $package_id = $data['id_package'];
+        $request_date = $data['request_date'];
         $review = $data['review'];
         $rating = $data['rating'];
         // dd($data);
@@ -131,7 +132,7 @@ class RatingReviewController extends BaseController
             'review' => $review
         ];
 
-        $updateRating = $this->modelReservation->update_r_api($reservation_id, $requestData);
+        $updateRating = $this->modelReservation->update_r_api($user_id, $package_id, $request_date, $requestData);
         if ($updateRating) {
             session()->setFlashdata('success', 'Thanks for your rated.');
             return redirect()->to(site_url('user/reservation/' . $user_id));

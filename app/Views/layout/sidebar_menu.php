@@ -108,7 +108,7 @@
                     </li>
                     <li class="submenu-item sidebar-link  <?php if (current_url() == base_url('manage_reservation')) echo 'active'; ?>">
                         <i class="iconify" data-icon="material-symbols:order-play-outline" data-width="25" data-height="25"></i>
-                        <a role="button" href="<?= base_url('manage_reservation') ?>">Reservation</a>
+                        <a role="button" href="<?= base_url('manage_reservation') ?>">Booking info</a>
                     </li>
                     <li class="submenu-item sidebar-link  <?php if (current_url() == base_url('manage_pariangan')) echo 'active'; ?>">
                         <i class="iconify" data-icon="fontisto:holiday-village" data-width="25" data-height="25"></i>

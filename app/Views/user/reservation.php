@@ -60,7 +60,7 @@
 <section class="section">
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">My Reservation</h3>
+            <h3 class="card-title">My Booking</h3>
             <span id="multipleButton">
                 <!-- <a title="Print multiple reservation" class="btn btn-primary" onclick="openMultipleCheckOut()"> <i class="fa-solid fa-print"></i> Print in Group </a> -->
             </span>
@@ -73,10 +73,9 @@
                         <tr>
                             <th class="text-start"> #</th>
                             <th class="text-start"> Tourism package name / ID </th>
-                            <th class="text-start"> Reservation date </th>
+                            <th class="text-start"> Booking date </th>
                             <th class="text-start"> Number of people </th>
                             <th class="text-start"> Status </th>
-                            <th class="text-start"> Progress </th>
                             <th class="text-center  checkSingle"> Action </th>
                             <th class="text-center  d-none checkAll"> Action</th>
                             <th class="text-center"> Rate / review </th>
@@ -88,7 +87,9 @@
 
                             <?php foreach ($data as $item) : ?>
                                 <?php
-                                $reservationId = $item['id'];
+                                $userId = $item['id_user'];
+                                $packageId = $item['id_package'];
+                                $request_date = $item['request_date'];
                                 $packageName = $item['package_name'];
                                 $requestDate = $item['request_date'];
                                 $numberPeople = $item['number_people'];
@@ -97,25 +98,11 @@
                                 $rating = $item['rating'];
                                 $review = $item['review'];
                                 $dateNow = date("Y-m-d");
-                                $depositDate = $item['deposit_date'];
-
-                                $proggres = "";
-                                if ($reservationIdStatus == 1) {
-                                    $proggres = "Please wait admin to confirm your reservation";
-                                } else if ($reservationIdStatus == 2 && $depositDate == null) {
-                                    $proggres = "Please upload your payment document";
-                                } else if ($reservationIdStatus == 2 && $depositDate != null) {
-                                    $proggres = "Document Uploaded! Please Wait admin to check your payment";
-                                } else if ($reservationIdStatus == 3) {
-                                    $proggres = "Sorry, your reservation is not accepted";
-                                } else if ($reservationIdStatus == 4) {
-                                    $proggres = "Transaction success, Print your ticket by <a class='btn btn-outline-success btn-sm ' title='confirm' data-bs-toggle='modal' data-bs-target='#reservationModal' onclick='showInfoReservation(`$reservationId`)'> click here </a>";
-                                }
 
                                 ?>
                                 <tr>
                                     <td class="text-start"> <?= $no; ?> </td>
-                                    <td class="text-start"> <?= $packageName; ?>/<?= $reservationId ?></td>
+                                    <td class="text-start"> <?= $packageName; ?></td>
                                     <td class="text-start"> <?= $requestDate; ?> </td>
                                     <td class="text-start"> <?= $numberPeople; ?> </td>
                                     <td class="text-start">
@@ -127,27 +114,21 @@
                                                                     echo "danger";
                                                                 } else if ($reservationIdStatus == 4) {
                                                                     echo "success";
-                                                                }; ?>">
-                                            <?= $statusReservation ?>
-                                        </span>
+                                                                }; ?>"><?= $statusReservation ?></span>
                                     </td>
-                                    <td class="text-start">
-                                        <?= $proggres ?>
-                                    </td>
-
                                     <td class="text-center checkSingle">
 
-                                        <a class="btn btn-outline-success btn-sm " title="confirm" data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="showInfoReservation('<?= $reservationId ?>')">
+                                        <a class="btn btn-outline-success btn-sm " title="confirm" data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="showInfoReservation('<?= $userId ?>','<?= $packageId ?>','<?= $request_date ?>')">
                                             <i class="fa fa-info"></i>
                                         </a>
 
                                     </td>
                                     <td class="d-none text-center checkAll">
-                                        <input type="checkbox" <?= $reservationIdStatus == 2 && $requestDate > $dateNow ? '' : 'disabled' ?> name="idPackage[]" value="<?= $reservationId ?>">
+                                        <input type="checkbox" <?= $reservationIdStatus == 2 && $requestDate > $dateNow ? '' : 'disabled' ?> name="idPackage[]" value="<?= $userId . $packageId . $request_date  ?>">
                                     </td>
-                                    <td class="text-center" id="action<?= $reservationId ?>">
+                                    <td class="text-center" id="action<?= $userId . $packageId . $request_date  ?>">
                                         <?php if ($reservationIdStatus == 4 && $rating == null && $requestDate < $dateNow) : ?>
-                                            <a title="rate package" class="btn " data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="openModalRatingReservation('<?= $reservationId ?>')"> <i class="fa fa-star text-warning"></i></a>
+                                            <a title="rate package" class="btn " data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="openModalRatingReservation('<?= $userId ?>','<?= $packageId ?>','<?= $request_date ?>')"> <i class="fa fa-star text-warning"></i></a>
                                         <?php elseif ($reservationIdStatus == 4 && $rating != null && $requestDate < $dateNow) : ?>
                                             <a title="rate package" class="btn " data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="openInfoRating('<?= $rating ?>','<?= $review ?>','<?= $item['updated_at']; ?>')"> <i class="fa fa-check text-primary"></i></a>
                                         <?php else : ?>
@@ -181,10 +162,10 @@
     new DataTable('#dataTable')
     let photo, pond, galleryValue
 
-    function showInfoReservation(id) {
+    function showInfoReservation(id_user, id_package, request_date) {
         let result
         $.ajax({
-            url: `<?= base_url('reservation/show'); ?>/${id}`,
+            url: `<?= base_url('reservation/show'); ?>/${id_user}/${id_package}/${request_date}`,
             type: "GET",
             async: false,
             contentType: "application/json",
@@ -197,9 +178,9 @@
             }
         });
         let buttonDelete =
-            result['id_reservation_status'] == '1' ? `<a class="btn btn-outline-danger" onclick="deleteReservation('${id}')"> Abort reservation</a>` : '';
+            result['id_reservation_status'] == '1' ? `<a class="btn btn-outline-danger" onclick="deleteReservation('${id_user}','${id_package}','${request_date}')"> Abort booking</a>` : '';
 
-        $('#modalTitle').html("Reservation Info")
+        $('#modalTitle').html("Booking Info")
         $('#modalBody').html(`
         <div class="p-2">
                 <div id="userRating">
@@ -211,7 +192,7 @@
                 <div id="userDeposit">
                 </div>
                 <div class="mb-2 shadow-sm p-4 rounded">
-                    <p class="text-center fw-bold text-dark"> Reservation Information </p>
+                    <p class="text-center fw-bold text-dark"> Booking Information </p>
                     <table class="table table-borderless text-dark ">
                         <tbody>
                             <tr>
@@ -219,7 +200,7 @@
                                 <td></td>
                             </tr>
                             <tr>
-                                <td class="fw-bold">Your reservation status</td>
+                                <td class="fw-bold">Your booking status</td>
                                 <td>${result['status']}</td>
                             </tr>
                             <tr>
@@ -258,95 +239,15 @@
 
         // user payment
         if (result['id_reservation_status'] == '2') {
-            let proofDeposit = result['proof_of_deposit']
-            let deposit = result['deposit']
             $("#userDeposit").addClass("mb-2 shadow-sm p-4 rounded")
             $("#userDeposit").html(`
-                <p class="text-center fw-bold text-dark"> Upload Your Payment </p>
-                <p>Note <span class="text-danger">*</span> Before uploading proof of deposit, make sure the payment amount is the same as the invoice, please print the invoice to see the deposit amount</p>
+                <p>Note <span class="text-danger">*</span> Print your invoice here</p>
                 <div class="text-start mb-4">
-                    <a class="btn btn-primary" onclick="openInvoice('${id}')" > <i class="fa fa-print"> </i> print invoice</a>
-                </div>
-                <div class="form-group mb-4">
-                   <label for="deposit" class="mb-2"> Deposit <span class="text-danger">*</span></label>
-                   <div class="input-group">
-                   <span class="input-group-text">Rp </span>
-                      <input type="number" id="deposit" class="form-control" name="deposit" placeholder="deposit" aria-label="deposit" value="${deposit}" aria-describedby="deposit" required>
-                   </div>
-                </div>
-                <div class="form-group mb-4">
-                    <label for="gallery" class="form-label"> Upload Proof of Deposit <span class="text-danger">*</span></label>
-                    <input class="form-control" accept="image/*" type="file" name="gallery[]" id="gallery">
-                </div>
-                <div class="text-end">
-                    <a class="btn btn-success" onclick="saveDeposit('${id}')" > save</a>
-                </div>
-           
-            `)
-            FilePond.registerPlugin(
-                FilePondPluginFileValidateType,
-                FilePondPluginImageExifOrientation,
-                FilePondPluginImagePreview,
-                FilePondPluginImageResize,
-                FilePondPluginMediaPreview,
-            );
-            // Get a reference to the file input element
-            photo = document.querySelector('input[id="gallery"]');
-
-            // Create a FilePond instance
-            pond = FilePond.create(photo, {
-                maxFileSize: '1920MB',
-                maxTotalFileSize: '1920MB',
-                imageResizeTargetHeight: 720,
-                imageResizeUpscale: false,
-                credits: false,
-            });
-            if (proofDeposit != null) {
-                pond.addFiles(
-                    `<?= base_url('media/photos/reservation') ?>/${proofDeposit}`
-                );
-            }
-            pond.setOptions({
-                server: {
-                    timeout: 3600000,
-                    process: {
-                        url: '<?= base_url("upload/photo") ?>',
-                        onload: (response) => {
-                            galleryValue = response
-                            console.log("processed:", response);
-                            return response
-                        },
-                        onerror: (response) => {
-                            console.log("error:", response);
-                            return response
-                        },
-                    },
-                    revert: {
-                        url: '<?= base_url("upload/photo") ?>',
-                        onload: (response) => {
-                            console.log("reverted:", response);
-                            return response
-                        },
-                        onerror: (response) => {
-                            console.log("error:", response);
-                            return response
-                        },
-                    },
-                }
-            })
-
-        }
-
-        // user tiket
-        if (result['id_reservation_status'] == '4' && result['payment_date'] != null) {
-            $("#userTicket").addClass("background-effect mb-2 shadow-sm p-4 rounded border border-warning")
-            $("#userTicket").css('height', '250px');
-            $("#userTicket").html(`
-                <a class="btn" onclick="printTicket('${id}')">
-                    <h1 class=" gold text-center fw-bold text-dark"> Print Your Ticket Here </h1>
-                </a>
+                    <a class="btn btn-primary" onclick="openInvoice('${id_user}','${id_package}','${request_date}')" > <i class="fa fa-print"> </i> print invoice</a>
+                </div>  
             `)
         }
+
         // user rating
         if (result['rating'] != null) {
             let rating = result['rating']
@@ -418,7 +319,7 @@
                 contentType: "application/json",
                 success: function(response) {
                     Swal.fire(
-                        'Reservation updated',
+                        'Booking updated',
                         '',
                         'success'
                     ).then(() => {
@@ -451,7 +352,7 @@
         $("#modalFooter").html()
     }
 
-    function openModalRatingReservation(reservationId) {
+    function openModalRatingReservation(id_user, id_package, request_date) {
         let url = `<?= base_url('review/package') ?>`
         $('#modalTitle').html("Please rate and review")
         $("#modalBody").html(`
@@ -465,8 +366,9 @@
                         <i class="fa-solid fa-star fs-4" id="star-4" onclick="setStar('4');"></i>
                         <i class="fa-solid fa-star fs-4" id="star-5" onclick="setStar('5');"></i>
                         <input type="hidden" id="star-rating" value="0" name="rating">
-                        <input type="hidden" value="<?= user()->id ?>" name="id_user">
-                        <input type="hidden" value="${reservationId}" name="id_reservation">
+                        <input type="hidden" value="${id_user}" name="id_user">
+                        <input type="hidden" value="${id_package}" name="id_package">
+                        <input type="hidden" value="${request_date}" name="request_date">
                     </div>
                     <div class="col-12 mb-3">
                         <div class="form-floating">
@@ -519,22 +421,21 @@
     }
 
 
-    function showModalDelete(id) {
-        $('#modalTitle').html("Abort reservation")
-        $('#modalBody').html(`Are you sure delete this reservation?`)
-        $('#modalFooter').html(`<a class="btn btn-danger" onclick="deleteReservation('${id}')"> Delete </a>`)
+    function showModalDelete(id_user, id_package, request_date) {
+        $('#modalTitle').html("Abort booking")
+        $('#modalBody').html(`Are you sure delete this booking?`)
+        $('#modalFooter').html(`<a class="btn btn-danger" onclick="deleteReservation('${id_user}','${id_package}','${request_date}')"> Delete </a>`)
     }
 
-    function deleteReservation(id_reservation) {
+    function deleteReservation(id_user, id_package, request_date) {
         $.ajax({
-            url: `<?= base_url('reservation/delete') ?>/${id_reservation}`,
+            url: `<?= base_url('reservation/delete') ?>/${id_user}/${id_package}/${request_date}`,
             type: "DELETE",
             async: false,
             contentType: "application/json",
             success: function(response) {
-
                 Swal.fire(
-                    'Reservation deleted',
+                    'Booking deleted',
                     '',
                     'success'
                 ).then(() => {
@@ -547,56 +448,26 @@
         });
     }
 
-    function openMultipleCheckOut() {
-        $("#multipleButton").html(`
-        <a title="closeAll" class="btn btn-danger" onclick="closeMultipleCheckOut()"><i class="fa fa-x"></i> Cancel Group </a>
-        <a title="Print All" class="btn btn-primary" onclick="openInvoice()"><i class="fa fa-print"></i> Print selected</a>
-        `)
-        $(".checkAll").removeClass("d-none")
-        $(".checkSingle").addClass("d-none")
-    }
-
-    function closeMultipleCheckOut() {
-        $("#multipleButton").html(`
-        <a title="Print multiple reservation" class="btn btn-primary" onclick="openMultipleCheckOut()"><i class="fa-solid fa-print"></i> Print in Group </a>
-        `)
-        $(".checkAll").addClass("d-none")
-        $(".checkSingle").removeClass("d-none")
-    }
-
-    function openInvoice(single = null) {
-        let invoiceRequest
-
-        single != null ?
-            invoiceRequest = [single] :
-            invoiceRequest = $('input[name="idPackage[]"]:checked').map(function() {
-                return this.value; // $(this).val()
-            }).get();
 
 
-        if (invoiceRequest.length > 0) {
-            $.ajax({
-                url: '<?= base_url("pdf/invoice-data") ?>',
-                type: "POST",
-                dataType: "json",
-                data: {
-                    id_reservation: invoiceRequest
-                },
-                success: function(response) {
+    function openInvoice(id_user = null, id_package = null, request_date = null) {
+        $.ajax({
+            url: '<?= base_url("pdf/invoice-data") ?>',
+            type: "POST",
+            dataType: "json",
+            data: {
+                id_user: id_user,
+                id_package: id_package,
+                request_date: request_date
+            },
+            success: function(response) {
 
-                    window.open('<?= base_url('pdf/invoice'); ?>' + '/' + JSON.stringify(response));
-                },
-                error: function(err) {
-                    console.log(err.responseText)
-                }
-            })
-        } else {
-            Swal.fire(
-                'Please select 1 reservation at least!',
-                '',
-                'error'
-            )
-        }
+                window.open('<?= base_url('pdf/invoice'); ?>' + '/' + JSON.stringify(response));
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
 
     }
 </script>
