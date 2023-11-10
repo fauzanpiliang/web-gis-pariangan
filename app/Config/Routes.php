@@ -307,20 +307,18 @@ $routes->group('manage_service', function ($routes) {
 
 // 13. menu  reservation
 $routes->group('reservation', function ($routes) {
-    $routes->get('show/(:segment)', 'ReservationController::show/$1', ['filter' => 'role:user,admin']);
+    $routes->get('show/(:segment)/(:segment)/(:segment)', 'ReservationController::show/$1/$2/$3', ['filter' => 'role:user,admin']);
     $routes->post('create', 'ReservationController::create', ['filter' => 'role:user,admin']);
-    $routes->put('update/(:segment)', 'ReservationController::update/$1', ['filter' => 'role:user,admin']);
-    $routes->delete('delete/(:segment)', 'ReservationController::delete/$1', ['filter' => 'role:user,admin']);
-    $routes->get('check/(:segment)/(:segment)', 'ReservationController::check/$1/$2', ['filter' => 'role:user,admin']);
+    $routes->put('update/(:segment)/(:segment)/(:segment)', 'ReservationController::update/$1/$2/$3', ['filter' => 'role:user,admin']);
+    $routes->delete('delete/(:segment)/(:segment)/(:segment)', 'ReservationController::delete/$1/$2/$3', ['filter' => 'role:user,admin']);
+    $routes->get('check/(:segment)/(:segment)/(:segment)', 'ReservationController::check/$1/$2/$3', ['filter' => 'role:user,admin']);
 });
 
 // 14. Manage reservation
 $routes->group('manage_reservation', function ($routes) {
     $routes->get('/', 'ManageReservationController::index', ['filter' => 'role:admin']);
     $routes->get('index', 'ManageReservationController::index', ['filter' => 'role:admin']);
-    $routes->patch('save_update/(:segment)', 'ManageReservationController::save_update/$1', ['filter' => 'role:admin']);
-    $routes->get('insert', 'ManageReservationController::insert', ['filter' => 'role:admin']);
-    $routes->post('save_insert', 'ManageReservationController::save_insert', ['filter' => 'role:admin']);
+    $routes->patch('save_update/(:segment)/(:segment)/(:segment)', 'ManageReservationController::save_update/$1/$2/$3', ['filter' => 'role:admin']);
 });
 
 // 14. Manage reservation

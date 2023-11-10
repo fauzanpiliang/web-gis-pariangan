@@ -90,11 +90,25 @@
                                 <input type="text" value="<?= $data['cp'] ?>" id="contact_person" class="form-control" name="cp" placeholder="Contact Person" value="">
                             </div>
 
+                            <!-- service package include -->
                             <div class="form-group mb-4">
-                                <label for="service_package" class="mb-2">Service Package</label>
+                                <label for="service_package" class="mb-2">Service Package (Include) </label>
                                 <select class="choices form-select multiple-remove" multiple="multiple" id="service_package" name="service_package[]">
                                     <?php foreach ($serviceData as $service) : ?>
                                         <?php if (in_array(esc($service['name']), $data['service_package'])) : ?>
+                                            <option value="<?= esc($service['id']); ?>" selected><?= esc($service['name']); ?></option>
+                                        <?php else : ?>
+                                            <option value="<?= esc($service['id']); ?>"><?= esc($service['name']); ?></option>
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <!-- service package exclude -->
+                            <div class="form-group mb-4">
+                                <label for="service_package_exclude" class="mb-2">Service Package (exclude) </label>
+                                <select class="choices form-select multiple-remove" multiple="multiple" id="service_package_exclude" name="service_package_exclude[]">
+                                    <?php foreach ($serviceData as $service) : ?>
+                                        <?php if (in_array(esc($service['name']), $data['service_package_exclude'])) : ?>
                                             <option value="<?= esc($service['id']); ?>" selected><?= esc($service['name']); ?></option>
                                         <?php else : ?>
                                             <option value="<?= esc($service['id']); ?>"><?= esc($service['name']); ?></option>
@@ -154,7 +168,7 @@
                                                     <?php foreach ($packageDay['detailPackage'] as $detailPackage) : ?>
                                                         <tr id="<?= $noDay ?>-<?= $noDetail ?>">
                                                             <td><input value="<?= $detailPackage['id_object']; ?>" class="form-control" name="packageDetailData[<?= $noDay ?>][detailPackage][<?= $noDetail ?>][id_object]" required readonly></td>
-                                                            <td><input value="<?= $detailPackage['activity_type']; ?>" class="form-control" name="packageDetailData[<?= $noDay ?>][detailPackage][<?= $noDetail ?>][activity_type]"></td>
+                                                            <td><input value="<?= $detailPackage['activity_type']; ?>" class="form-control" name="packageDetailData[<?= $noDay ?>][detailPackage][<?= $noDetail ?>][activity_type]" readonly></td>
                                                             <td><input value="<?= $detailPackage['description']; ?>" class="form-control" name="packageDetailData[<?= $noDay ?>][detailPackage][<?= $noDetail ?>][description]" required></td>
                                                             <td><a class="btn btn-danger" onclick="removeObject('<?= $noDay ?>','<?= $noDetail ?>')"> <i class="fa fa-x"></i> </a></td>
                                                         </tr>
@@ -273,10 +287,6 @@
                      </select>
         </div>
         <div class="form-group mb-4">
-                    <label for="detail-package-activity-type" class="mb-2">Activity type</label>
-                    <input type="text" id="detail-package-activity-type" class="form-control" name="detail-package-activity-type" placeholder="activity type" required>
-        </div> 
-        <div class="form-group mb-4">
                     <label for="detail-package-description" class="mb-2">Description</label>
                     <input type="text" id="detail-package-description" class="form-control" name="detail-package-description" placeholder="Detail package description" required>
         </div>
@@ -298,13 +308,26 @@
         let noDetail = parseInt($(`#lastNoDetail${noDay}`).val())
         console.log(noDetail)
         let object_id = $("#detail-package-id-object").val()
-        let activity_type = $("#detail-package-activity-type").val()
+        let activity_type = ''
         let description = $("#detail-package-description").val()
 
+        if (object_id.substring(0, 1) == 'A') {
+            activity_type = 'Atraksi'
+        } else if (object_id.substring(0, 1) == 'C') {
+            activity_type = 'Culinary Place'
+        } else if (object_id.substring(0, 1) == 'S') {
+            activity_type = 'Souvenir Place'
+        } else if (object_id.substring(0, 1) == 'W') {
+            activity_type = 'Worship Place'
+        } else if (object_id.substring(0, 1) == 'H') {
+            activity_type = 'Homestay'
+        }
         $(`#body-detail-package-${noDay}`).append(`
         <tr id="${noDay}-${noDetail}"> 
           <td><input class="form-control" value="${object_id}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][id_object]" required readonly></td>
-          <td><input class="form-control" value="${activity_type}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_type]"></td>
+          <td>
+          <input class="form-control" value="${activity_type}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_type]"  readonly>
+          </td>
           <td><input class="form-control" value="${description}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][description]" required></td>
           <td><a class="btn btn-danger" onclick="removeObject('${noDay}','${ noDetail }')"> <i class="fa fa-x"></i> </a></td>
         </tr>     
@@ -331,6 +354,13 @@
         imageResizeUpscale: false,
         credits: false,
     })
+
+    <?php if (count($data['gallery']) > 0) : ?>
+        pond.addFiles(
+            <?php foreach ($data['gallery'] as $gallery) : ?> `<?= base_url('media/photos/package/' . $gallery); ?>`,
+            <?php endforeach; ?>
+        );
+    <?php endif; ?>
 
     pond.setOptions({
         server: {

@@ -89,14 +89,24 @@
                                 <label for="contact_person" class="mb-2">Contact Person</label>
                                 <input type="tel" id="contact_person" class="form-control" name="cp" placeholder="Contact Person" value="">
                             </div>
-
+                            <!-- service package include -->
                             <div class="form-group mb-4">
-                                <label for="service_package" class="mb-2">Service Package</label>
+                                <label for="service_package" class="mb-2">Service Package (include)</label>
                                 <select class="choices form-select multiple-remove" multiple="multiple" id="service_package" name="service_package[]">
                                     <?php foreach ($serviceData as $service) : ?>
 
                                         <option value="<?= esc($service['id']); ?>"><?= esc($service['name']); ?></option>
 
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <!-- service package exclude -->
+                            <div class="form-group mb-4">
+                                <label for="service_package_exclude" class="mb-2">Service Package (exclude) </label>
+                                <select class="choices form-select multiple-remove" multiple="multiple" id="service_package_exclude" name="service_package_exclude[]">
+                                    <?php foreach ($serviceData as $service) : ?>
+                                        <option value="<?= esc($service['id']); ?>"><?= esc($service['name']); ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
@@ -281,10 +291,6 @@
                      </select>
         </div>
         <div class="form-group mb-4">
-                    <label for="detail-package-activity-type" class="mb-2">Activity type</label>
-                    <input type="text" id="detail-package-activity-type" class="form-control" name="detail-package-activity-type" placeholder="activity type" required>
-        </div> 
-        <div class="form-group mb-4">
                     <label for="detail-package-description" class="mb-2">Description</label>
                     <input type="text" id="detail-package-description" class="form-control" name="detail-package-description" placeholder="Detail package description" required>
         </div>
@@ -304,15 +310,28 @@
     function saveDetailPackageDay(noDay) {
         //get data from modal input
         let noDetail = parseInt($(`#lastNoDetail${noDay}`).val())
-        console.log(noDetail)
+
         let object_id = $("#detail-package-id-object").val()
-        let activity_type = $("#detail-package-activity-type").val()
+        let activity_type = ""
         let description = $("#detail-package-description").val()
 
+        if (object_id.substring(0, 1) == 'A') {
+            activity_type = 'Atraksi'
+        } else if (object_id.substring(0, 1) == 'C') {
+            activity_type = 'Culinary Place'
+        } else if (object_id.substring(0, 1) == 'S') {
+            activity_type = 'Souvenir Place'
+        } else if (object_id.substring(0, 1) == 'W') {
+            activity_type = 'Worship Place'
+        } else if (object_id.substring(0, 1) == 'H') {
+            activity_type = 'Homestay'
+        }
+        console.log(activity_type)
         $(`#body-detail-package-${noDay}`).append(`
         <tr id="${noDay}-${noDetail}"> 
           <td><input class="form-control" value="${object_id}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][id_object]" required readonly></td>
-          <td><input class="form-control" value="${activity_type}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_type]"></td>
+          <td><input class="form-control" value="${activity_type}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_type]"
+          readonly></td>
           <td><input class="form-control" value="${description}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][description]" required></td>
           <td><a class="btn btn-danger" onclick="removeObject('${noDay}','${ noDetail }')"> <i class="fa fa-x"></i> </a></td>
         </tr>     
