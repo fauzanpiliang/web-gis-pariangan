@@ -52,7 +52,7 @@ class reservationModel extends Model
     public function getTotal()
     {
         $query =  $this->db->table($this->table)
-            ->selectCount("id")->get()
+            ->selectCount("created_at")->get()
             ->getRow();
         return $query;
     }
