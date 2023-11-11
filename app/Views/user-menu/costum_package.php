@@ -292,8 +292,8 @@
         console.log(object)
         let objectData = JSON.parse(object)
         let objectId = objectData.id
-        let objectPrice = objectData.price == null ? 0 : parseInt(objectData.price)
         $("#detail-package-id-object").val(objectId)
+        let objectPrice = objectData.price == null ? 0 : parseInt(objectData.price)
         $("#detail-package-price-object").val(objectPrice)
     }
 

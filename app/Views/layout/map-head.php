@@ -42536,7 +42536,7 @@
             let latlng = new google.maps.LatLng(latPariangan, lngPariangan)
             map.setCenter(latlng)
             map.panTo(latlng)
-            moveCamera(14)
+            moveCamera(13)
         }
     }
 </script>
