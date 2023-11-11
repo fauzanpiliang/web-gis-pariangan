@@ -31,7 +31,7 @@
     <!-- DataTbales  -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h5 class="m-0 font-weight-bold text-primary text-center">List Booking </h5>
+            <h5 class="m-0 font-weight-bold text-primary text-center">List reservation Package</h5>
             <a class="btn btn-success" onclick="showReservationModal()" data-bs-toggle="modal" data-bs-target="#reservationModal"> add <i class="fa fa-plus"></i> </a>
         </div>
         <div class="card-body">
@@ -45,7 +45,7 @@
                             <th>Username</th>
                             <th>Request date</th>
                             <th>Status</th>
-                            <th class="text-start"> Progress </th>
+                            <th>Progress</th>
                             <th class="text-center">Action</th>
                         </tr>
                     </thead>
@@ -76,8 +76,6 @@
                                 $proggres = "Transaction Success";
                             }
                             ?>
-
-
                             <tr>
                                 <td><?= $no++; ?></td>
                                 <td><?= $packageName; ?></td>
@@ -86,18 +84,18 @@
                                     <?= $requestDate; ?>
                                 </td>
                                 <td>
-                                    <span class="badge bg-<?php if ($reservationIdStatus == 1) {
-                                                                echo "warning";
-                                                            } else if ($reservationIdStatus == 2) {
-                                                                echo "primary";
-                                                            } else if ($reservationIdStatus == 3) {
-                                                                echo "danger";
-                                                            } else if ($reservationIdStatus == 4) {
-                                                                echo "success";
-                                                            }; ?>"> <?= $reservationStatus; ?></span>
+                                    <span class="<?php if ($reservationIdStatus == "1") {
+                                                        echo "badge bg-warning";
+                                                    } elseif ($reservationIdStatus == "2") {
+                                                        echo "badge bg-primary";
+                                                    } else if ($reservationIdStatus == "4") {
+                                                        echo "badge bg-success";
+                                                    } else {
+                                                        echo "badge bg-danger";
+                                                    } ?>"> <?= $reservationStatus; ?></span>
                                 </td>
-                                <td class="text-start">
-                                    <?= $proggres ?>
+                                <td>
+                                    <?= $proggres; ?>
                                 </td>
                                 <td class="text-center">
                                     <a class="btn btn-outline-success btn-sm " title="confirm" data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="showInfoReservation('<?= $userId ?>','<?= $packageId ?>','<?= $request_date ?>')">
@@ -140,7 +138,7 @@
         reservationStatus = result['id_reservation_status']
         if (reservationStatus == '1') {
             reservationInfo =
-                `<a class ="btn btn-success" onclick="changeReservationStatus('${id_user}','${id_package}','${request_date}',2)"> Confirm booking </a>`
+                `<a class ="btn btn-success" onclick="changeReservationStatus('${id}',2)"> Confirm reservation </a>`
 
         } else {
             reservationInfo = ''
@@ -316,11 +314,10 @@
         }
     }
 
-    function changeReservationStatus(id_user, id_package, request_date, status, paymentDate = null) {
+    function changeReservationStatus(id, status, paymentDate = null) {
 
         let requestData = {
             id_reservation_status: status, //status
-            payment_date: paymentDate
         }
         console.log(requestData)
         $.ajax({

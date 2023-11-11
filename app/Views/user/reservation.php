@@ -87,9 +87,7 @@
 
                             <?php foreach ($data as $item) : ?>
                                 <?php
-                                $userId = $item['id_user'];
-                                $packageId = $item['id_package'];
-                                $request_date = $item['request_date'];
+                                $reservationId = $item['id'];
                                 $packageName = $item['package_name'];
                                 $requestDate = $item['request_date'];
                                 $numberPeople = $item['number_people'];
@@ -98,6 +96,20 @@
                                 $rating = $item['rating'];
                                 $review = $item['review'];
                                 $dateNow = date("Y-m-d");
+                                $depositDate = $item['deposit_date'];
+
+                                $proggres = "";
+                                if ($reservationIdStatus == 1) {
+                                    $proggres = "Please wait admin to confirm your reservation";
+                                } else if ($reservationIdStatus == 2 && $depositDate == null) {
+                                    $proggres = "Please upload your payment document";
+                                } else if ($reservationIdStatus == 2 && $depositDate != null) {
+                                    $proggres = "Document Uploaded! Please Wait admin to check your payment";
+                                } else if ($reservationIdStatus == 3) {
+                                    $proggres = "Sorry, your reservation is not accepted";
+                                } else if ($reservationIdStatus == 4) {
+                                    $proggres = "Transaction success, Print your ticket by <a class='btn btn-outline-success btn-sm ' title='confirm' data-bs-toggle='modal' data-bs-target='#reservationModal' onclick='showInfoReservation(`$reservationId`)'> click here </a>";
+                                }
 
                                 ?>
                                 <tr>
@@ -249,14 +261,11 @@
         }
         // user payment
         if (result['id_reservation_status'] == '2') {
-            let proofDeposit = result['proof_of_deposit']
-            let deposit = result['deposit']
             $("#userDeposit").addClass("mb-2 shadow-sm p-4 rounded")
             $("#userDeposit").html(`
-                <p class="text-center fw-bold text-dark"> Upload Your Payment </p>
-                <p>Note <span class="text-danger">*</span> Before uploading proof of deposit, make sure the payment amount is the same as the invoice, please print the invoice to see the deposit amount</p>
+                <p>Note <span class="text-danger">*</span> Print your invoice here</p>
                 <div class="text-start mb-4">
-                    <a class="btn btn-primary" onclick="openInvoice('${id_user}','${id_package}','${request_date}')" > <i class="fa fa-print"> </i> print invoice</a>
+                    <a class="btn btn-primary" onclick="openInvoice('${id}')" > <i class="fa fa-print"> </i> print invoice</a>
                 </div>
                 <div class="form-group mb-4">
                    <label for="deposit" class="mb-2"> Deposit <span class="text-danger">*</span></label>
@@ -270,7 +279,7 @@
                     <input class="form-control" accept="image/*" type="file" name="gallery[]" id="gallery">
                 </div>
                 <div class="text-end">
-                    <a class="btn btn-success" onclick="saveDeposit('${id_user}','${id_package}','${request_date}')" > save</a>
+                    <a class="btn btn-success" onclick="saveDeposit('${id}')" > save</a>
                 </div>
            
             `)
@@ -328,6 +337,16 @@
 
         }
 
+        // user tiket
+        if (result['id_reservation_status'] == '4' && result['payment_date'] != null) {
+            $("#userTicket").addClass("background-effect mb-2 shadow-sm p-4 rounded border border-warning")
+            $("#userTicket").css('height', '250px');
+            $("#userTicket").html(`
+                <a class="btn" onclick="printTicket('${id}')">
+                    <h1 class=" gold text-center fw-bold text-dark"> Print Your Ticket Here </h1>
+                </a>
+            `)
+        }
         // user rating
         if (result['rating'] != null) {
             let rating = result['rating']
