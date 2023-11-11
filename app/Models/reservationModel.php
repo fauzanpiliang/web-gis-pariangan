@@ -11,7 +11,7 @@ class reservationModel extends Model
     protected $table            = 'reservation';
     protected $primaryKey       = 'id';
     protected $returnType       = 'array';
-    protected $allowedFields    = ['id', 'id_user', 'id_package', 'id_reservation_status', 'number_people', 'comment', 'rating', 'review', 'request_date'];
+    protected $allowedFields    = ['id_user', 'id_package', 'id_reservation_status', 'number_people', 'comment', 'rating', 'review', 'request_date'];
 
     // Dates
     protected $useTimestamps = true;
@@ -32,17 +32,19 @@ class reservationModel extends Model
     {
         $query = $this->db->table($this->table)
             ->select('*')
-            ->orderBy('id', 'DESC')
+            ->orderBy('created_at', 'DESC')
             ->get();
         return $query;
     }
 
-    public function get_r_by_id_api($id = null)
+    public function get_r_by_id_api($id_user = null, $id_package = null, $request_date = null)
     {
         $query = $this->db->table($this->table)
             ->select('*')
-            ->where('id', $id)
-            ->orderBy('id', 'DESC')
+            ->where('id_user', $id_user)
+            ->where('id_package', $id_package)
+            ->where('request_date', $request_date)
+            ->orderBy('created_at', 'DESC')
             ->get();
         return $query;
     }
@@ -50,7 +52,7 @@ class reservationModel extends Model
     public function getTotal()
     {
         $query =  $this->db->table($this->table)
-            ->selectCount("id")->get()
+            ->selectCount("created_at")->get()
             ->getRow();
         return $query;
     }
@@ -60,7 +62,7 @@ class reservationModel extends Model
         $query = $this->db->table($this->table)
             ->select('*')
             ->where('id_user', $id_user)
-            ->orderBy('id', 'DESC')
+            ->orderBy('created_at', 'DESC')
             ->get();
         return $query;
     }
@@ -94,7 +96,7 @@ class reservationModel extends Model
         return $insert;
     }
 
-    public function update_r_api($id = null, $data = null)
+    public function update_r_api($id_user = null, $id_package = null, $request_date = null, $data = null)
     {
         foreach ($data as $key => $value) {
             if (empty($value)) {
@@ -103,10 +105,22 @@ class reservationModel extends Model
         }
         $data['updated_at'] = Time::now();
         $query = $this->db->table($this->table)
-            ->where('id', $id)
+            ->where('id_user', $id_user)
+            ->where('id_package', $id_package)
+            ->where('request_date', $request_date)
             ->update($data);
         return $query;
     }
+    public function delete_r_api($id_user = null, $id_package = null, $request_date = null)
+    {
+        $query = $this->db->table($this->table)
+            ->where('id_user', $id_user)
+            ->where('id_package', $id_package)
+            ->where('request_date', $request_date)
+            ->delete();
+        return $query;
+    }
+
     public function getRating($id)
     {
         $query = $this->db->table($this->table)
@@ -145,12 +159,13 @@ class reservationModel extends Model
             ->get();
         return $query;
     }
-    public function checkIsDateDuplicate($user_id, $date)
+    public function checkIsDateDuplicate($user_id, $package_id, $date)
     {
         $query = $this->db->table($this->table)
             ->select('COUNT(request_date) as dateCount')
-            ->where('request_date', $date)
             ->where('id_user', $user_id)
+            ->where('id_package', $package_id)
+            ->where('request_date', $date)
             ->get()->getRowArray();
         if ($query['dateCount'] > 0) {
             return true;

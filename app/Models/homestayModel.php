@@ -19,7 +19,7 @@ class homestayModel extends Model
         $lastId = $this->db->table($this->table)->select('id')->orderBy('id', 'ASC')->get()->getLastRow('array');
         if ($lastId != null) {
             $count = (int)substr($lastId['id'], 0);
-            $id = sprintf('%02d', $count + 1);
+            $id = sprintf('%01d', $count + 1);
             return $id;
         } else {
             return '01';

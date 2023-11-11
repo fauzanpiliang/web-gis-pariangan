@@ -25,13 +25,13 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="<?= base_url('dashboard') ?>">Dashboard</a></li>
-            <li class="breadcrumb-item active" aria-current="page">List reservation</li>
+            <li class="breadcrumb-item active" aria-current="page">List booking</li>
         </ol>
     </nav>
     <!-- DataTbales  -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h5 class="m-0 font-weight-bold text-primary text-center">List reservation Package</h5>
+            <h5 class="m-0 font-weight-bold text-primary text-center">List Booking </h5>
             <a class="btn btn-success" onclick="showReservationModal()" data-bs-toggle="modal" data-bs-target="#reservationModal"> add <i class="fa fa-plus"></i> </a>
         </div>
         <div class="card-body">
@@ -45,14 +45,16 @@
                             <th>Username</th>
                             <th>Request date</th>
                             <th>Status</th>
-                            <th>Progress</th>
+                            <th class="text-start"> Progress </th>
                             <th class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($data as $reservation) : ?>
                             <?php
-                            $reservationId = $reservation['id'];
+                            $userId = $reservation['id_user'];
+                            $packageId = $reservation['id_package'];
+                            $request_date = $reservation['request_date'];
                             $packageName = $reservation['package_name'];
                             $username = $reservation['username'];
                             $requestDate = $reservation['request_date'];
@@ -74,6 +76,8 @@
                                 $proggres = "Transaction Success";
                             }
                             ?>
+
+
                             <tr>
                                 <td><?= $no++; ?></td>
                                 <td><?= $packageName; ?></td>
@@ -82,21 +86,21 @@
                                     <?= $requestDate; ?>
                                 </td>
                                 <td>
-                                    <span class="<?php if ($reservationIdStatus == "1") {
-                                                        echo "badge bg-warning";
-                                                    } elseif ($reservationIdStatus == "2") {
-                                                        echo "badge bg-primary";
-                                                    } else if ($reservationIdStatus == "4") {
-                                                        echo "badge bg-success";
-                                                    } else {
-                                                        echo "badge bg-danger";
-                                                    } ?>"> <?= $reservationStatus; ?></span>
+                                    <span class="badge bg-<?php if ($reservationIdStatus == 1) {
+                                                                echo "warning";
+                                                            } else if ($reservationIdStatus == 2) {
+                                                                echo "primary";
+                                                            } else if ($reservationIdStatus == 3) {
+                                                                echo "danger";
+                                                            } else if ($reservationIdStatus == 4) {
+                                                                echo "success";
+                                                            }; ?>"> <?= $reservationStatus; ?></span>
                                 </td>
-                                <td>
-                                    <?= $proggres; ?>
+                                <td class="text-start">
+                                    <?= $proggres ?>
                                 </td>
                                 <td class="text-center">
-                                    <a class="btn btn-outline-success btn-sm " title="confirm" data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="showInfoReservation('<?= $reservationId ?>')">
+                                    <a class="btn btn-outline-success btn-sm " title="confirm" data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="showInfoReservation('<?= $userId ?>','<?= $packageId ?>','<?= $request_date ?>')">
                                         <i class="fa fa-info"></i>
                                     </a>
                                 </td>
@@ -115,12 +119,12 @@
 <script>
     new DataTable("#dataTable")
 
-    function showInfoReservation(id) {
+    function showInfoReservation(id_user, id_package, request_date) {
         let statusData = JSON.parse('<?= json_encode($statusData) ?>')
         let result
         let reservationStatus, reservationInfo
         $.ajax({
-            url: `<?= base_url('reservation/show'); ?>/${id}`,
+            url: `<?= base_url('reservation/show'); ?>/${id_user}/${id_package}/${request_date}`,
             type: "GET",
             async: false,
             contentType: "application/json",
@@ -136,7 +140,7 @@
         reservationStatus = result['id_reservation_status']
         if (reservationStatus == '1') {
             reservationInfo =
-                `<a class ="btn btn-success" onclick="changeReservationStatus('${id}',2)"> Confirm reservation </a>`
+                `<a class ="btn btn-success" onclick="changeReservationStatus('${id_user}','${id_package}','${request_date}',2)"> Confirm booking </a>`
 
         } else {
             reservationInfo = ''
@@ -149,6 +153,9 @@
                
                 <div id="userRating">
     
+                </div>  
+                <div id="userTicket">
+                
                 </div>
                 <div  id="userPayment">
     
@@ -197,7 +204,7 @@
                 <div class="shadow-sm p-4 rounded">
                      <p class="text-center fw-bold text-dark"> Reservation Status </p>
                      <fieldset class="form-group mb-4">
-                        <label for="statusReservation" class="mb-2"> Status reservation </label>
+                        <label for="statusReservation" class="mb-2"> Status booking </label>
                         <select class="form-select" id="statusReservation" required>
                                 
                       </fieldset>
@@ -216,7 +223,7 @@
         }
         $("#statusReservation").on("change", function() {
             let statusReservation = $("#statusReservation").val()
-            changeReservationStatus(id, statusReservation)
+            changeReservationStatus(id_user, id_package, request_date, statusReservation)
 
         })
 
@@ -246,12 +253,11 @@
             } else {
                 $("#userPayment").append(`
                 <div class="text-end">
-                <a class="btn btn-success" onclick="changeReservationStatus('${id}',4,'payment')"> Accept payment</a>
+                <a class="btn btn-success" onclick="changeReservationStatus('${id_user}','${id_package}','${request_date}',4,'payment')"> Accept payment</a>
                 </div>
                 `)
             }
         }
-
 
         // user rating
         if (result['rating'] != null) {
@@ -310,7 +316,7 @@
         }
     }
 
-    function changeReservationStatus(id, status, paymentDate = null) {
+    function changeReservationStatus(id_user, id_package, request_date, status, paymentDate = null) {
 
         let requestData = {
             id_reservation_status: status, //status
@@ -318,14 +324,14 @@
         }
         console.log(requestData)
         $.ajax({
-            url: `<?= base_url('reservation/update'); ?>/${id}`,
+            url: `<?= base_url('reservation/update'); ?>/${id_user}/${id_package}/${request_date}`,
             type: "PUT",
             data: requestData,
             async: false,
             contentType: "application/json",
             success: function(response) {
                 Swal.fire(
-                    'Reservation updated',
+                    'Booking updated',
                     '',
                     'success'
                 ).then(() => {
@@ -379,7 +385,7 @@
                             <?php endforeach; ?>
                         <?php endif ?>
             <div class="form-group mb-2">
-                <label for="reservation_date" class="mb-2">Reservation date </label>
+                <label for="reservation_date" class="mb-2">Booking date </label>
                 <input type="date" id="reservation_date" class="form-control" required >
             </div>
             <div class="form-group mb-2">
@@ -391,7 +397,7 @@
                 <input type="text" id="comment" class="form-control"  >
             </div>
             <div class="form-group mb-2">
-                <label for="status" class="mb-2"> Status reservation </label>
+                <label for="status" class="mb-2"> Booking status </label>
                 <select class="form-select" id="status" required>
                             <?php if ($statusData) : ?>
                             <?php $no = 0; ?>       
@@ -406,7 +412,7 @@
                             <?php endif; ?>
             </div>
             `)
-            $('#modalFooter').html(`<a class="btn btn-success" onclick="makeReservation()"> Make reservation </a>`)
+            $('#modalFooter').html(`<a class="btn btn-success" onclick="makeReservation()"> Booking </a>`)
         <?php endif; ?>
     }
 
@@ -422,17 +428,17 @@
         let dateCheckResult = checkIsDateExpired(reservationDate)
         let sameDateCheckResult = "true"
         if (reservationDate) {
-            sameDateCheckResult = checkIsDateDuplicate(userId, reservationDate)
+            sameDateCheckResult = checkIsDateDuplicate(userId, packageId, reservationDate)
         }
 
         if (!reservationDate) {
-            Swal.fire('Please select reservation date', '', 'warning');
+            Swal.fire('Please select booking date', '', 'warning');
         } else if (numberPeople <= 0) {
             Swal.fire('Need 1 people at least', '', 'warning');
         } else if (numberCheckResult == false) {
             Swal.fire('Out of capacity, maksimal ' + `${capacityOfPackage}` + ' people', '', 'warning');
         } else if (dateCheckResult == false) {
-            Swal.fire('Cannot Reserve, out of date, maksimal H-1 reservation', '', 'warning');
+            Swal.fire('Cannot Reserve, out of date, maksimal H-1 booking', '', 'warning');
         } else if (sameDateCheckResult == "true") {
             Swal.fire('Already chose the same date! please select another date', '', 'warning');
         } else {
@@ -446,18 +452,18 @@
                     comment: comment
                 }
                 $.ajax({
-                    url: `<?= base_url('web/reservation/create'); ?>`,
+                    url: `<?= base_url('reservation/create'); ?>`,
                     type: "POST",
                     data: requestData,
                     async: false,
                     contentType: "application/json",
                     success: function(response) {
                         Swal.fire(
-                            'Success to make reservation request',
+                            'Success to booking',
                             '',
                             'success'
                         ).then(() => {
-                            window.location.replace('<?= base_url() ?>' + '/dashboard/reservation/')
+                            window.location.reload()
                         });
 
                     },
@@ -498,10 +504,10 @@
         return result
     }
 
-    function checkIsDateDuplicate(user_id, reservation_date) {
+    function checkIsDateDuplicate(user_id, id_package, reservation_date) {
         let result
         $.ajax({
-            url: `<?= base_url('web') ?>/check/${user_id}/${reservation_date}`,
+            url: `<?= base_url('reservation') ?>/check/${user_id}/${id_package}/${reservation_date}`,
             type: "GET",
             async: false,
             success: function(response) {

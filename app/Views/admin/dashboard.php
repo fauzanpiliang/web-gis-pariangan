@@ -87,7 +87,7 @@
                                     <div class="card-body">
                                         <h4 class="card-title">Reservation</h4>
                                         <p class="card-text">Manage reservation</p>
-                                        <p class="card-text"> Total reservation : <?= $reservationData->id; ?></p>
+                                        <p class="card-text"> Total reservation : <?= $reservationData->created_at; ?></p>
                                         <small class="text-muted">Click to go <i class="fa fa-arrow-right fa-xs"></i> </small>
                                     </div>
                                 </a>

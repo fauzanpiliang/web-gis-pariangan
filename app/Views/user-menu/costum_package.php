@@ -160,9 +160,7 @@
         let reservationDate = $('#reservation_date').val()
         let numberPeople = $('#number_people').val()
         let sameDateCheckResult = "true"
-        if (reservationDate) {
-            sameDateCheckResult = checkIsDateDuplicate('<?= user()->id ?>', reservationDate)
-        }
+
 
         let checkDetailPackage = $('#checkDetailPackage').val()
         let today = new Date();
@@ -174,9 +172,6 @@
         if (reservationDate <= today) {
             event.preventDefault();
             Swal.fire('Cannot create costume package, out of date, Maximum H-1 reservation', '', 'warning');
-        } else if (sameDateCheckResult == "true") {
-            event.preventDefault();
-            Swal.fire('Already chose the same date! please select another date', '', 'warning');
         } else if (numberPeople <= 0) {
             event.preventDefault();
             Swal.fire('Need 1 people at least', '', 'warning');
@@ -186,21 +181,6 @@
         }
     }
 
-    function checkIsDateDuplicate(user_id, reservation_date) {
-        let result
-        $.ajax({
-            url: `<?= base_url('reservation') ?>/check/${user_id}/${reservation_date}`,
-            type: "GET",
-            async: false,
-            success: function(response) {
-                result = response
-            },
-            error: function(err) {
-                console.log(err.responseText)
-            }
-        })
-        return result
-    }
 
     function removeObject(noDay, noDetail, objectPrice) {
         $(`#${noDay}-${noDetail}`).remove()
@@ -278,7 +258,7 @@
                                         <?php $no = 0; ?>       
                                         <?php foreach ($objectData as $object) : ?>
                                             
-                                    <option value="<?= esc(json_encode($object)); ?>"> <?= $object->id ?> - <?= esc($object->name); ?></option>
+                                    <option value="<?= esc(json_encode($object)) ?>"> <?= $object->id ?> - <?= esc($object->name); ?></option>
                                         
                                             <?php $no++; ?>       
                                         <?php endforeach; ?>
@@ -289,10 +269,7 @@
         </div>
         <input id="detail-package-id-object" type="hidden" required>
         <input id="detail-package-price-object" type="hidden" type="number" value="0"  required>
-        <div class="form-group mb-4">
-                    <label for="detail-package-activity-type" class="mb-2">Activity type</label>
-                    <input type="text" id="detail-package-activity-type" class="form-control" name="detail-package-activity-type" placeholder="activity type" required>
-        </div> 
+       
         <div class="form-group mb-4">
                     <label for="detail-package-description" class="mb-2">Description</label>
                     <input type="text" id="detail-package-description" class="form-control" name="detail-package-description" placeholder="Detail package description" required>
@@ -311,10 +288,12 @@
     }
 
     function addObjectValue(object) {
+
+        console.log(object)
         let objectData = JSON.parse(object)
         let objectId = objectData.id
-        let objectPrice = objectData.price == null ? 0 : parseInt(objectData.price)
         $("#detail-package-id-object").val(objectId)
+        let objectPrice = objectData.price == null ? 0 : parseInt(objectData.price)
         $("#detail-package-price-object").val(objectPrice)
     }
 
@@ -328,23 +307,32 @@
         $("#totalPrice").val(totalPrice)
 
         let object_id = $("#detail-package-id-object").val()
-        let activity_type = $("#detail-package-activity-type").val()
+        let activity_type = ''
         let description = $("#detail-package-description").val()
-        if (!object_id) {
-            alert('please select object')
-        } else {
-            $(`#body-detail-package-${noDay}`).append(`
+        if (object_id.substring(0, 1) == 'A') {
+            activity_type = 'Atraksi'
+        } else if (object_id.substring(0, 1) == 'C') {
+            activity_type = 'Culinary Place'
+        } else if (object_id.substring(0, 1) == 'S') {
+            activity_type = 'Souvenir Place'
+        } else if (object_id.substring(0, 1) == 'W') {
+            activity_type = 'Worship Place'
+        } else if (object_id.substring(0, 1) == 'H') {
+            activity_type = 'Homestay'
+        }
+
+        $(`#body-detail-package-${noDay}`).append(`
             <tr id="${noDay}-${noDetail}"> 
               <td><input class="form-control" value="${object_id}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][id_object]" required readonly></td>
-              <td><input class="form-control" value="${activity_type}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_type]"></td>
+              <td><input class="form-control" value="${activity_type}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_type]" readonly></td>
               <td><input class="form-control" value="${description}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][description]" required></td>
               <td><a class="btn btn-danger" onclick="removeObject('${noDay}','${ noDetail }','${object_price}')"> <i class="fa fa-x"></i> </a></td>
             </tr>     
             `)
-            $(`#lastNoDetail${noDay}`).val(noDetail + 1)
-            $('#checkDetailPackage').val('oke')
+        $(`#lastNoDetail${noDay}`).val(noDetail + 1)
+        $('#checkDetailPackage').val('oke')
 
-        }
+
     }
 </script>
 

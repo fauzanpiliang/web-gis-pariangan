@@ -44,7 +44,7 @@ class PdfGenerator extends BaseController
             'imageSrc'    => $this->imageToBase64(ROOTPATH . '\public\assets\images\pariangan.jpg'),
             'packageData' => $invoiceData
         ];
-        // dd($data);
+
         $html = view('user-menu/ticket', $data);
         $dompdf->loadHtml($html);
         $dompdf->render();
@@ -53,65 +53,79 @@ class PdfGenerator extends BaseController
     public function getInvoiceData()
     {
         if ($this->request->isAJAX()) {
-            $request = $this->request->getPost('id_reservation');
-            $packages = array();
-            foreach ($request as $id_reservation) {
-                $reservation  = $this->reservationModel->get_r_by_id_api($id_reservation)->getRowArray();
-                $id = $reservation['id_package'];
-                // each package
-                $package = $this->modelPackage->getPackage($id)->getRowArray();
+            $id_user = $this->request->getPost('id_user');
+            $id_package = $this->request->getPost('id_package');
+            $request_date = $this->request->getPost('request_date');
 
-                // service
-                $list_service = $this->detailServicePackageModel->get_service_by_package_api($id)->getResultArray();
-                $services = array();
-                foreach ($list_service as $service) {
-                    $services[] = $service['name'];
-                }
+            $reservation  = $this->reservationModel->get_r_by_id_api($id_user, $id_package, $request_date)->getRowArray();
 
-                $package_day = $this->packageDayModel->get_pd_by_package_id_api($id)->getResultArray();
+            // package
+            $package = $this->modelPackage->getPackage($id_package)->getRowArray();
 
-                for ($i = 0; $i < count($package_day); $i++) {
-                    $package_day[$i]['package_day_detail'] = $this->detailPackageModel->get_detail_package_by_dp_api($package_day[$i]['day'])->getResultArray();
-                }
-
-                $package['reservation'] = $reservation;
-                $package['services'] = $services;
-                $package['package_day'] = $package_day;
-                array_push($packages, $package);
+            // service include
+            $list_service = $this->detailServicePackageModel->get_service_by_package_api($id_package)->getResultArray();
+            $services = array();
+            foreach ($list_service as $service) {
+                $services[] = $service['name'];
             }
-            return json_encode($packages);
+            // service exclude
+            $list_service_exclude = $this->detailServicePackageModel->get_service_by_package_api_exclude($id_package)->getResultArray();
+            $servicesExclude = array();
+            foreach ($list_service_exclude as $serviceEx) {
+                $servicesExclude[] = $serviceEx['name'];
+            }
+
+            $package_day = $this->packageDayModel->get_pd_by_package_id_api($id_package)->getResultArray();
+
+            for ($i = 0; $i < count($package_day); $i++) {
+                $package_day[$i]['package_day_detail'] = $this->detailPackageModel->get_detail_package_by_dp_api($package_day[$i]['day'])->getResultArray();
+            }
+
+            $package['reservation'] = $reservation;
+            $package['services'] = $services;
+            $package['services_exclude'] = $servicesExclude;
+            $package['package_day'] = $package_day;
+
+            return json_encode($package);
         }
     }
     public function getTicketData()
     {
         if ($this->request->isAJAX()) {
-            $request = $this->request->getPost('id_reservation');
-            $packages = array();
-            foreach ($request as $id_reservation) {
-                $reservation  = $this->reservationModel->get_r_by_id_api($id_reservation)->getRowArray();
-                $id = $reservation['id_package'];
-                // each package
-                $package = $this->modelPackage->getPackage($id)->getRowArray();
+            $id_user = $this->request->getPost('id_user');
+            $id_package = $this->request->getPost('id_package');
+            $request_date = $this->request->getPost('request_date');
 
-                // service
-                $list_service = $this->detailServicePackageModel->get_service_by_package_api($id)->getResultArray();
-                $services = array();
-                foreach ($list_service as $service) {
-                    $services[] = $service['name'];
-                }
+            $reservation  = $this->reservationModel->get_r_by_id_api($id_user, $id_package, $request_date)->getRowArray();
 
-                $package_day = $this->packageDayModel->get_pd_by_package_id_api($id)->getResultArray();
+            // package
+            $package = $this->modelPackage->getPackage($id_package)->getRowArray();
 
-                for ($i = 0; $i < count($package_day); $i++) {
-                    $package_day[$i]['package_day_detail'] = $this->detailPackageModel->get_detail_package_by_dp_api($package_day[$i]['day'])->getResultArray();
-                }
-
-                $package['reservation'] = $reservation;
-                $package['services'] = $services;
-                $package['package_day'] = $package_day;
-                array_push($packages, $package);
+            // service include
+            $list_service = $this->detailServicePackageModel->get_service_by_package_api($id_package)->getResultArray();
+            $services = array();
+            foreach ($list_service as $service) {
+                $services[] = $service['name'];
             }
-            return json_encode($packages);
+            // service exclude
+            $list_service_exclude = $this->detailServicePackageModel->get_service_by_package_api_exclude($id_package)->getResultArray();
+            $servicesExclude = array();
+            foreach ($list_service_exclude as $serviceEx) {
+                $servicesExclude[] = $serviceEx['name'];
+            }
+
+            $package_day = $this->packageDayModel->get_pd_by_package_id_api($id_package)->getResultArray();
+
+            for ($i = 0; $i < count($package_day); $i++) {
+                $package_day[$i]['package_day_detail'] = $this->detailPackageModel->get_detail_package_by_dp_api($package_day[$i]['day'])->getResultArray();
+            }
+
+            $package['reservation'] = $reservation;
+            $package['services'] = $services;
+            $package['services_exclude'] = $servicesExclude;
+            $package['package_day'] = $package_day;
+
+            return json_encode($package);
         }
     }
     private function imageToBase64($path)

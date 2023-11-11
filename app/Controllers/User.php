@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use Myth\Auth\Password;
 use CodeIgniter\Files\File;
-
+use CodeIgniter\I18n\Time;
 
 class User extends BaseController
 {
@@ -38,8 +38,17 @@ class User extends BaseController
         $no = 0;
         // reservation status dan paket
         foreach ($users_reservation as $item) {
-            $reservation_status_id = $item['id_reservation_status'];
             $package_id = $item['id_package'];
+            $request_date = $item['request_date'];
+            //check if date is passed
+            $dateNow = date('Y-m-d');
+            if ($request_date  < $dateNow) {
+                // update status
+                $users_reservation[$no]['id_reservation_status'] = 4;
+                $this->reservationModel->update_r_api($id, $package_id, $request_date, ['id_reservation_status' => 4]);
+            }
+            $reservation_status_id = $users_reservation[$no]['id_reservation_status'];
+
             $reservationStatus = $this->reservationStatusModel->get_s_by_id_api($reservation_status_id)->getRowArray();
             $package = $this->packageModel->getPackage($package_id)->getRowArray();
             $users_reservation[$no]['status'] = $reservationStatus['status'];
@@ -112,17 +121,17 @@ class User extends BaseController
         if ($validateInput) {
             // -----------------------------Avatar -----------------------------------------
 
-            if ($request['avatar'] != 'default.png' && $request['avatar']) {
-                $folder = $request['avatar'];
-                $filepath = WRITEPATH . 'uploads/' . $folder;
-                $filenames = get_filenames($filepath);
-                $avatar = new File($filepath . '/' . $filenames[0]);
-                $avatar->move(FCPATH . 'assets/images/user-photos');
-                $requestData['user_image'] = $avatar->getFilename();
-                delete_files($filepath);
-                rmdir($filepath);
-            } else {
-                $requestData['user_image'] = 'default.png';
+            if (isset($request['avatar'])) {
+                if ($request['avatar'] != 'default.svg') {
+                    $folder = $request['avatar'];
+                    $filepath = WRITEPATH . 'uploads/' . $folder;
+                    $filenames = get_filenames($filepath);
+                    $avatar = new File($filepath . '/' . $filenames[0]);
+                    $avatar->move(FCPATH . 'assets/images/user-photos');
+                    $requestData['user_image'] = $avatar->getFilename();
+                    delete_files($filepath);
+                    rmdir($filepath);
+                }
             }
 
 

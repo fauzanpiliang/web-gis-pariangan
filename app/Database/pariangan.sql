@@ -228,7 +228,7 @@ CREATE TABLE `auth_logins` (
   PRIMARY KEY (`id`),
   KEY `email` (`email`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -237,7 +237,7 @@ CREATE TABLE `auth_logins` (
 
 LOCK TABLES `auth_logins` WRITE;
 /*!40000 ALTER TABLE `auth_logins` DISABLE KEYS */;
-INSERT INTO `auth_logins` VALUES (1,'::1','fauzanpiliang13@gmail.com',1,'2023-07-26 07:33:01',1),(2,'::1','fauzanpiliang13@gmail.com',1,'2023-07-27 09:28:51',1),(3,'::1','fauzanpiliang13@gmail.com',1,'2023-07-27 17:19:54',1),(4,'::1','  piliang13',NULL,'2023-08-04 22:16:11',0),(5,'::1','Piliang13',NULL,'2023-08-04 22:16:49',0),(6,'::1','fauzanpiliang13@gmail.com',1,'2023-08-04 22:17:42',1),(7,'::1','fauzanpiliang13@gmail.com',1,'2023-08-07 07:09:13',1),(8,'::1','fauzanpiliang13@gmail.com',1,'2023-08-07 12:34:51',1),(9,'::1','fauzanpiliang13@gmail.com',1,'2023-08-14 23:23:42',1),(10,'::1','fauzanpiliang13@gmail.com',1,'2023-08-15 07:15:36',1),(11,'::1','fauzanpiliang13@gmail.com',1,'2023-08-16 18:05:45',1),(12,'::1','admin',NULL,'2023-10-21 03:21:36',0),(13,'::1','m.agungmahardika12@gmail.com',2,'2023-10-21 03:22:11',1),(14,'::1','m.agungmahardika12@gmail.com',2,'2023-10-21 03:49:15',1),(15,'::1','m.agungmahardika12@gmail.com',2,'2023-10-21 03:50:14',1),(16,'::1','m.agungmahardika12@gmail.com',2,'2023-10-21 09:18:18',1),(17,'::1','m.agungmahardika12@gmail.com',2,'2023-10-22 05:50:36',1),(18,'::1','m.agungmahardika12@gmail.com',2,'2023-10-23 00:11:01',1),(19,'::1','m.agungmahardika12@gmail.com',2,'2023-10-23 04:28:36',1),(20,'::1','user@gmail.com',3,'2023-10-23 04:29:28',1),(21,'::1','admin',NULL,'2023-10-24 07:55:31',0),(22,'::1','admin',NULL,'2023-10-24 07:55:38',0),(23,'::1','m.agungmahardika12@gmail.com',NULL,'2023-10-24 07:55:55',0),(24,'::1','m.agungmahardika12@gmail.com',2,'2023-10-24 07:56:04',1),(25,'::1','user@gmail.com',NULL,'2023-10-24 07:58:15',0),(26,'::1','user@gmail.com',NULL,'2023-10-24 08:01:51',0),(27,'::1','user@gmail.com',NULL,'2023-10-24 08:09:56',0),(28,'::1','user@gmail.com',NULL,'2023-10-24 08:10:05',0),(29,'::1','user@gmail.com',NULL,'2023-10-24 08:10:18',0),(30,'::1','user@gmail.com',NULL,'2023-10-24 08:10:28',0),(31,'::1','user@gmail.com',NULL,'2023-10-24 08:11:56',0),(32,'::1','user@gmail.com',3,'2023-10-24 08:12:05',1),(33,'::1','m.agungmahardika12@gmail.com',NULL,'2023-10-24 11:34:43',0),(34,'::1','m.agungmahardika12@gmail.com',2,'2023-10-24 11:34:55',1),(35,'::1','m.agungmahardika12@gmail.com',2,'2023-10-24 16:51:57',1),(36,'::1','user@gmail.com',3,'2023-10-24 16:52:28',1),(37,'::1','user@gmail.com',3,'2023-10-25 03:03:20',1),(38,'::1','m.agungmahardika12@gmail.com',2,'2023-10-25 03:10:47',1),(39,'::1','m.agungmahardika12@gmail.com',2,'2023-10-25 10:14:39',1),(40,'::1','user@gmail.com',3,'2023-10-25 10:15:22',1),(41,'::1','m.agungmahardika12@gmail.com',2,'2023-10-25 10:37:26',1),(42,'::1','m.agungmahardika12@gmail.com',2,'2023-10-26 00:40:44',1),(43,'::1','m.agungmahardika12@gmail.com',2,'2023-10-26 01:08:30',1),(44,'::1','m.agungmahardika12@gmail.com',2,'2023-10-26 06:33:39',1),(45,'::1','user@gmail.com',3,'2023-10-26 06:46:15',1),(46,'::1','m.agungmahardika@gmail.com',NULL,'2023-10-26 06:49:28',0),(47,'::1','m.agungmahardika12@gmail.com',2,'2023-10-26 06:49:42',1),(48,'::1','user@gmail.com',3,'2023-10-27 00:31:04',1),(49,'::1','user@gmail.com',3,'2023-10-27 06:40:18',1),(50,'::1','user@gmail.com',NULL,'2023-10-27 10:44:32',0),(51,'::1','user@gmail.com',3,'2023-10-27 10:44:40',1),(52,'::1','user@gmail.com',3,'2023-10-27 13:38:25',1),(53,'::1','user@gmail.com',3,'2023-10-28 01:41:43',1),(54,'::1','m.agungmahardika12@gmail.com',2,'2023-10-28 02:25:05',1),(55,'::1','m.agungmahardika12@gmail.com',2,'2023-10-28 08:40:24',1),(56,'::1','user@gmail.com',3,'2023-10-29 06:34:41',1),(57,'::1','user@gmail.com',3,'2023-11-01 10:15:43',1),(58,'::1','admin@gmail.com',2,'2023-11-01 10:58:58',1),(59,'::1','user@gmail.com',NULL,'2023-11-02 02:07:54',0),(60,'::1','user@gmail.com',3,'2023-11-02 02:08:04',1),(61,'::1','admin@gmail.com',2,'2023-11-02 03:33:50',1),(62,'::1','user@gmail.com',3,'2023-11-02 10:11:38',1),(63,'::1','admin@gmail.com',2,'2023-11-02 10:39:11',1),(64,'::1','user@gmail.com',3,'2023-11-02 13:43:02',1),(65,'::1','admin@gmail.com',2,'2023-11-02 13:54:27',1),(66,'::1','user@gmail.com',3,'2023-11-03 04:05:20',1),(67,'::1','admin@gmail.com',2,'2023-11-03 04:55:26',1);
+INSERT INTO `auth_logins` VALUES (1,'::1','fauzanpiliang13@gmail.com',1,'2023-07-26 07:33:01',1),(2,'::1','fauzanpiliang13@gmail.com',1,'2023-07-27 09:28:51',1),(3,'::1','fauzanpiliang13@gmail.com',1,'2023-07-27 17:19:54',1),(4,'::1','  piliang13',NULL,'2023-08-04 22:16:11',0),(5,'::1','Piliang13',NULL,'2023-08-04 22:16:49',0),(6,'::1','fauzanpiliang13@gmail.com',1,'2023-08-04 22:17:42',1),(7,'::1','fauzanpiliang13@gmail.com',1,'2023-08-07 07:09:13',1),(8,'::1','fauzanpiliang13@gmail.com',1,'2023-08-07 12:34:51',1),(9,'::1','fauzanpiliang13@gmail.com',1,'2023-08-14 23:23:42',1),(10,'::1','fauzanpiliang13@gmail.com',1,'2023-08-15 07:15:36',1),(11,'::1','fauzanpiliang13@gmail.com',1,'2023-08-16 18:05:45',1),(12,'::1','admin',NULL,'2023-10-21 03:21:36',0),(13,'::1','m.agungmahardika12@gmail.com',2,'2023-10-21 03:22:11',1),(14,'::1','m.agungmahardika12@gmail.com',2,'2023-10-21 03:49:15',1),(15,'::1','m.agungmahardika12@gmail.com',2,'2023-10-21 03:50:14',1),(16,'::1','m.agungmahardika12@gmail.com',2,'2023-10-21 09:18:18',1),(17,'::1','m.agungmahardika12@gmail.com',2,'2023-10-22 05:50:36',1),(18,'::1','m.agungmahardika12@gmail.com',2,'2023-10-23 00:11:01',1),(19,'::1','m.agungmahardika12@gmail.com',2,'2023-10-23 04:28:36',1),(20,'::1','user@gmail.com',3,'2023-10-23 04:29:28',1),(21,'::1','admin',NULL,'2023-10-24 07:55:31',0),(22,'::1','admin',NULL,'2023-10-24 07:55:38',0),(23,'::1','m.agungmahardika12@gmail.com',NULL,'2023-10-24 07:55:55',0),(24,'::1','m.agungmahardika12@gmail.com',2,'2023-10-24 07:56:04',1),(25,'::1','user@gmail.com',NULL,'2023-10-24 07:58:15',0),(26,'::1','user@gmail.com',NULL,'2023-10-24 08:01:51',0),(27,'::1','user@gmail.com',NULL,'2023-10-24 08:09:56',0),(28,'::1','user@gmail.com',NULL,'2023-10-24 08:10:05',0),(29,'::1','user@gmail.com',NULL,'2023-10-24 08:10:18',0),(30,'::1','user@gmail.com',NULL,'2023-10-24 08:10:28',0),(31,'::1','user@gmail.com',NULL,'2023-10-24 08:11:56',0),(32,'::1','user@gmail.com',3,'2023-10-24 08:12:05',1),(33,'::1','m.agungmahardika12@gmail.com',NULL,'2023-10-24 11:34:43',0),(34,'::1','m.agungmahardika12@gmail.com',2,'2023-10-24 11:34:55',1),(35,'::1','m.agungmahardika12@gmail.com',2,'2023-10-24 16:51:57',1),(36,'::1','user@gmail.com',3,'2023-10-24 16:52:28',1),(37,'::1','user@gmail.com',3,'2023-10-25 03:03:20',1),(38,'::1','m.agungmahardika12@gmail.com',2,'2023-10-25 03:10:47',1),(39,'::1','m.agungmahardika12@gmail.com',2,'2023-10-25 10:14:39',1),(40,'::1','user@gmail.com',3,'2023-10-25 10:15:22',1),(41,'::1','m.agungmahardika12@gmail.com',2,'2023-10-25 10:37:26',1),(42,'::1','m.agungmahardika12@gmail.com',2,'2023-10-26 00:40:44',1),(43,'::1','m.agungmahardika12@gmail.com',2,'2023-10-26 01:08:30',1),(44,'::1','m.agungmahardika12@gmail.com',2,'2023-10-26 06:33:39',1),(45,'::1','user@gmail.com',3,'2023-10-26 06:46:15',1),(46,'::1','m.agungmahardika@gmail.com',NULL,'2023-10-26 06:49:28',0),(47,'::1','m.agungmahardika12@gmail.com',2,'2023-10-26 06:49:42',1),(48,'::1','user@gmail.com',3,'2023-10-27 00:31:04',1),(49,'::1','user@gmail.com',3,'2023-10-27 06:40:18',1),(50,'::1','user@gmail.com',NULL,'2023-10-27 10:44:32',0),(51,'::1','user@gmail.com',3,'2023-10-27 10:44:40',1),(52,'::1','user@gmail.com',3,'2023-10-27 13:38:25',1),(53,'::1','user@gmail.com',3,'2023-10-28 01:41:43',1),(54,'::1','m.agungmahardika12@gmail.com',2,'2023-10-28 02:25:05',1),(55,'::1','m.agungmahardika12@gmail.com',2,'2023-10-28 08:40:24',1),(56,'::1','user@gmail.com',3,'2023-10-29 06:34:41',1),(57,'::1','user@gmail.com',3,'2023-11-01 10:15:43',1),(58,'::1','admin@gmail.com',2,'2023-11-01 10:58:58',1),(59,'::1','user@gmail.com',NULL,'2023-11-02 02:07:54',0),(60,'::1','user@gmail.com',3,'2023-11-02 02:08:04',1),(61,'::1','admin@gmail.com',2,'2023-11-02 03:33:50',1),(62,'::1','user@gmail.com',3,'2023-11-02 10:11:38',1),(63,'::1','admin@gmail.com',2,'2023-11-02 10:39:11',1),(64,'::1','user@gmail.com',3,'2023-11-02 13:43:02',1),(65,'::1','admin@gmail.com',2,'2023-11-02 13:54:27',1),(66,'::1','user@gmail.com',3,'2023-11-03 04:05:20',1),(67,'::1','admin@gmail.com',2,'2023-11-03 04:55:26',1),(68,'::1','admin@gmail.com',NULL,'2023-11-04 02:48:00',0),(69,'::1','admin@gmail.com',2,'2023-11-04 02:48:12',1),(70,'::1','user@gmail.com',NULL,'2023-11-04 05:01:21',0),(71,'::1','user@gmail.com',3,'2023-11-04 05:01:28',1);
 /*!40000 ALTER TABLE `auth_logins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -369,6 +369,55 @@ LOCK TABLES `category_atraction` WRITE;
 /*!40000 ALTER TABLE `category_atraction` DISABLE KEYS */;
 INSERT INTO `category_atraction` VALUES ('1','uniq'),('2','ordinary');
 /*!40000 ALTER TABLE `category_atraction` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `city`
+--
+
+DROP TABLE IF EXISTS `city`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `city` (
+  `id` varchar(8) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `geom` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `city`
+--
+
+LOCK TABLES `city` WRITE;
+/*!40000 ALTER TABLE `city` DISABLE KEYS */;
+/*!40000 ALTER TABLE `city` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `country`
+--
+
+DROP TABLE IF EXISTS `country`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `country` (
+  `id` varchar(8) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `geom` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `country`
+--
+
+LOCK TABLES `country` WRITE;
+/*!40000 ALTER TABLE `country` DISABLE KEYS */;
+INSERT INTO `country` VALUES ('1','Indonesia',NULL);
+/*!40000 ALTER TABLE `country` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -513,7 +562,7 @@ CREATE TABLE `detail_package` (
 
 LOCK TABLES `detail_package` WRITE;
 /*!40000 ALTER TABLE `detail_package` DISABLE KEYS */;
-INSERT INTO `detail_package` VALUES ('01','6','10','','A01','Kuburan Panjang'),('01','6','11','','A02','Batu AGam'),('01','6','12','','H01','Menginap'),('01','7','13','','C01','Sarapan pagi'),('01','7','14','','A06','Tabuah larangan'),('01','7','15','','A11','Sholat ashar berjamaah'),('01','7','16','','C08','Minum kawah daun malam malam'),('03','8','17','','A01','asdsa'),('03','8','18','','C02','Makan Siang'),('03','9','19','','A01','okee'),('03','9','20','','C03','Makan Siang'),('04','10','21','','A01','Kuburan Panjang');
+INSERT INTO `detail_package` VALUES ('01','17','38','','A01','asdsa'),('01','17','39','','A07','jkhj'),('01','17','40','','C02','kjkj'),('01','18','41','','A02','asdsa'),('03','15','33','','A01','asdsa'),('03','15','34','','C02','Makan Siang'),('03','16','35','','A01','okee'),('03','16','36','','C03','Makan Siang'),('03','16','37','','A02','sadsd'),('04','10','21','','A01','Kuburan Panjang');
 /*!40000 ALTER TABLE `detail_package` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -849,7 +898,7 @@ CREATE TABLE `migrations` (
   `time` int NOT NULL,
   `batch` int unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -858,7 +907,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2017-11-20-223112','Myth\\Auth\\Database\\Migrations\\CreateAuthTables','default','Myth\\Auth',1690214058,1),(2,'2022-07-13-025921','App\\Database\\Migrations\\Pariangan','default','App',1690214058,1),(3,'2022-07-13-025948','App\\Database\\Migrations\\Event','default','App',1690214058,1),(4,'2022-07-13-030025','App\\Database\\Migrations\\CulinaryPlace','default','App',1690214058,1),(5,'2022-07-13-030048','App\\Database\\Migrations\\SouvenirPlace','default','App',1690214058,1),(6,'2022-07-13-030112','App\\Database\\Migrations\\WorshipPlace','default','App',1690214058,1),(7,'2022-07-13-030132','App\\Database\\Migrations\\Facility','default','App',1690214058,1),(8,'2022-07-13-030159','App\\Database\\Migrations\\Atraction','default','App',1690214058,1),(9,'2022-07-13-032655','App\\Database\\Migrations\\ParianganGallery','default','App',1690214058,1),(10,'2022-07-13-032926','App\\Database\\Migrations\\ParianganVideo','default','App',1690214058,1),(11,'2022-07-13-033252','App\\Database\\Migrations\\AtractionGallery','default','App',1690214058,1),(12,'2022-07-13-033459','App\\Database\\Migrations\\AtractionVideo','default','App',1690214058,1),(13,'2022-07-13-033634','App\\Database\\Migrations\\EventGallery','default','App',1690214058,1),(14,'2022-07-13-033742','App\\Database\\Migrations\\EventVideo','default','App',1690214058,1),(15,'2022-07-13-033829','App\\Database\\Migrations\\FacilityGallery','default','App',1690214058,1),(16,'2022-07-13-033839','App\\Database\\Migrations\\FacilityVideo','default','App',1690214058,1),(17,'2022-07-13-033936','App\\Database\\Migrations\\WorshipPlaceGallery','default','App',1690214058,1),(18,'2022-07-13-033956','App\\Database\\Migrations\\WorshipPlaceVideo','default','App',1690214058,1),(19,'2022-07-13-034414','App\\Database\\Migrations\\CulinaryPlaceGallery','default','App',1690214058,1),(20,'2022-07-13-034423','App\\Database\\Migrations\\CulinaryPlaceVideo','default','App',1690214058,1),(21,'2022-07-13-034537','App\\Database\\Migrations\\SouvenirPlaceGallery','default','App',1690214058,1),(22,'2022-07-13-034547','App\\Database\\Migrations\\SouvenirPlaceVideo','default','App',1690214058,1),(23,'2022-07-13-034817','App\\Database\\Migrations\\Product','default','App',1690214058,1),(24,'2022-07-13-035312','App\\Database\\Migrations\\DetailProduct','default','App',1690214058,1),(25,'2022-07-13-035640','App\\Database\\Migrations\\Menu','default','App',1690214058,1),(26,'2022-07-13-035731','App\\Database\\Migrations\\DetailMenu','default','App',1690214058,1),(27,'2022-07-18-040720','App\\Database\\Migrations\\ReviewAtraction','default','App',1690214058,1),(28,'2022-08-14-022634','App\\Database\\Migrations\\Comment','default','App',1690214058,1),(29,'2023-10-23-041428','App\\Database\\Migrations\\Reservation','default','App',1698034506,2),(30,'2023-10-23-041559','App\\Database\\Migrations\\ReservationStatus','default','App',1698034570,3),(31,'2023-10-24-130707','App\\Database\\Migrations\\Reservation','default','App',1698152838,4),(32,'2023-10-24-130939','App\\Database\\Migrations\\Reservation','default','App',1698152984,5),(33,'2023-10-26-001131','App\\Database\\Migrations\\Homestay','default','App',1698279621,6),(34,'2023-10-26-001152','App\\Database\\Migrations\\HomestayGallery','default','App',1698279621,6),(35,'2023-10-26-004717','App\\Database\\Migrations\\HomestayGallery','default','App',1698281248,7);
+INSERT INTO `migrations` VALUES (1,'2017-11-20-223112','Myth\\Auth\\Database\\Migrations\\CreateAuthTables','default','Myth\\Auth',1690214058,1),(2,'2022-07-13-025921','App\\Database\\Migrations\\Pariangan','default','App',1690214058,1),(3,'2022-07-13-025948','App\\Database\\Migrations\\Event','default','App',1690214058,1),(4,'2022-07-13-030025','App\\Database\\Migrations\\CulinaryPlace','default','App',1690214058,1),(5,'2022-07-13-030048','App\\Database\\Migrations\\SouvenirPlace','default','App',1690214058,1),(6,'2022-07-13-030112','App\\Database\\Migrations\\WorshipPlace','default','App',1690214058,1),(7,'2022-07-13-030132','App\\Database\\Migrations\\Facility','default','App',1690214058,1),(8,'2022-07-13-030159','App\\Database\\Migrations\\Atraction','default','App',1690214058,1),(9,'2022-07-13-032655','App\\Database\\Migrations\\ParianganGallery','default','App',1690214058,1),(10,'2022-07-13-032926','App\\Database\\Migrations\\ParianganVideo','default','App',1690214058,1),(11,'2022-07-13-033252','App\\Database\\Migrations\\AtractionGallery','default','App',1690214058,1),(12,'2022-07-13-033459','App\\Database\\Migrations\\AtractionVideo','default','App',1690214058,1),(13,'2022-07-13-033634','App\\Database\\Migrations\\EventGallery','default','App',1690214058,1),(14,'2022-07-13-033742','App\\Database\\Migrations\\EventVideo','default','App',1690214058,1),(15,'2022-07-13-033829','App\\Database\\Migrations\\FacilityGallery','default','App',1690214058,1),(16,'2022-07-13-033839','App\\Database\\Migrations\\FacilityVideo','default','App',1690214058,1),(17,'2022-07-13-033936','App\\Database\\Migrations\\WorshipPlaceGallery','default','App',1690214058,1),(18,'2022-07-13-033956','App\\Database\\Migrations\\WorshipPlaceVideo','default','App',1690214058,1),(19,'2022-07-13-034414','App\\Database\\Migrations\\CulinaryPlaceGallery','default','App',1690214058,1),(20,'2022-07-13-034423','App\\Database\\Migrations\\CulinaryPlaceVideo','default','App',1690214058,1),(21,'2022-07-13-034537','App\\Database\\Migrations\\SouvenirPlaceGallery','default','App',1690214058,1),(22,'2022-07-13-034547','App\\Database\\Migrations\\SouvenirPlaceVideo','default','App',1690214058,1),(23,'2022-07-13-034817','App\\Database\\Migrations\\Product','default','App',1690214058,1),(24,'2022-07-13-035312','App\\Database\\Migrations\\DetailProduct','default','App',1690214058,1),(25,'2022-07-13-035640','App\\Database\\Migrations\\Menu','default','App',1690214058,1),(26,'2022-07-13-035731','App\\Database\\Migrations\\DetailMenu','default','App',1690214058,1),(27,'2022-07-18-040720','App\\Database\\Migrations\\ReviewAtraction','default','App',1690214058,1),(28,'2022-08-14-022634','App\\Database\\Migrations\\Comment','default','App',1690214058,1),(29,'2023-10-23-041428','App\\Database\\Migrations\\Reservation','default','App',1698034506,2),(30,'2023-10-23-041559','App\\Database\\Migrations\\ReservationStatus','default','App',1698034570,3),(31,'2023-10-24-130707','App\\Database\\Migrations\\Reservation','default','App',1698152838,4),(32,'2023-10-24-130939','App\\Database\\Migrations\\Reservation','default','App',1698152984,5),(33,'2023-10-26-001131','App\\Database\\Migrations\\Homestay','default','App',1698279621,6),(34,'2023-10-26-001152','App\\Database\\Migrations\\HomestayGallery','default','App',1698279621,6),(35,'2023-10-26-004717','App\\Database\\Migrations\\HomestayGallery','default','App',1698281248,7),(36,'2023-11-04-052631','App\\Database\\Migrations\\Country','default','App',1699076011,8),(37,'2023-11-04-052637','App\\Database\\Migrations\\Province','default','App',1699076011,8),(38,'2023-11-04-052644','App\\Database\\Migrations\\City','default','App',1699076011,8),(39,'2023-11-04-053207','App\\Database\\Migrations\\Subdistrict','default','App',1699076011,8),(40,'2023-11-04-053644','App\\Database\\Migrations\\Country','default','App',1699076256,9),(41,'2023-11-04-053651','App\\Database\\Migrations\\Province','default','App',1699076256,9),(42,'2023-11-04-053657','App\\Database\\Migrations\\City','default','App',1699076256,9),(43,'2023-11-04-053701','App\\Database\\Migrations\\Subdistrict','default','App',1699076256,9),(44,'2023-11-04-054836','App\\Database\\Migrations\\Country','default','App',1699076978,10),(45,'2023-11-04-054842','App\\Database\\Migrations\\City','default','App',1699076978,10),(46,'2023-11-04-054853','App\\Database\\Migrations\\Province','default','App',1699076978,10),(47,'2023-11-04-054901','App\\Database\\Migrations\\Subdistrict','default','App',1699076978,10);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -889,7 +938,7 @@ CREATE TABLE `package` (
 
 LOCK TABLES `package` WRITE;
 /*!40000 ALTER TABLE `package` DISABLE KEYS */;
-INSERT INTO `package` VALUES ('01','Paket wisata tes 1',100000,10,'6281373517899','','1698934681_4d1b6657786c4e20d505.png',2,NULL),('03','tes',500000,10,'1','','1698934692_e3af9b5f9c5c5d5060d2.png',2,NULL),('04','Costume Package By -user1',10000,3,NULL,NULL,'costum_package.jpg',1,NULL);
+INSERT INTO `package` VALUES ('01','Paket wisata tes 1',100000,10,'6281373517899','',NULL,2,NULL),('03','tes',500000,10,'1','',NULL,2,NULL),('04','Costume Package By -user1',10000,3,NULL,NULL,'costum_package.jpg',1,NULL);
 /*!40000 ALTER TABLE `package` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -916,7 +965,7 @@ CREATE TABLE `package_day` (
 
 LOCK TABLES `package_day` WRITE;
 /*!40000 ALTER TABLE `package_day` DISABLE KEYS */;
-INSERT INTO `package_day` VALUES ('01','6',NULL),('01','7',NULL),('03','8',NULL),('03','9',NULL),('04','10',NULL);
+INSERT INTO `package_day` VALUES ('01','17',NULL),('01','18',NULL),('03','15',NULL),('03','16',NULL),('04','10',NULL);
 /*!40000 ALTER TABLE `package_day` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1064,6 +1113,30 @@ LOCK TABLES `product_category` WRITE;
 /*!40000 ALTER TABLE `product_category` DISABLE KEYS */;
 INSERT INTO `product_category` VALUES ('1','Culinery'),('2','Souvenir');
 /*!40000 ALTER TABLE `product_category` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `province`
+--
+
+DROP TABLE IF EXISTS `province`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `province` (
+  `id` varchar(8) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `geom` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `province`
+--
+
+LOCK TABLES `province` WRITE;
+/*!40000 ALTER TABLE `province` DISABLE KEYS */;
+/*!40000 ALTER TABLE `province` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1335,6 +1408,30 @@ LOCK TABLES `souvenir_place_video` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `subdistric`
+--
+
+DROP TABLE IF EXISTS `subdistric`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `subdistric` (
+  `id` varchar(8) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `geom` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `subdistric`
+--
+
+LOCK TABLES `subdistric` WRITE;
+/*!40000 ALTER TABLE `subdistric` DISABLE KEYS */;
+/*!40000 ALTER TABLE `subdistric` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `users`
 --
 
@@ -1472,4 +1569,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-03 12:00:41
+-- Dump completed on 2023-11-04 20:17:37
