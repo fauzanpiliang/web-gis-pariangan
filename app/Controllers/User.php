@@ -121,17 +121,17 @@ class User extends BaseController
         if ($validateInput) {
             // -----------------------------Avatar -----------------------------------------
 
-            if ($request['avatar'] != 'default.png' && $request['avatar']) {
-                $folder = $request['avatar'];
-                $filepath = WRITEPATH . 'uploads/' . $folder;
-                $filenames = get_filenames($filepath);
-                $avatar = new File($filepath . '/' . $filenames[0]);
-                $avatar->move(FCPATH . 'assets/images/user-photos');
-                $requestData['user_image'] = $avatar->getFilename();
-                delete_files($filepath);
-                rmdir($filepath);
-            } else {
-                $requestData['user_image'] = 'default.png';
+            if (isset($request['avatar'])) {
+                if ($request['avatar'] != 'default.svg') {
+                    $folder = $request['avatar'];
+                    $filepath = WRITEPATH . 'uploads/' . $folder;
+                    $filenames = get_filenames($filepath);
+                    $avatar = new File($filepath . '/' . $filenames[0]);
+                    $avatar->move(FCPATH . 'assets/images/user-photos');
+                    $requestData['user_image'] = $avatar->getFilename();
+                    delete_files($filepath);
+                    rmdir($filepath);
+                }
             }
 
 
