@@ -87,7 +87,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title text-center">Detail package</h4>
-                            <h5 class="card-title text-start">Total package price : <input id="totalPrice" readonly class="input-no-border" name="price" value="0"></h5>
+
                             <input type="hidden" required id="checkDetailPackage">
                         </div>
                         <div class="card-body">
@@ -186,8 +186,8 @@
         $(`#${noDay}-${noDetail}`).remove()
         let current = $(`#lastNoDetail${noDay}`).val()
         $(`#lastNoDetail${noDay}`).val(current - 1)
-        totalPrice -= parseInt(objectPrice)
-        $("#totalPrice").val(totalPrice)
+        // totalPrice -= parseInt(objectPrice)
+        // $("#totalPrice").val(totalPrice)
 
     }
     //open modal package day
@@ -268,11 +268,11 @@
                      </select>
         </div>
         <input id="detail-package-id-object" type="hidden" required>
-        <input id="detail-package-price-object" type="hidden" type="number" value="0"  required>
+        <input id="detail-package-price-object" type="hidden" type="number" value="0" required>
        
         <div class="form-group mb-4">
                     <label for="detail-package-description" class="mb-2">Description</label>
-                    <input type="text" id="detail-package-description" class="form-control" name="detail-package-description" placeholder="Detail package description" required>
+                    <input type="text" id="detail-package-description" class="form-control" name="detail-package-description" placeholder="Detail package description">
         </div>
         `)
         $("#modalFooter").html(
@@ -292,7 +292,9 @@
         console.log(object)
         let objectData = JSON.parse(object)
         let objectId = objectData.id
+        let objectName = objectData.name
         $("#detail-package-id-object").val(objectId)
+        $("#detail-package-description").val("Visit " + objectName)
         let objectPrice = objectData.price == null ? 0 : parseInt(objectData.price)
         $("#detail-package-price-object").val(objectPrice)
     }
@@ -303,8 +305,8 @@
         //get data from modal input
         let noDetail = parseInt($(`#lastNoDetail${noDay}`).val())
         let object_price = $("#detail-package-price-object").val() == null ? 0 : parseInt($("#detail-package-price-object").val())
-        totalPrice += parseInt(object_price)
-        $("#totalPrice").val(totalPrice)
+        // totalPrice += parseInt(object_price)
+        // $("#totalPrice").val(totalPrice)
 
         let object_id = $("#detail-package-id-object").val()
         let activity_type = ''
@@ -325,14 +327,12 @@
             <tr id="${noDay}-${noDetail}"> 
               <td><input class="form-control" value="${object_id}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][id_object]" required readonly></td>
               <td><input class="form-control" value="${activity_type}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_type]" readonly></td>
-              <td><input class="form-control" value="${description}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][description]" required></td>
+              <td><input class="form-control" value="${description}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][description]"></td>
               <td><a class="btn btn-danger" onclick="removeObject('${noDay}','${ noDetail }','${object_price}')"> <i class="fa fa-x"></i> </a></td>
             </tr>     
             `)
         $(`#lastNoDetail${noDay}`).val(noDetail + 1)
         $('#checkDetailPackage').val('oke')
-
-
     }
 </script>
 

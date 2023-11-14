@@ -276,7 +276,7 @@
        
         <div class="form-group mb-4">
                     <label for="detail-package-id-object" class="mb-2">Object</label>
-                    <select class="form-select" id="detail-package-id-object" name="detail-package-id-object">
+                    <select class="form-select" id="detail-package-id-object" name="detail-package-id-object" >
                                     <?php if ($objectData) : ?>
                                         <?php $no = 0; ?>       
                                         <?php foreach ($objectData as $object) : ?>

@@ -44,6 +44,18 @@ class packageController extends BaseController
         ];
         return view('user-menu/package', $data);
     }
+
+    public function package_api($id)
+    {
+        $package = $this->model->getPackage($id)->getRowArray();
+        // package day
+        $package_day = $this->packageDayModel->get_pd_by_package_id_api($id)->getResultArray();
+        for ($i = 0; $i < count($package_day); $i++) {
+            $package_day[$i]['package_day_detail'] = $this->detailPackageModel->get_detail_package_by_dp_api($package_day[$i]['day'])->getResultArray();
+        }
+        $package['package_day'] = $package_day;
+        return json_encode($package);
+    }
     public function package($id)
     {
         $package = $this->model->getPackage($id)->getRowArray();

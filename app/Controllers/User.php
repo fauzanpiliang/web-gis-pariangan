@@ -21,6 +21,11 @@ class User extends BaseController
         $this->validation =  \Config\Services::validation();
         $this->config = config('Auth');
     }
+    public function getUser($id)
+    {
+        $userData = $this->model->getUser($id);
+        return json_encode($userData);
+    }
     public function profile()
     {
         $data = [
@@ -40,12 +45,13 @@ class User extends BaseController
         foreach ($users_reservation as $item) {
             $package_id = $item['id_package'];
             $request_date = $item['request_date'];
+            $reservation_status = $item['id_reservation_status'];
             //check if date is passed
             $dateNow = date('Y-m-d');
-            if ($request_date  < $dateNow) {
+            if ($request_date  < $dateNow && $reservation_status != 3) {
                 // update status
-                $users_reservation[$no]['id_reservation_status'] = 4;
-                $this->reservationModel->update_r_api($id, $package_id, $request_date, ['id_reservation_status' => 4]);
+                $users_reservation[$no]['id_reservation_status'] = 5;
+                $this->reservationModel->update_r_api($id, $package_id, $request_date, ['id_reservation_status' => 5]);
             }
             $reservation_status_id = $users_reservation[$no]['id_reservation_status'];
 

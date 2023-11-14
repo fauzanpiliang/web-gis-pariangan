@@ -344,7 +344,6 @@
                 <th colspan="4"> Activities</th>
                 <th> Services </th>
                 <th> Capacity</th>
-                <th colspan="3"> Price</th>
                 <th> Reservation Date</th>
             </tr>
 
@@ -377,7 +376,6 @@
                     <?php endforeach; ?>
                 </td>
                 <td><?= $packageData['capacity']; ?></td>
-                <td colspan="3"><?= "Rp " . number_format($packageData['price'], 0, ",", ".") ?></td>
                 <td>
                     <h3> <?= $packageData['reservation']['request_date']; ?> </h3>
                 </td>

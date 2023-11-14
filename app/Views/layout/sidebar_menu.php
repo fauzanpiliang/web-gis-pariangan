@@ -104,7 +104,7 @@
                 endif; ?>">
                     <li class="submenu-item sidebar-link  <?php if (current_url() == base_url('manage_users')) echo 'active'; ?>">
                         <i class="iconify" data-icon="clarity:users-solid" data-width="25" data-height="25"></i>
-                        <a role="button" href="<?= base_url('manage_users') ?>">Admin</a>
+                        <a role="button" href="<?= base_url('manage_users') ?>">Users & Admins</a>
                     </li>
                     <li class="submenu-item sidebar-link  <?php if (current_url() == base_url('manage_reservation')) echo 'active'; ?>">
                         <i class="iconify" data-icon="material-symbols:order-play-outline" data-width="25" data-height="25"></i>
