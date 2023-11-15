@@ -424,6 +424,7 @@
                     </table>
                 </div>
                 <div class="shadow p-4 rounded">
+                    <input type="hidden" value="<?= $data['price'] ?>" id="package_price">
                     <div class="form-group mb-2">
                         <label for="reservation_date" class="mb-2"> Select booking date </label>
                         <input type="date" id="reservation_date" class="form-control" required >
@@ -456,7 +457,7 @@
                     <p class="text-center fw-bold text-dark"> Package Information </p>
                     <table class="table table-borderless text-dark ">
                                         <tbody>
-                                        <?php if ($data['url'] != null) : ?>
+                                            <?php if ($data['url'] != null) : ?>
                                             <tr>
                                                 <td colspan="2"><img class="img-fluid img-thumbnail rounded" src="<?= base_url('media/photos') . '/' . $data['url'] ?>" width="100%"></td>
                                             </tr>
@@ -485,6 +486,7 @@
                     </table>
                 </div>
                 <div class="shadow p-4 rounded">
+                    <input type="hidden" value="<?= $data['price'] ?>" id="package_price" >
                     <div class="form-group mb-2">
                         <label for="reservation_date" class="mb-2"> Select booking date </label>
                         <input value="${date}" readonly type="date" id="reservation_date" class="form-control" required >
@@ -511,6 +513,8 @@
     function makeReservation(user_id) {
         let reservationDate = $("#reservation_date").val()
         let numberPeople = $("#number_people").val()
+        let packagePrice = $("#package_price").val()
+        console.log(packagePrice)
         let comment = $("#comment").val()
         let package_id = '<?= $data['id'] ?>';
         let numberCheckResult = checkNumberPeople(numberPeople)
@@ -539,6 +543,7 @@
                     id_package: package_id,
                     id_reservation_status: 1, // pending status
                     number_people: numberPeople,
+                    total_price: packagePrice,
                     comment: comment
                 }
                 $.ajax({

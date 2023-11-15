@@ -181,9 +181,12 @@
                                         </tr>
                                         <tr>
                                             <td>Center</td>
-                                            <td><input type="text" class="form-control" id="latitude" name="latitude" value="<?= $parianganData->lat; ?>" autocomplete="off" readonly="readonly" required></td>
+                                            <td><input type="text" class="form-control" id="latitude" name="latitude" value="<?= $parianganData->lat; ?>" autocomplete="off" required></td>
+                                            <td>
+                                                <a onclick="searchLatLang('<?= $url ?>')" data-bs-toggle="tooltip" data-bs-placement="bottom" title="search latlng" class="btn icon btn-outline-primary"> <i class="fa fa-search"></i></a>
+                                            </td>
 
-                                            <td><input type="text" class="form-control" id="longitude" name="longitude" value="<?= $parianganData->lng; ?>" autocomplete="off" readonly="readonly" required></td>
+                                            <td><input type="text" class="form-control" id="longitude" name="longitude" value="<?= $parianganData->lng; ?>" autocomplete="off" required></td>
                                         </tr>
 
                                     </tbody>

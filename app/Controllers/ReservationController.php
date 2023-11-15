@@ -58,12 +58,11 @@ class ReservationController extends BaseController
             'id_reservation_status' => $request['id_reservation_status'],
             'request_date' => $request['reservation_date'],
             'number_people' => $request['number_people'],
+            'total_price' => $request['total_price'],
             'comment' => $request['comment']
         ];
 
         $addR = $this->reservationModel->add_r_api($requestData);
-        if ($addR) {
-        }
     }
 
     public function edit($id = null)
@@ -76,10 +75,15 @@ class ReservationController extends BaseController
     {
         $request = $this->request->getRawInput();
 
-        // execute when payment accepted
-        if (isset($request['payment_date']) && $request['payment_date'] != null) {
-            $request['payment_date'] = Time::now();
+        // execute when booking confirmed
+        if (isset($request['confirmed_at'])) {
+            $request['confirmed_at'] = Time::now("Asia/Jakarta");
         }
+        // execute when payment accepted
+        if (isset($request['payment_accepted_date'])) {
+            $request['payment_accepted_date'] = Time::now("Asia/Jakarta");
+        }
+
 
         // execute when upload proof of payment
         if (isset($request['proof_of_deposit'])) {
@@ -91,7 +95,7 @@ class ReservationController extends BaseController
             delete_files($filepath);
             rmdir($filepath);
             $request['proof_of_deposit'] = $fileImg->getFilename();
-            $request['deposit_date'] = Time::now();
+            $request['deposit_date'] = Time::now("Asia/Jakarta");
         }
         $updateFC = $this->reservationModel->update_r_api($id_user, $id_package, $request_date, $request);
         if ($updateFC) {

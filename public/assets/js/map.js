@@ -1445,6 +1445,23 @@ function initDrawingManager(url = null) {
 
 }
 
+function searchLatLang(url=null){
+    let latitude = parseFloat($('#latitude').val())
+    let langtitude = parseFloat($('#longitude').val())
+    
+    if(!latitude|| !longitude){
+       return  swal.fire('Please input the coordinate')
+    }
+    const objectMarker = new google.maps.Marker({
+        position: { lat: latitude, lng: langtitude },
+        icon: checkIcon(url),
+        opacity: 0.8,
+        map: map,
+    })
+    setMarker(objectMarker,url)
+   
+}
+
 function setMarker(shape, url = null) {
     let lat = shape.getPosition().lat().toFixed(8)
     let lng = shape.getPosition().lng().toFixed(8)

@@ -380,7 +380,7 @@
                     <?php endforeach; ?>
                 </td>
                 <td><?= $packageData['capacity']; ?></td>
-                <td colspan="3"><?= "Rp " . number_format($packageData['price'], 0, ",", ".") ?></td>
+                <td colspan="3"><?= "Rp " . number_format($packageData['reservation']['total_price'], 0, ",", ".") ?></td>
                 <td>
                     <h3> <?= $packageData['reservation']['request_date']; ?> </h3>
                 </td>
@@ -390,7 +390,7 @@
 
     </table>
     <div>
-        <h1 style="color: green;">Amount Due : <?= "Rp " . number_format($packageData['price'], 0, ",", ".") ?></h1>
+        <h1 style="color: green;">Amount Due : <?= "Rp " . number_format($packageData['reservation']['total_price'], 0, ",", ".") ?></h1>
     </div>
     <p>
         Payment Instruction <br>

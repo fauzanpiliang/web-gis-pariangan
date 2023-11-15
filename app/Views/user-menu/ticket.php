@@ -344,46 +344,44 @@
                 <th colspan="4"> Activities</th>
                 <th> Services </th>
                 <th> Capacity</th>
-                <th colspan="3"> Price</th>
                 <th> Reservation Date</th>
             </tr>
 
         </thead>
         <tbody>
             <?php $noPackage = 1 ?>
-            <?php $totalPrice = 0 ?>
-            <?php foreach ($packageData as $package) : ?>
-                <tr>
-                    <td><?= $noPackage; ?></td>
-                    <td colspan="2"><?= $package['name']  ?> / <?= $package['reservation']['id']; ?></td>
-                    <td colspan="4">
-                        <?php $noDay = 1; ?>
-                        <?php foreach ($package['package_day'] as $packageDay) : ?>
-                            Day <?= $noDay  ?> : <br><br>
-                            <?php $noDetail = 1; ?>
-                            <?php foreach ($packageDay['package_day_detail'] as $packageDetail) : ?>
-                                <?= $noDetail; ?>. <?= $packageDetail['detailDescription']; ?><br>
-                                <?php $noDetail++ ?>
-                            <?php endforeach; ?>
-                            <br><br>
-                            <?php $noDay++ ?>
+
+
+            <tr>
+                <td><?= $noPackage; ?></td>
+                <td colspan="2"><?= $packageData['name']  ?> </td>
+                <td colspan="4">
+                    <?php $noDay = 1; ?>
+                    <?php foreach ($packageData['package_day'] as $packageDay) : ?>
+                        Day <?= $noDay  ?> : <br><br>
+                        <?php $noDetail = 1; ?>
+                        <?php foreach ($packageDay['package_day_detail'] as $packageDetail) : ?>
+                            <?= $noDetail; ?>. <?= $packageDetail['detailDescription']; ?><br>
+                            <?php $noDetail++ ?>
                         <?php endforeach; ?>
-                    </td>
-                    <td>
-                        <?php $noService = 1; ?>
-                        <?php foreach ($package['services'] as $service) : ?>
-                            <?= $noService ?>. <?= $service; ?> <br>
-                            <?php $noService++ ?>
-                        <?php endforeach; ?>
-                    </td>
-                    <td><?= $package['capacity']; ?></td>
-                    <td colspan="3"><?= "Rp " . number_format($package['price'], 0, ",", ".") ?> <?php $totalPrice += $package['price']  ?></td>
-                    <td>
-                        <h3> <?= $package['reservation']['request_date']; ?> </h3>
-                    </td>
-                </tr>
-                <?= $noPackage++; ?>
-            <?php endforeach; ?>
+                        <br><br>
+                        <?php $noDay++ ?>
+                    <?php endforeach; ?>
+                </td>
+                <td>
+                    <?php $noService = 1; ?>
+                    <?php foreach ($packageData['services'] as $service) : ?>
+                        <?= $noService ?>. <?= $service; ?> <br>
+                        <?php $noService++ ?>
+                    <?php endforeach; ?>
+                </td>
+                <td><?= $packageData['capacity']; ?></td>
+                <td>
+                    <h3> <?= $packageData['reservation']['request_date']; ?> </h3>
+                </td>
+            </tr>
+
+
         </tbody>
 
     </table>

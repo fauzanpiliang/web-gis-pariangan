@@ -11,7 +11,6 @@ class reservationModel extends Model
     protected $table            = 'reservation';
     protected $primaryKey       = 'id';
     protected $returnType       = 'array';
-    protected $allowedFields    = ['id', 'id_user', 'id_package', 'id_reservation_status', 'number_people', 'comment', 'rating', 'review', 'request_date'];
 
     // Dates
     protected $useTimestamps = true;

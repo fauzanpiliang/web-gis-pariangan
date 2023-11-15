@@ -58,6 +58,7 @@ $routes->get('/register', 'AuthController::register');
 // Route user menu
 // Route untuk manage user profile
 $routes->group('user', function ($routes) {
+    $routes->get('getUser/(:segment)', 'User::getUser/$1', ['filter' => 'role:user,admin']);
     $routes->get('profile', 'User::profile', ['filter' => 'role:user,admin']);
     $routes->get('edit_profile', 'User::edit_profile', ['filter' => 'role:user,admin']);
     $routes->get('reservation/(:segment)', 'User::reservation/$1', ['filter' => 'role:user']);
@@ -140,6 +141,7 @@ $routes->group('review', function ($routes) {
 $routes->group('package', function ($routes) {
     $routes->get('/', 'packageController::packages');
     $routes->get('costum/new', 'packageController::newCostume');
+    $routes->get('package_api/(:segment)', 'packageController::package_api/$1');
     $routes->post('saveCostume', 'packageController::saveCostume', ['filter' => 'role:user']);
     $routes->get('detail/(:segment)', 'packageController::package/$1');
     $routes->get('getActivityGallery/(:segment)', 'packageController::getActivityGallery/$1');
@@ -162,6 +164,7 @@ $routes->get('dashboard', 'Pages::dashboard', ['filter' => 'role:admin']);
 $routes->group('manage_users', function ($routes) {
     $routes->get('/', 'ManageUsersController::index', ['filter' => 'role:admin']);
     $routes->get('index', 'ManageUsersController::index', ['filter' => 'role:admin']);
+    $routes->get('admin', 'ManageUsersController::admin', ['filter' => 'role:admin']);
     $routes->get('detail/(:num)', 'ManageUsersController::detail/$1',  ['filter' => 'role:admin']);
     $routes->get('edit/(:num)', 'ManageUsersController::edit/$1',  ['filter' => 'role:admin']);
     $routes->post('save_update/(:segment)', 'ManageUsersController::save_update/$1', ['filter' => 'role:user,admin']);

@@ -14,6 +14,7 @@ class ManageReservationController extends BaseController
     protected $title = 'Manage-Reservation | Tourism Village';
     public function __construct()
     {
+        $this->modelPariangan = new \App\Models\parianganModel();
         $this->validation = \Config\Services::validation();
         $this->model = new \App\Models\reservationModel();
         $this->reservationStatusModel = new \App\Models\reservationStatusModel();
@@ -35,9 +36,10 @@ class ManageReservationController extends BaseController
             $package_id = $item['id_package'];
             $user_id = $item['id_user'];
             $request_date = $item['request_date'];
+            $reservation_status = $item['id_reservation_status'];
             //check if date is passed
             $dateNow = date('Y-m-d');
-            if ($request_date < $dateNow) {
+            if ($request_date < $dateNow && $reservation_status != 3) {
                 // update status
                 $contents[$no]['id_reservation_status'] = 4;
                 $this->model->update_r_api($user_id, $package_id, $request_date, ['id_reservation_status' => 4]);
@@ -51,11 +53,13 @@ class ManageReservationController extends BaseController
             $contents[$no]['package_name'] = $package['name'];
             $no++;
         }
+        $parianganData = $this->modelPariangan->getPariangan();
         $data = [
             'title' => $this->title,
             'data' => $contents,
             'userData' => $userData,
             'packageData' => $packageData,
+            'parianganData' => $parianganData,
             'statusData' => $statusData
         ];
 

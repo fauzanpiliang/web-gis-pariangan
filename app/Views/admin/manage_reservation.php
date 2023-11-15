@@ -45,6 +45,7 @@
                             <th>Username</th>
                             <th>Request date</th>
                             <th>Status</th>
+                            <th class="text-start"> Progress </th>
                             <th class="text-center">Action</th>
                         </tr>
                     </thead>
@@ -60,6 +61,20 @@
                             $reservationIdStatus = $reservation['id_reservation_status'];
                             $reservationStatus = $reservation['status'];
                             $dateNow = date("Y-m-d");
+                            $depositDate = $reservation['deposit_date'];
+
+                            $proggres = "";
+                            if ($reservationIdStatus == 1) {
+                                $proggres = "Check Reservation!";
+                            } else if ($reservationIdStatus == 2 && $depositDate == null) {
+                                $proggres = "Waiting payment document";
+                            } else if ($reservationIdStatus == 2 && $depositDate != null) {
+                                $proggres = "Check Payment!";
+                            } else if ($reservationIdStatus == 3) {
+                                $proggres = "Canceled";
+                            } else if ($reservationIdStatus == 4) {
+                                $proggres = "Transaction Success";
+                            }
                             ?>
 
 
@@ -80,6 +95,9 @@
                                                             } else if ($reservationIdStatus == 4) {
                                                                 echo "success";
                                                             }; ?>"> <?= $reservationStatus; ?></span>
+                                </td>
+                                <td class="text-start">
+                                    <?= $proggres ?>
                                 </td>
                                 <td class="text-center">
                                     <a class="btn btn-outline-success btn-sm " title="confirm" data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="showInfoReservation('<?= $userId ?>','<?= $packageId ?>','<?= $request_date ?>')">
@@ -104,7 +122,7 @@
     function showInfoReservation(id_user, id_package, request_date) {
         let statusData = JSON.parse('<?= json_encode($statusData) ?>')
         let result
-        let reservationStatus, reservationInfo
+        let reservationStatus, reservationInfo, reservationPrice
         $.ajax({
             url: `<?= base_url('reservation/show'); ?>/${id_user}/${id_package}/${request_date}`,
             type: "GET",
@@ -118,23 +136,36 @@
                 console.log(err.responseText)
             }
         });
+        console.log(result)
+
 
         reservationStatus = result['id_reservation_status']
-        if (reservationStatus == '1') {
+        if (reservationStatus == '1' && result['package_costum'] == '1') {
             reservationInfo =
-                `<a class ="btn btn-success" onclick="changeReservationStatus('${id_user}','${id_package}','${request_date}',2)"> Confirm reservation </a>`
+                `<a class ="btn btn-outline-danger m-1" onclick="cancelReservation('${id_user}','${id_package}','${request_date}')"> Cancel  </a>
+               <a class ="btn btn-outline-success m-1" onclick="confirmCostumReservation('${id_user}','${id_package}','${request_date}')"> Confirm</a>
+               <a class ="btn btn-outline-primary m-1" onclick="previewPackage('${id_package}')"> preview</a>`
+            reservationPrice = '<input class="form-input" title="input the costume package price" id="inputPriceReservation" type="number"></input>'
+        } else if (reservationStatus == '1') {
+            reservationInfo =
+                `<a class ="btn btn-outline-danger m-1" onclick="cancelReservation('${id_user}','${id_package}','${request_date}')"> Cancel  </a>
+               <a class ="btn btn-outline-success m-1" onclick="confirmReservation('${id_user}','${id_package}','${request_date}')"> Confirm</a>`
+            console.log(result['total_price'])
+            reservationPrice = rupiah(result['total_price'])
 
         } else {
             reservationInfo = ''
+            reservationPrice = rupiah(result['total_price'])
         }
-
-
         $('#modalTitle').html("Reservation Info")
         $('#modalBody').html(`
         <div class="p-2">
                
                 <div id="userRating">
     
+                </div>  
+                <div id="userTicket">
+                
                 </div>
                 <div  id="userPayment">
     
@@ -171,19 +202,26 @@
                             </tr>
                             <tr>
                                 <td class="fw-bold">Price </td>
-                                <td >${rupiah(result['package_price'])}</td>
+                                <td>${reservationPrice}</td>
                             </tr>
                             <tr>
-                                <td class="fw-bold"> </td>
-                                <td>${reservationInfo}</td>
-                            </tr>           
+                                <td class="text-center" colspan="2">
+                                    <div> 
+                                        ${reservationInfo}
+                                    </div>
+                                </td>
+                            </tr>  
+                        
                         </tbody>
                     </table>
                 </div>    
+                <div id="previewMap">
+                   
+                </div>
                 <div class="shadow-sm p-4 rounded">
                      <p class="text-center fw-bold text-dark"> Reservation Status </p>
                      <fieldset class="form-group mb-4">
-                        <label for="statusReservation" class="mb-2"> Status reservation </label>
+                        <label for="statusReservation" class="mb-2"> Status booking </label>
                         <select class="form-select" id="statusReservation" required>
                                 
                       </fieldset>
@@ -191,7 +229,13 @@
             </div>
         `)
 
-        // user status
+        // check if costume package
+        if (result['package_costum'] == '1') {
+
+        }
+
+
+        // button status
         $("#statusReservation").html(`<option value="${result['id_reservation_status']}"> ${result['status']} ( current status )</option>`)
         for (i in statusData) {
             if (statusData[i].id != result['id_reservation_status']) {
@@ -207,7 +251,7 @@
         })
 
         // user payment
-        if (result['proof_of_deposit'] != null) {
+        if (reservationStatus == 2 && result['proof_of_deposit'] != null) {
             let depositDate = result['deposit_date']
             let deposit = result['deposit']
             let proofDeposit = result['proof_of_deposit']
@@ -232,15 +276,14 @@
             } else {
                 $("#userPayment").append(`
                 <div class="text-end">
-                <a class="btn btn-success" onclick="changeReservationStatus('${id}',4,'payment')"> Accept payment</a>
+                <a class="btn btn-success" onclick="acceptReservation('${id_user}','${id_package}','${request_date}')"> Accept payment</a>
                 </div>
                 `)
             }
         }
 
-
         // user rating
-        if (result['rating'] != null) {
+        if (reservationStatus == 5 && result['rating'] != null) {
             let rating = result['rating']
             let updatedRating = result['updated_at']
             let review = result['review'] != null ? result['review'] : ''
@@ -296,12 +339,313 @@
         }
     }
 
-    function changeReservationStatus(id_user, id_package, request_date, status) {
+    function previewPackage(id_package) {
+        $("#previewMap").html(`
+        <div class="card-body">
+            <div id="buttonDay" class="mb-1">
+            </div>
+            <div class="googlemaps" id="map" style="min-height: 60vh;">
+            </div>
+        </div>`)
+        initMap()
+        let result
+        $.ajax({
+            url: `<?= base_url('package/package_api'); ?>/${id_package}`,
+            type: "GET",
+            async: false,
+            contentType: "application/json",
+            success: function(response) {
+                result = JSON.parse(response)
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        });
+        console.log(result.package_day)
+        let buttonDay = ''
 
+        let no = 1
+        result.package_day.forEach(element => {
+            buttonDay += `<a class="btn btn-outline-primary btn-sm" onclick="getObjectsByPackageDayId('${element.day}')">Day ${no}</a>`
+            no++
+        });
+        $("#buttonDay").html(buttonDay)
+
+        // getObjectsByPackageDayId('')
+
+    }
+    // start of the map
+
+    let latBefore = ''
+    let lngBefore = ''
+    let routeArray = []
+
+
+    function getObjectsByPackageDayId(id_day) {
+
+        $.ajax({
+            url: `<?= base_url('package'); ?>/objects/package_day/${id_day}`,
+            type: "GET",
+            contentType: "application/json",
+            success: function(response) {
+                let objects = JSON.parse(response)
+                getObjectById(objects)
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        });
+    }
+
+
+    function getObjectById(objects = null) {
+        let objectNumber = 1
+        let flightPlanCoordinates = []
+        clearMarker()
+        clearRoutes()
+        let boundObject = new google.maps.LatLngBounds();
+        objects.forEach(object => {
+            let id_object = object['id_object']
+
+            let URI = "<?= base_url('list_object') ?>";
+            let url = ""
+            if (id_object.charAt(0) == 'H') {
+                url = "homestay"
+                URI = URI + '/homestay/' + `${id_object.substring(1,3)}`
+            } else if (id_object.charAt(0) == 'E') {
+                url = "event"
+                URI = URI + '/event/' + `${id_object.substring(1,3)}`
+            } else if (id_object.charAt(0) == 'C') {
+                url = "culinary_place"
+                URI = URI + '/culinary_place/' + `${id_object.substring(1,3)}`
+            } else if (id_object.charAt(0) == 'W') {
+                url = "worship_place"
+                URI = URI + '/worship_place/' + `${id_object.substring(1,3)}`
+            } else if (id_object.charAt(0) == 'S') {
+                url = "souvenir_place"
+                URI = URI + '/souvenir_place/' + `${id_object.substring(1,3)}`
+            } else if (id_object.charAt(0) == 'A') {
+                url = "atraction"
+                URI = URI + '/atraction/' + `${id_object.substring(1,3)}`
+            }
+
+            $.ajax({
+                url: URI,
+                type: "GET",
+                async: false,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.objectData.length > 0) {
+                        let data = response.objectData[0]
+                        let latlng = new google.maps.LatLng(data.lat, data.lng)
+                        showObjectOnMap(objectNumber, data)
+                        boundObject.extend(latlng)
+                    }
+
+                }
+            })
+            objectNumber++
+        })
+
+        map.fitBounds(boundObject)
+        map.setCenter(boundObject.getCenter())
+    }
+    // Display marker for loaded object
+    function showObjectOnMap(objectNumber, data, anim = true) {
+        let id = data.id
+        let lat = data.lat
+        let lng = data.lng
+        google.maps.event.clearListeners(map, 'click');
+        let pos = new google.maps.LatLng(lat, lng);
+        let marker = new google.maps.Marker();
+        let icon = `https://raw.githubusercontent.com/Concept211/Google-Maps-Markers/master/images/marker_red${objectNumber}.png`;
+
+        markerOption = {
+            position: pos,
+            icon: icon,
+            animation: google.maps.Animation.DROP,
+            map: map,
+        }
+        marker.setOptions(markerOption);
+        if (!anim) {
+            marker.setAnimation(null);
+        }
+        marker.addListener('click', () => {
+            openInfoWindow(marker, infoMarkerData(data, url = null))
+        });
+        markerArray.push(marker);
+        if (objectNumber == 1) {
+            latBefore = lat
+            lngBefore = lng
+
+        } else {
+            routeAll(lat, lng)
+        }
+    }
+
+    function routeAll(lat, lng) {
+        google.maps.event.clearListeners(map, 'click')
+        let directionsService = new google.maps.DirectionsService();
+        let start, end;
+        start = new google.maps.LatLng(latBefore, lngBefore);
+        end = new google.maps.LatLng(lat, lng)
+        let request = {
+            origin: start,
+            destination: end,
+            travelMode: 'DRIVING'
+        };
+        directionsService.route(request, function(result, status) {
+            if (status == 'OK') {
+                directionsRenderer = new google.maps.DirectionsRenderer({
+                    suppressMarkers: true
+                })
+                directionsRenderer.setDirections(result);
+
+                directionsRenderer.setMap(map);
+                routeArray.push(directionsRenderer);
+            }
+        });
+
+    }
+
+    function clearRoutes() {
+        for (i in routeArray) {
+            routeArray[i].setMap(null);
+        }
+        routeArray = [];
+    }
+
+
+    // end of the map
+
+    function cancelReservation(id_user, id_package, request_date) {
+        let requestData = {
+            id_reservation_status: 3
+        }
+
+        $.ajax({
+            url: `<?= base_url('reservation/update'); ?>/${id_user}/${id_package}/${request_date}`,
+            type: "PUT",
+            data: requestData,
+            async: false,
+            contentType: "application/json",
+            success: function(response) {
+                Swal.fire(
+                    'Booking confirmed',
+                    '',
+                    'success'
+                ).then(() => {
+                    window.location.reload()
+                });
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
+
+    }
+
+    function confirmReservation(id_user, id_package, request_date) {
+
+        let requestData = {
+            id_reservation_status: 2,
+            confirmed_at: "true",
+            confirmed_by: '<?= user()->id ?>'
+        }
+
+        $.ajax({
+            url: `<?= base_url('reservation/update'); ?>/${id_user}/${id_package}/${request_date}`,
+            type: "PUT",
+            data: requestData,
+            async: false,
+            contentType: "application/json",
+            success: function(response) {
+                Swal.fire(
+                    'Booking confirmed',
+                    '',
+                    'success'
+                ).then(() => {
+                    window.location.reload()
+                });
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
+
+    }
+
+    function confirmCostumReservation(id_user, id_package, request_date) {
+        // check if it costum package or not
+        let inputPriceCostum = $("#inputPriceReservation").val()
+        if (!inputPriceCostum) {
+            return swal.fire("please input the price")
+        }
+
+        let requestData = {
+            id_reservation_status: 2,
+            confirmed_at: "true",
+            confirmed_by: '<?= user()->id ?>',
+            total_price: inputPriceCostum
+        }
+
+        $.ajax({
+            url: `<?= base_url('reservation/update'); ?>/${id_user}/${id_package}/${request_date}`,
+            type: "PUT",
+            data: requestData,
+            async: false,
+            contentType: "application/json",
+            success: function(response) {
+                Swal.fire(
+                    'Booking confirmed',
+                    '',
+                    'success'
+                ).then(() => {
+                    window.location.reload()
+                });
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
+
+    }
+
+
+    function acceptReservation(id_user, id_package, request_date) {
+        let requestData = {
+            id_reservation_status: 4,
+            payment_accepted_date: "true",
+            payment_accepted_by: '<?= user()->id ?>'
+        }
+
+        $.ajax({
+            url: `<?= base_url('reservation/update'); ?>/${id_user}/${id_package}/${request_date}`,
+            type: "PUT",
+            data: requestData,
+            async: false,
+            contentType: "application/json",
+            success: function(response) {
+                Swal.fire(
+                    'Booking accepted',
+                    '',
+                    'success'
+                ).then(() => {
+                    window.location.reload()
+                });
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
+
+    }
+
+    function changeReservationStatus(id_user, id_package, request_date, status) {
         let requestData = {
             id_reservation_status: status, //status
         }
-        console.log(requestData)
+
         $.ajax({
             url: `<?= base_url('reservation/update'); ?>/${id_user}/${id_package}/${request_date}`,
             type: "PUT",
@@ -499,4 +843,14 @@
         return result
     }
 </script>
+<script>
+    // Global variabel
+    let datas
+    let geomPariangan = JSON.parse('<?= $parianganData->geoJSON; ?>')
+    let latPariangan = parseFloat(<?= $parianganData->lat; ?>)
+    let lngPariangan = parseFloat(<?= $parianganData->lng; ?>)
+</script>
+<script src="<?= base_url('/assets/js/map.js') ?>"></script>
+<!-- Maps JS -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8B04MTIk7abJDVESr6SUF6f3Hgt1DPAY"></script>
 <?= $this->endSection() ?>
