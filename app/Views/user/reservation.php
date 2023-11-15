@@ -295,6 +295,10 @@
         let buttonDelete =
             result['id_reservation_status'] == '1' ? `<a class="btn btn-outline-danger" onclick="deleteReservation('${id_user}','${id_package}','${request_date}')"> Abort booking</a>` : '';
 
+
+
+
+
         $('#modalTitle').html("Booking Info")
         $('#modalBody').html(`
         <div class="p-2">
@@ -329,7 +333,7 @@
                             </tr>
                                                 
                             <tr>
-                                <td class="fw-bold">Date</td>
+                                <td class="fw-bold">Booking Date</td>
                                 <td>${result['request_date']}</td>
                             </tr>
                             <tr>
@@ -354,12 +358,21 @@
 
         // user payment
         if (result['id_reservation_status'] == '2') {
+
+            let dat = new Date(request_date);
+            let dd = String(dat.getDate() - 3).padStart(2, '0');
+            let mm = String(dat.getMonth() + 1).padStart(2, '0'); //January is 0!
+            let yyyy = dat.getFullYear();
+
+            dat = yyyy + '-' + mm + '-' + dd;
+
             let proofDeposit = result['proof_of_deposit']
             let deposit = result['deposit']
             $("#userDeposit").addClass("mb-2 shadow-sm p-4 rounded")
             $("#userDeposit").html(`
                 <p class="text-center fw-bold text-dark"> Upload Your Payment </p>
-                <p>Note <span class="text-danger">*</span> Before uploading proof of deposit, make sure the payment amount is the same as the invoice, please print the invoice to see the deposit amount</p>
+                <p ></p>
+                <p>Note <br><span class="text-danger">*</span> You must pay before <span class="text-primary"> ${dat} </span> ( H-3 )</span>  or booking will be cancel by the system<br><span class="text-danger">*</span> Before uploading proof of deposit, make sure the payment amount is the same as the invoice, please print the invoice to see the deposit amount</p>
                 <div class="text-start mb-4">
                     <a class="btn btn-primary" onclick="openInvoice('${id_user}','${id_package}','${request_date}')" > <i class="fa fa-print"> </i> print invoice</a>
                 </div>
