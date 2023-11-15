@@ -177,7 +177,7 @@
                                     <tbody>
                                         <tr>
                                             <td>Village geom</td>
-                                            <td colspan="2"><input type="text" id="geo-json" class="form-control" name="geojson" placeholder="GeoJSON" readonly="readonly" required value='<?= $parianganData->geoJSON; ?>'></td>
+                                            <td colspan="2"><input type="text" id="geo-json" class="form-control" name="geojson" placeholder="GeoJSON" required value='<?= $parianganData->geoJSON; ?>'></td>
                                         </tr>
                                         <tr>
                                             <td>Center</td>

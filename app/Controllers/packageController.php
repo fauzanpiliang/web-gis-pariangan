@@ -142,29 +142,33 @@ class packageController extends BaseController
         $atractionData = $this->atractionModel->getAtractions();
         foreach ($atractionData as $atraction) {
             $atraction->id = 'A' . $atraction->id;
+            $atraction->geoJSON = null;
             $objectData[] = $atraction;
         }
         $culinaryData = $this->culinaryModel->getCulinaryPlaces();
         foreach ($culinaryData as $culinary) {
             $culinary->id = 'C' . $culinary->id;
+            $culinary->geoJSON = null;
             $objectData[] = $culinary;
         }
         $souvenirData = $this->souvenirModel->getSouvenirPlaces();
         foreach ($souvenirData as $souvenir) {
             $souvenir->id = 'S' . $souvenir->id;
+            $souvenir->geoJSON = null;
             $objectData[] = $souvenir;
         }
         $worshipData = $this->worshipModel->getWorshipPlaces();
         foreach ($worshipData as $worship) {
             $worship->id = 'W' . $worship->id;
+            $worship->geoJSON = null;
             $objectData[] = $worship;
         }
         $homestayData = $this->homestayModel->getHomestays();
         foreach ($homestayData as $homestay) {
             $homestay->id = 'H' . $homestay->id;
+            $homestay->geoJSON = null;
             $objectData[] = $homestay;
         }
-
 
         $data = [
             'title' => 'Tourism Village | Costume Package',
@@ -228,7 +232,7 @@ class packageController extends BaseController
         $addService = true;
         if (isset($request['service_package'])) {
             $services = $request['service_package'];
-            $addService = $this->detailServicePackageModel->add_service_api($id_package, $services);
+            $addService = $this->detailServicePackageModel->add_service_api($id_package, $services, 'include');
         }
 
         // create reservation
