@@ -37,8 +37,21 @@ class ManageReservationController extends BaseController
             $user_id = $item['id_user'];
             $request_date = $item['request_date'];
             $reservation_status = $item['id_reservation_status'];
+            $deposit_date = $item['deposit_date'];
             //check if date is passed
             $dateNow = date('Y-m-d');
+            $dateConvert = getDate(strtotime($request_date));
+            $yearConvert = $dateConvert['year'];
+            $monthConvert = $dateConvert['mon'];
+
+            $dayConvert = $dateConvert['mday'] - 3;
+            $requestDateMin3 = $yearConvert . "-" . $monthConvert . "-" . $dayConvert;
+
+            if ($dateNow == $requestDateMin3 && ($reservation_status == 2 || $reservation_status == 1) && $deposit_date == null) {
+                // update status
+                $contents[$no]['id_reservation_status'] = 3;
+                $this->model->update_r_api($user_id, $package_id, $request_date, ['id_reservation_status' => 3]);
+            }
             if ($request_date < $dateNow && $reservation_status != 3) {
                 // update status
                 $contents[$no]['id_reservation_status'] = 4;

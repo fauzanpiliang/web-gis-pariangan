@@ -1,7 +1,18 @@
 <?= $this->extend('layout/template.php') ?>
+<?= $this->section('head') ?>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/css/bootstrap-datepicker.min.css" integrity="sha512-34s5cpvaNG3BknEWSuOncX28vz97bRI59UnVtEEpFX536A7BtZSJHsDyFoCl8S7Dt2TPzcrCEoHBGeM4SUBDBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js" integrity="sha512-LsnSViqQyaXpD4mBBdRYeP6sRwJiJveh2ZIbW41EBrNmKxgr/LFZIiWT6yr+nycvhvauz8c2nYMhrP80YhG7Cw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<style>
+    input[type=date]::-webkit-inner-spin-button,
+    input[type=date]::-webkit-calendar-picker-indicator {
+        display: none;
+    }
+</style>
+<?= $this->endSection() ?>
 <?= $this->section('content') ?>
 <script src="<?= base_url('/assets/js/map.js') ?>"></script>
-<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
 <!-- Modal reservation -->
 <div class="modal fade text-left " id="reservationModal" tabindex="-1" aria-labelledby="myModalLabel1" style="display: none;" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable " role="document">
@@ -426,12 +437,12 @@
                 <div class="shadow p-4 rounded">
                     <input type="hidden" value="<?= $data['price'] ?>" id="package_price">
                     <div class="form-group mb-2">
-                        <label for="reservation_date" class="mb-2"> Select booking date </label>
-                        <input type="date" id="reservation_date" class="form-control" required >
+                        <label for="reservation_date" class="mb-2"> Select booking date <span class="text-primary"> ( Min H-7 ) </span></label>
+                        <input  id="reservation_date" type="date" class="form-control" required >
                     </div>
                     <div class="form-group mb-2">
                         <label for="number_people" class="mb-2"> Number of people </label>
-                        <input type="number" id="number_people" placeholder="masimum capacity is <?= esc($data['capacity']) ?>" class="form-control" required >
+                        <input type="number" id="number_people" placeholder="maksimum capacity is <?= esc($data['capacity']) ?>" class="form-control" required >
                     </div>
                     <div class="form-group mb-2">
                         <label for="comment" class="mb-2"> Additional information </label>
@@ -440,6 +451,14 @@
                 </div>
             </div>
             `)
+            let dateNow = new Date();
+            $('#reservation_date').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                startDate: new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate() + 7),
+                todayHighlight: true
+            });
+
             $('#modalFooter').html(`<a class="btn btn-success" onclick="makeReservation(${<?= user()->id ?>})"> Booking </a>`)
         <?php else : ?>
             $('#modalTitle').html('Login required')
@@ -488,7 +507,7 @@
                 <div class="shadow p-4 rounded">
                     <input type="hidden" value="<?= $data['price'] ?>" id="package_price" >
                     <div class="form-group mb-2">
-                        <label for="reservation_date" class="mb-2"> Select booking date </label>
+                        <label for="reservation_date" class="mb-2"> Select booking date <span class="text-primary"> ( Min H-7 ) </span> </label>
                         <input value="${date}" readonly type="date" id="reservation_date" class="form-control" required >
                     </div>
                     <div class="form-group mb-2">
@@ -502,6 +521,14 @@
                 </div>
             </div>
             `)
+            let dateNow = new Date();
+            $('#reservation_date').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                startDate: new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate() + 7),
+                todayHighlight: true
+            });
+
             $('#modalFooter').html(`<a class="btn btn-success" onclick="makeReservation(${<?= user()->id ?>})"> Booking </a>`)
         <?php else : ?>
             $('#modalTitle').html('Login required')
@@ -531,7 +558,7 @@
         } else if (numberCheckResult == false) {
             Swal.fire('Out of capacity, maksimal ' + '<?= $data['capacity'] ?>' + 'people', '', 'warning');
         } else if (dateCheckResult == false) {
-            Swal.fire('Cannot booking, out of date, maksimal H-1 booking', '', 'warning');
+            Swal.fire('Cannot booking, out of date, maksimal H-7 booking', '', 'warning');
         } else if (sameDateCheckResult == "true") {
             Swal.fire('Already chose the same date! please select another date', '', 'warning');
         } else {
@@ -586,10 +613,11 @@
         let result
 
         let today = new Date();
-        let dd = String(today.getDate()).padStart(2, '0');
+        let dd = String(today.getDate() + 6).padStart(2, '0');
         let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
         let yyyy = today.getFullYear();
 
+        console.log(dd)
         today = yyyy + '-' + mm + '-' + dd;
 
         if (reservation_date > today) {
