@@ -275,7 +275,6 @@ class ManagePackageController extends BaseController
         // ---------------------Data request------------------------------------
         $request = $this->request->getPost();
 
-
         $id_package = $this->model->get_new_id();
 
         $url = null;

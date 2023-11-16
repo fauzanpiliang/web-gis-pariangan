@@ -182,7 +182,6 @@ class packageController extends BaseController
             $objectData[] = $homestay;
         }
 
-
         $data = [
             'title' => 'Tourism Village | Costume Package',
             // 'homestayData' => $homestayData,

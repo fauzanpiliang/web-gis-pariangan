@@ -318,7 +318,7 @@
         <tr>
             <td class="address billing-address">
                 <h3>Billing To:</h3>
-                Agung
+                Pokdarwis Pariangan
             </td>
 
             <td class="order-data">

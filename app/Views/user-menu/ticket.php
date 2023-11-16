@@ -318,11 +318,11 @@
         <tr>
             <td class="address billing-address">
                 <h3>Reservation code:</h3>
-                Agung
+                Pokdarwis Pariangan
             </td>
             <td class="address billing-address">
                 <h3>Belong To:</h3>
-                Agung
+                Pokdarwis Pariangan
             </td>
             <td class="order-data">
                 <table>
