@@ -271,24 +271,28 @@
         <input type="text" id="detail-package-day" class="form-control" name="detail-package-day" value="${noDay}" readonly placeholder="object" required>
        
         <div class="form-group mb-4">
-                    <label for="detail-package-id-object" class="mb-2">Object</label>
-                    <select class="form-select" id="detail-package-id-object" name="detail-package-id-object">
+                    <label for="select-object" class="mb-2">Object</label>
+                    <select class="form-select" onchange="addObjectValue(this.value)" required>
+                                     <option >Pilih objek</option>
                                     <?php if ($objectData) : ?>
                                         <?php $no = 0; ?>       
                                         <?php foreach ($objectData as $object) : ?>
-                                           
-                                    <option value="<?= esc($object->id); ?>" <?= ($no == 0) ? 'selected' : ''; ?>> <?= $object->id ?> - <?= esc($object->name); ?></option>
+                                            
+                                    <option value="<?= esc(json_encode($object)) ?>"> <?= $object->id ?> - <?= esc($object->name); ?></option>
                                         
                                             <?php $no++; ?>       
                                         <?php endforeach; ?>
                                     <?php else : ?>
-                                        <option value=" ">Homestay not found</option>
+                                       
                                     <?php endif; ?>
                      </select>
         </div>
+        <input id="detail-package-id-object" type="hidden" required>
+        <input id="detail-package-price-object" type="hidden" type="number" value="0" required>
+       
         <div class="form-group mb-4">
                     <label for="detail-package-description" class="mb-2">Description</label>
-                    <input type="text" id="detail-package-description" class="form-control" name="detail-package-description" placeholder="Detail package description" required>
+                    <input type="text" id="detail-package-description" class="form-control" name="detail-package-description" placeholder="Detail package description">
         </div>
         `)
         $("#modalFooter").html(
@@ -301,6 +305,18 @@
                     <span class="d-none d-sm-block">Save</span>
             </button>`
         )
+    }
+
+    function addObjectValue(object) {
+
+        console.log(object)
+        let objectData = JSON.parse(object)
+        let objectId = objectData.id
+        let objectName = objectData.name
+        $("#detail-package-id-object").val(objectId)
+        $("#detail-package-description").val("Visit " + objectName)
+        let objectPrice = objectData.price == null ? 0 : parseInt(objectData.price)
+        $("#detail-package-price-object").val(objectPrice)
     }
 
     function saveDetailPackageDay(noDay) {
@@ -356,6 +372,7 @@
     })
 
     <?php if (count($data['gallery']) > 0) : ?>
+
         pond.addFiles(
             <?php foreach ($data['gallery'] as $gallery) : ?> `<?= base_url('media/photos/package/' . $gallery); ?>`,
             <?php endforeach; ?>

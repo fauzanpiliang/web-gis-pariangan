@@ -328,7 +328,7 @@
                 <table>
                     <tr>
                         <th> Reservation status </th>
-                        <td style="color: green;"> : Payed</td>
+                        <td style="color: green;"> : Paid</td>
                     </tr>
                 </table>
             </td>

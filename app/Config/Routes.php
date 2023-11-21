@@ -144,6 +144,8 @@ $routes->group('package', function ($routes) {
     $routes->get('package_api/(:segment)', 'packageController::package_api/$1');
     $routes->post('saveCostume', 'packageController::saveCostume', ['filter' => 'role:user']);
     $routes->get('detail/(:segment)', 'packageController::package/$1');
+    $routes->get('costumExisting/(:segment)', 'packageController::costumExisting/$1');
+    $routes->post('saveCostumExisting', 'packageController::saveCostumExisting');
     $routes->get('getActivityGallery/(:segment)', 'packageController::getActivityGallery/$1');
     $routes->get('objects/package_day/(:segment)', 'packageController::getObjectsByPackageDayId/$1');
 });

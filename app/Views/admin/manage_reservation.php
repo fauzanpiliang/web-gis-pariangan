@@ -1,4 +1,15 @@
 <?= $this->extend('layout/template.php') ?>
+<?= $this->section('head'); ?>
+<link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+<link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/filepond-plugin-media-preview@1.0.11/dist/filepond-plugin-media-preview.min.css">
+<link rel="stylesheet" href="<?= base_url('assets/css/pages/form-element-select.css'); ?>">
+<style>
+    .filepond--root {
+        width: 100%;
+    }
+</style>
+<?= $this->endSection() ?>
 <?= $this->section('content') ?>
 <!-- Modal  -->
 <div class="modal fade text-left" id="reservationModal" tabindex="-1" aria-labelledby="myModalLabel1" style="display: none;" aria-hidden="true">
@@ -62,6 +73,8 @@
                             $reservationStatus = $reservation['status'];
                             $dateNow = date("Y-m-d");
                             $depositDate = $reservation['deposit_date'];
+                            $paymentDate = $reservation['payment_accepted_date'];
+                            $refundDate = $reservation['refund_date'];
 
                             $proggres = "";
                             if ($reservationIdStatus == 1) {
@@ -70,8 +83,12 @@
                                 $proggres = "Waiting payment document";
                             } else if ($reservationIdStatus == 2 && $depositDate != null) {
                                 $proggres = "Check Payment!";
-                            } else if ($reservationIdStatus == 3) {
+                            } else if ($reservationIdStatus == 3 && $paymentDate == null &&  $refundDate == null) {
                                 $proggres = "Canceled";
+                            } else if ($reservationIdStatus == 3 && $paymentDate != null &&  $refundDate == null) {
+                                $proggres = "Canceled, refund user money!";
+                            } else if ($reservationIdStatus == 3 && $paymentDate != null &&  $refundDate != null) {
+                                $proggres = "Canceled, money returned";
                             } else if ($reservationIdStatus == 4) {
                                 $proggres = "Transaction Success";
                             }
@@ -116,8 +133,17 @@
 <!--container-fluid -->
 <?= $this->endSection() ?>
 <?= $this->section('script') ?>
+<script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js"></script>
+<script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+<script src="https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.js"></script>
+<script src="https://unpkg.com/filepond-plugin-image-resize/dist/filepond-plugin-image-resize.js"></script>
+<script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/filepond-plugin-media-preview@1.0.11/dist/filepond-plugin-media-preview.min.js"></script>
+<script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
+<script src="<?= base_url('assets/js/extensions/form-element-select.js'); ?>"></script>
 <script>
     new DataTable("#dataTable")
+    let photo, pond, galleryValue
 
     function showInfoReservation(id_user, id_package, request_date) {
         let statusData = JSON.parse('<?= json_encode($statusData) ?>')
@@ -167,7 +193,10 @@
                 <div id="userTicket">
                 
                 </div>
-                <div  id="userPayment">
+                <div id="userRefund">
+    
+                </div>
+                <div id="userPayment">
     
                 </div>
                 <div class="mb-2 shadow-sm p-4 rounded">
@@ -229,12 +258,6 @@
             </div>
         `)
 
-        // check if costume package
-        if (result['package_costum'] == '1') {
-
-        }
-
-
         // button status
         $("#statusReservation").html(`<option value="${result['id_reservation_status']}"> ${result['status']} ( current status )</option>`)
         for (i in statusData) {
@@ -282,6 +305,15 @@
             }
         }
 
+        // refund
+        if (reservationStatus == 3 && result['proof_of_deposit'] != null) {
+            let deposit = result['deposit']
+            let proofRefund = result['proof_of_refund']
+            $("#userRefund").addClass("mb-2 shadow-sm p-4 rounded")
+            $("#userRefund").html(`<a class="btn btn-outline-primary" onclick="addRefundBody('${id_user}','${id_package}','${request_date}','${deposit}','${proofRefund}')">Refund</a>`)
+
+        }
+
         // user rating
         if (reservationStatus == 5 && result['rating'] != null) {
             let rating = result['rating']
@@ -303,8 +335,6 @@
             `)
             setStar(rating)
         }
-
-
         $('#modalFooter').html(``)
     }
     const rupiah = (number) => {
@@ -338,6 +368,121 @@
                 break
         }
     }
+
+    function addRefundBody(id_user, id_package, request_date, deposit, proofRefund) {
+        let userDeposit = parseInt(deposit)
+        let refund = userDeposit / 2
+        $(`#userRefund`).html(`<a class="btn btn-outline-primary" onclick="cancelRefundBody('${id_user}','${id_package}','${request_date}','${userDeposit}','${proofRefund}')">Cancel refund</a>`)
+        $(`#userRefund`).append(`
+                <p class="text-center fw-bold text-dark"> Upload Your Refund </p>
+                <p ></p>
+                <p>Note <br><span class="text-danger">*</span> Make sure you refund total : (50% *${userDeposit}) <br><span class="text-danger">*</span> Total refund:<span class="text-primary">${rupiah(refund)} </span></p>
+                <div class="form-group mb-4">
+                    <label for="gallery" class="form-label"> Upload Proof of Refund <span class="text-danger">*</span></label>
+                    <input class="form-control" accept="image/*" type="file" name="gallery[]" id="gallery">
+                </div>
+                <div class="text-end">
+                    <a class="btn btn-success" onclick="saveRefund('${id_user}','${id_package}','${request_date}')" > Refund</a>
+                </div>
+           
+        `)
+        FilePond.registerPlugin(
+            FilePondPluginFileValidateType,
+            FilePondPluginImageExifOrientation,
+            FilePondPluginImagePreview,
+            FilePondPluginImageResize,
+            FilePondPluginMediaPreview,
+        );
+        // Get a reference to the file input element
+        photo = document.querySelector('input[id="gallery"]');
+
+        // Create a FilePond instance
+        pond = FilePond.create(photo, {
+            maxFileSize: '1920MB',
+            maxTotalFileSize: '1920MB',
+            imageResizeTargetHeight: 720,
+            imageResizeUpscale: false,
+            credits: false,
+        });
+        console.log(typeof proofRefund)
+        if (proofRefund != "null") {
+            console.log("masuk")
+            pond.addFiles(
+                `<?= base_url('media/photos/refund') ?>/${proofRefund}`
+            );
+        }
+        pond.setOptions({
+            server: {
+                timeout: 3600000,
+                process: {
+                    url: '<?= base_url("upload/photo") ?>',
+                    onload: (response) => {
+                        galleryValue = response
+                        console.log("processed:", response);
+                        return response
+                    },
+                    onerror: (response) => {
+                        console.log("error:", response);
+                        return response
+                    },
+                },
+                revert: {
+                    url: '<?= base_url("upload/photo") ?>',
+                    onload: (response) => {
+                        console.log("reverted:", response);
+                        return response
+                    },
+                    onerror: (response) => {
+                        console.log("error:", response);
+                        return response
+                    },
+                },
+            }
+        })
+    }
+
+    function cancelRefundBody(id_user, id_package, request_date, deposit, proofRefund) {
+        let userDeposit = parseInt(deposit)
+        $(`#userRefund`).html(`<a class="btn btn-outline-primary" onclick="addRefundBody('${id_user}','${id_package}','${request_date}','${deposit}','${proofRefund}')">Add refund</a>`)
+    }
+
+    function saveRefund(id_user, id_package, request_date) {
+        let proofRefund = galleryValue
+        if (proofRefund == null) {
+            Swal.fire(
+                'Please input the proof of refund',
+                '',
+                'warning'
+            )
+        } else {
+            let requestData = {
+                refund_by: '<?= user()->id ?>',
+                proof_of_refund: proofRefund
+            }
+            $.ajax({
+                url: `<?= base_url('reservation/update'); ?>/${id_user}/${id_package}/${request_date}`,
+                type: "PUT",
+                data: requestData,
+                async: false,
+                contentType: "application/json",
+                success: function(response) {
+                    Swal.fire(
+                        'Booking updated',
+                        '',
+                        'success'
+                    ).then(() => {
+                        window.location.reload()
+                    });
+                },
+                error: function(err) {
+                    console.log(err.responseText)
+                }
+            });
+        }
+
+    }
+
+
 
     function previewPackage(id_package) {
         $("#previewMap").html(`
@@ -520,7 +665,9 @@
 
     function cancelReservation(id_user, id_package, request_date) {
         let requestData = {
-            id_reservation_status: 3
+            id_reservation_status: 3,
+            canceled_at: "true",
+            canceled_by: '<?= user()->id ?>'
         }
 
         $.ajax({
@@ -531,7 +678,7 @@
             contentType: "application/json",
             success: function(response) {
                 Swal.fire(
-                    'Booking confirmed',
+                    'Booking canceled',
                     '',
                     'success'
                 ).then(() => {
