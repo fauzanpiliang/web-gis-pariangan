@@ -125,6 +125,7 @@
                         <div class="col border p-2">
                             <p class="fw-bold">Detail Packages </p>
                             <?php if ($data['package_day'] != null) : ?>
+                                <a href="<?= base_url('package/costumExisting') . '/' . $data['id'] ?>" class="btn btn-outline-primary mb-2">Costume this package</a>
                                 <div class="list-group list-group-horizontal-sm mb-4 text-center" role="tablist">
                                     <?php $dayNumber = 1; ?>
                                     <?php foreach ($data['package_day'] as $day) : ?>
@@ -644,18 +645,7 @@
         return result
     }
 </script>
-<script>
-    const myModal = document.getElementById('videoModal');
-    const videoSrc = document.getElementById('video-play').getAttribute('data-src');
 
-    myModal.addEventListener('shown.bs.modal', () => {
-        console.log(videoSrc);
-        document.getElementById('video').setAttribute('src', videoSrc);
-    });
-    myModal.addEventListener('hide.bs.modal', () => {
-        document.getElementById('video').setAttribute('src', '');
-    });
-</script>
 <!-- Maps JS -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8B04MTIk7abJDVESr6SUF6f3Hgt1DPAY&callback=initMap"></script>
 <?= $this->endSection() ?>

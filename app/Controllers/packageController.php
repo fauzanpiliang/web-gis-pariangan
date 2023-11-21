@@ -269,4 +269,162 @@ class packageController extends BaseController
             return redirect()->back()->withInput();
         }
     }
+
+    public function costumExisting($id)
+    {
+        // 
+        $package = $this->model->getPackage($id)->getRowArray();
+
+        $serviceData = $this->serviceModel->getServices()->getResultArray();
+
+        // get include service package
+        $packageService = $this->detailServicePackageModel->get_service_by_package_api($id)->getResultArray();
+        $selectedService = array();
+        foreach ($packageService as $service) {
+            $selectedService[] = $service['name'];
+        }
+
+        // get exclude service package
+        $packageServiceExclude = $this->detailServicePackageModel->get_service_by_package_api_exclude($id)->getResultArray();
+        $selectedServiceExclude = array();
+        foreach ($packageServiceExclude as $service) {
+            $selectedServiceExclude[] = $service['name'];
+        }
+
+        $packageDay = $this->packageDayModel->get_pd_by_package_id_api($id)->getResultArray();
+        $no = 0;
+        foreach ($packageDay as $day) {
+            $packageDay[$no]['detailPackage'] = $this->detailPackageModel->get_objects_by_package_day_id($day['day'])->getResultArray();
+            $no++;
+        }
+
+        $objectData = [];
+
+
+        $atractionData = $this->atractionModel->getAtractions();
+        foreach ($atractionData as $atraction) {
+            $atraction->id = 'A' . $atraction->id;
+            $atraction->geoJSON = null;
+            $objectData[] = $atraction;
+        }
+        $culinaryData = $this->culinaryModel->getCulinaryPlaces();
+        foreach ($culinaryData as $culinary) {
+            $culinary->id = 'C' . $culinary->id;
+            $culinary->geoJSON = null;
+            $objectData[] = $culinary;
+        }
+        $souvenirData = $this->souvenirModel->getSouvenirPlaces();
+        foreach ($souvenirData as $souvenir) {
+            $souvenir->id = 'S' . $souvenir->id;
+            $souvenir->geoJSON = null;
+            $objectData[] = $souvenir;
+        }
+        $worshipData = $this->worshipModel->getWorshipPlaces();
+        foreach ($worshipData as $worship) {
+            $worship->id = 'W' . $worship->id;
+            $worship->geoJSON = null;
+            $objectData[] = $worship;
+        }
+        $homestayData = $this->homestayModel->getHomestays();
+        foreach ($homestayData as $homestay) {
+            $homestay->id = 'H' . $homestay->id;
+            $homestay->geoJSON = null;
+            $objectData[] = $homestay;
+        }
+
+
+        $package['service_package'] =  $selectedService;
+        $package['service_package_exclude'] = $selectedServiceExclude;
+        $package['gallery'] = [$package['url']];
+        $package['video_url'] = null;
+
+        $data = [
+            'title' => 'Edit Package',
+            'data' => $package,
+            // 'homestayData' => $homestayData,
+            'packageDayData' => $packageDay,
+            'objectData' => $objectData,
+            'serviceData' => $serviceData
+        ];
+        return view('user-menu/costum_existing_package', $data);
+    }
+
+    public function saveCostumExisting()
+    {
+
+        // ---------------------Data request------------------------------------
+        $request = $this->request->getPost();
+
+        // create package
+        $id_package = $this->model->get_new_id();
+        $requestData = [
+            'id' => $id_package,
+            'name' =>  $request['reservationData']['package_name'] . ' + Costum By -' . $request['username'],
+            'price' => empty($request['price']) ? "0" : $request['price'],
+            'capacity' => $request['reservationData']['number_people'],
+            'url' => 'costum_package.jpg',
+            'costum' => $request['reservationData']['costum'],
+        ];
+        $addtp = $this->model->addPackage($requestData);
+
+        // create package day + detail package
+        if (isset($request['packageDetailData'])) {
+            foreach ($request['packageDetailData'] as $packageDay) {
+                if (isset($packageDay['detailPackage'])) {
+                    $packageDayId = $this->packageDayModel->get_new_id_api();
+                    $requestPackageDay = [
+                        'day' => $packageDayId,
+                        'id_package' => $id_package,
+                        'description' => $packageDay['packageDayDescription']
+                    ];
+                    $addPackageDay = $this->packageDayModel->add_pd_api($requestPackageDay);
+
+                    if ($addPackageDay) {
+
+                        foreach ($packageDay['detailPackage'] as $detailPackage) {
+                            $detailPackageId = $this->detailPackageModel->get_new_id_api();
+                            $requestDetailPackage = [
+                                'activity' => $detailPackageId,
+                                'id_day' => $packageDayId,
+                                'id_package' => $id_package,
+                                'id_object' => $detailPackage['id_object'],
+                                'activity_type' => $detailPackage['activity_type'],
+                                'description' => $detailPackage['description']
+                            ];
+                            $addDetailPackage =  $this->detailPackageModel->add_dp_api($requestDetailPackage);
+                        }
+                    }
+                }
+            }
+        }
+
+        // create detail service
+        $addService = true;
+        if (isset($request['service_package'])) {
+            $services = $request['service_package'];
+            $addService = $this->detailServicePackageModel->add_service_api($id_package, $services, 'include');
+        }
+
+        // create reservation
+        $addR = true;
+        if (isset($request['reservationData'])) {
+            $requestData = [
+                'id_user' => $request['id_user'],
+                'id_package' => $id_package,
+                'request_date' => $request['reservationData']['reservation_date'],
+                'total_price' => empty($request['price']) ? "0" : $request['price'],
+                'id_reservation_status' => '1',
+                'number_people' => $request['reservationData']['number_people'],
+                'comment' => $request['reservationData']['comment']
+            ];
+
+            $addR = $this->reservationModel->add_r_api($requestData);
+        }
+
+        if ($addtp && $addService && $addR) {
+            return redirect()->to(base_url('user/reservation/') . '/' . $request['id_user']);
+        } else {
+            return redirect()->back()->withInput();
+        }
+    }
 }

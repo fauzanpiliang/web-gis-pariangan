@@ -207,7 +207,7 @@ CREATE TABLE `auth_groups_users` (
 
 LOCK TABLES `auth_groups_users` WRITE;
 /*!40000 ALTER TABLE `auth_groups_users` DISABLE KEYS */;
-INSERT INTO `auth_groups_users` VALUES (1,1),(1,2),(2,3),(2,4);
+INSERT INTO `auth_groups_users` VALUES (1,1),(1,2),(2,3),(2,4),(2,5);
 /*!40000 ALTER TABLE `auth_groups_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -228,7 +228,7 @@ CREATE TABLE `auth_logins` (
   PRIMARY KEY (`id`),
   KEY `email` (`email`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=96 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=108 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -237,7 +237,7 @@ CREATE TABLE `auth_logins` (
 
 LOCK TABLES `auth_logins` WRITE;
 /*!40000 ALTER TABLE `auth_logins` DISABLE KEYS */;
-INSERT INTO `auth_logins` VALUES (1,'::1','fauzanpiliang13@gmail.com',1,'2023-07-26 07:33:01',1),(2,'::1','fauzanpiliang13@gmail.com',1,'2023-07-27 09:28:51',1),(3,'::1','fauzanpiliang13@gmail.com',1,'2023-07-27 17:19:54',1),(4,'::1','  piliang13',NULL,'2023-08-04 22:16:11',0),(5,'::1','Piliang13',NULL,'2023-08-04 22:16:49',0),(6,'::1','fauzanpiliang13@gmail.com',1,'2023-08-04 22:17:42',1),(7,'::1','fauzanpiliang13@gmail.com',1,'2023-08-07 07:09:13',1),(8,'::1','fauzanpiliang13@gmail.com',1,'2023-08-07 12:34:51',1),(9,'::1','fauzanpiliang13@gmail.com',1,'2023-08-14 23:23:42',1),(10,'::1','fauzanpiliang13@gmail.com',1,'2023-08-15 07:15:36',1),(11,'::1','fauzanpiliang13@gmail.com',1,'2023-08-16 18:05:45',1),(12,'::1','admin',NULL,'2023-10-21 03:21:36',0),(13,'::1','m.agungmahardika12@gmail.com',2,'2023-10-21 03:22:11',1),(14,'::1','m.agungmahardika12@gmail.com',2,'2023-10-21 03:49:15',1),(15,'::1','m.agungmahardika12@gmail.com',2,'2023-10-21 03:50:14',1),(16,'::1','m.agungmahardika12@gmail.com',2,'2023-10-21 09:18:18',1),(17,'::1','m.agungmahardika12@gmail.com',2,'2023-10-22 05:50:36',1),(18,'::1','m.agungmahardika12@gmail.com',2,'2023-10-23 00:11:01',1),(19,'::1','m.agungmahardika12@gmail.com',2,'2023-10-23 04:28:36',1),(20,'::1','user@gmail.com',3,'2023-10-23 04:29:28',1),(21,'::1','admin',NULL,'2023-10-24 07:55:31',0),(22,'::1','admin',NULL,'2023-10-24 07:55:38',0),(23,'::1','m.agungmahardika12@gmail.com',NULL,'2023-10-24 07:55:55',0),(24,'::1','m.agungmahardika12@gmail.com',2,'2023-10-24 07:56:04',1),(25,'::1','user@gmail.com',NULL,'2023-10-24 07:58:15',0),(26,'::1','user@gmail.com',NULL,'2023-10-24 08:01:51',0),(27,'::1','user@gmail.com',NULL,'2023-10-24 08:09:56',0),(28,'::1','user@gmail.com',NULL,'2023-10-24 08:10:05',0),(29,'::1','user@gmail.com',NULL,'2023-10-24 08:10:18',0),(30,'::1','user@gmail.com',NULL,'2023-10-24 08:10:28',0),(31,'::1','user@gmail.com',NULL,'2023-10-24 08:11:56',0),(32,'::1','user@gmail.com',3,'2023-10-24 08:12:05',1),(33,'::1','m.agungmahardika12@gmail.com',NULL,'2023-10-24 11:34:43',0),(34,'::1','m.agungmahardika12@gmail.com',2,'2023-10-24 11:34:55',1),(35,'::1','m.agungmahardika12@gmail.com',2,'2023-10-24 16:51:57',1),(36,'::1','user@gmail.com',3,'2023-10-24 16:52:28',1),(37,'::1','user@gmail.com',3,'2023-10-25 03:03:20',1),(38,'::1','m.agungmahardika12@gmail.com',2,'2023-10-25 03:10:47',1),(39,'::1','m.agungmahardika12@gmail.com',2,'2023-10-25 10:14:39',1),(40,'::1','user@gmail.com',3,'2023-10-25 10:15:22',1),(41,'::1','m.agungmahardika12@gmail.com',2,'2023-10-25 10:37:26',1),(42,'::1','m.agungmahardika12@gmail.com',2,'2023-10-26 00:40:44',1),(43,'::1','m.agungmahardika12@gmail.com',2,'2023-10-26 01:08:30',1),(44,'::1','m.agungmahardika12@gmail.com',2,'2023-10-26 06:33:39',1),(45,'::1','user@gmail.com',3,'2023-10-26 06:46:15',1),(46,'::1','m.agungmahardika@gmail.com',NULL,'2023-10-26 06:49:28',0),(47,'::1','m.agungmahardika12@gmail.com',2,'2023-10-26 06:49:42',1),(48,'::1','user@gmail.com',3,'2023-10-27 00:31:04',1),(49,'::1','user@gmail.com',3,'2023-10-27 06:40:18',1),(50,'::1','user@gmail.com',NULL,'2023-10-27 10:44:32',0),(51,'::1','user@gmail.com',3,'2023-10-27 10:44:40',1),(52,'::1','user@gmail.com',3,'2023-10-27 13:38:25',1),(53,'::1','user@gmail.com',3,'2023-10-28 01:41:43',1),(54,'::1','m.agungmahardika12@gmail.com',2,'2023-10-28 02:25:05',1),(55,'::1','m.agungmahardika12@gmail.com',2,'2023-10-28 08:40:24',1),(56,'::1','user@gmail.com',3,'2023-10-29 06:34:41',1),(57,'::1','user@gmail.com',3,'2023-11-01 10:15:43',1),(58,'::1','admin@gmail.com',2,'2023-11-01 10:58:58',1),(59,'::1','user@gmail.com',NULL,'2023-11-02 02:07:54',0),(60,'::1','user@gmail.com',3,'2023-11-02 02:08:04',1),(61,'::1','admin@gmail.com',2,'2023-11-02 03:33:50',1),(62,'::1','user@gmail.com',3,'2023-11-02 10:11:38',1),(63,'::1','admin@gmail.com',2,'2023-11-02 10:39:11',1),(64,'::1','user@gmail.com',3,'2023-11-02 13:43:02',1),(65,'::1','admin@gmail.com',2,'2023-11-02 13:54:27',1),(66,'::1','user@gmail.com',3,'2023-11-03 04:05:20',1),(67,'::1','admin@gmail.com',2,'2023-11-03 04:55:26',1),(68,'::1','admin@gmail.com',NULL,'2023-11-04 02:48:00',0),(69,'::1','admin@gmail.com',2,'2023-11-04 02:48:12',1),(70,'::1','user@gmail.com',NULL,'2023-11-04 05:01:21',0),(71,'::1','user@gmail.com',3,'2023-11-04 05:01:28',1),(72,'::1','user@gmail.com',3,'2023-11-11 05:40:54',1),(73,'::1','admin@gmail.com',2,'2023-11-11 05:42:01',1),(74,'::1','tes@gmail.com',4,'2023-11-11 05:48:51',1),(75,'::1','user@gmail.com',3,'2023-11-11 05:49:16',1),(76,'::1','user@gmail.com',3,'2023-11-11 13:00:06',1),(77,'::1','admin@gmail.com',2,'2023-11-11 15:24:17',1),(78,'::1','user@gmail.com',3,'2023-11-12 03:07:50',1),(79,'::1','user@gmail.com',3,'2023-11-12 03:13:00',1),(80,'::1','admin@gmail.com',2,'2023-11-12 04:05:25',1),(81,'::1','user@gmail.com',3,'2023-11-12 09:09:43',1),(82,'::1','admin@gmail.com',2,'2023-11-12 09:10:38',1),(83,'::1','user@gmail.com',3,'2023-11-13 02:02:49',1),(84,'::1','admin@gmail.com',2,'2023-11-13 02:04:18',1),(85,'::1','admin@gmail.com',2,'2023-11-13 10:33:30',1),(86,'::1','user@gmail.com',3,'2023-11-13 11:01:20',1),(87,'::1','user@gmail.com',3,'2023-11-14 08:38:51',1),(88,'::1','admin@gmail.com',2,'2023-11-14 08:42:03',1),(89,'::1','user@gmail.com',3,'2023-11-14 14:19:05',1),(90,'::1','admin@gmail.com',2,'2023-11-14 14:19:17',1),(91,'::1','user@gmail.com',3,'2023-11-15 00:51:21',1),(92,'::1','user@gmail.com',3,'2023-11-15 05:18:48',1),(93,'::1','user@gmail.com',3,'2023-11-15 10:29:20',1),(94,'::1','user@gmail.com',3,'2023-11-15 11:10:26',1),(95,'::1','admin@gmail.com',2,'2023-11-15 13:17:19',1);
+INSERT INTO `auth_logins` VALUES (1,'::1','fauzanpiliang13@gmail.com',1,'2023-07-26 07:33:01',1),(2,'::1','fauzanpiliang13@gmail.com',1,'2023-07-27 09:28:51',1),(3,'::1','fauzanpiliang13@gmail.com',1,'2023-07-27 17:19:54',1),(4,'::1','  piliang13',NULL,'2023-08-04 22:16:11',0),(5,'::1','Piliang13',NULL,'2023-08-04 22:16:49',0),(6,'::1','fauzanpiliang13@gmail.com',1,'2023-08-04 22:17:42',1),(7,'::1','fauzanpiliang13@gmail.com',1,'2023-08-07 07:09:13',1),(8,'::1','fauzanpiliang13@gmail.com',1,'2023-08-07 12:34:51',1),(9,'::1','fauzanpiliang13@gmail.com',1,'2023-08-14 23:23:42',1),(10,'::1','fauzanpiliang13@gmail.com',1,'2023-08-15 07:15:36',1),(11,'::1','fauzanpiliang13@gmail.com',1,'2023-08-16 18:05:45',1),(12,'::1','admin',NULL,'2023-10-21 03:21:36',0),(13,'::1','m.agungmahardika12@gmail.com',2,'2023-10-21 03:22:11',1),(14,'::1','m.agungmahardika12@gmail.com',2,'2023-10-21 03:49:15',1),(15,'::1','m.agungmahardika12@gmail.com',2,'2023-10-21 03:50:14',1),(16,'::1','m.agungmahardika12@gmail.com',2,'2023-10-21 09:18:18',1),(17,'::1','m.agungmahardika12@gmail.com',2,'2023-10-22 05:50:36',1),(18,'::1','m.agungmahardika12@gmail.com',2,'2023-10-23 00:11:01',1),(19,'::1','m.agungmahardika12@gmail.com',2,'2023-10-23 04:28:36',1),(20,'::1','user@gmail.com',3,'2023-10-23 04:29:28',1),(21,'::1','admin',NULL,'2023-10-24 07:55:31',0),(22,'::1','admin',NULL,'2023-10-24 07:55:38',0),(23,'::1','m.agungmahardika12@gmail.com',NULL,'2023-10-24 07:55:55',0),(24,'::1','m.agungmahardika12@gmail.com',2,'2023-10-24 07:56:04',1),(25,'::1','user@gmail.com',NULL,'2023-10-24 07:58:15',0),(26,'::1','user@gmail.com',NULL,'2023-10-24 08:01:51',0),(27,'::1','user@gmail.com',NULL,'2023-10-24 08:09:56',0),(28,'::1','user@gmail.com',NULL,'2023-10-24 08:10:05',0),(29,'::1','user@gmail.com',NULL,'2023-10-24 08:10:18',0),(30,'::1','user@gmail.com',NULL,'2023-10-24 08:10:28',0),(31,'::1','user@gmail.com',NULL,'2023-10-24 08:11:56',0),(32,'::1','user@gmail.com',3,'2023-10-24 08:12:05',1),(33,'::1','m.agungmahardika12@gmail.com',NULL,'2023-10-24 11:34:43',0),(34,'::1','m.agungmahardika12@gmail.com',2,'2023-10-24 11:34:55',1),(35,'::1','m.agungmahardika12@gmail.com',2,'2023-10-24 16:51:57',1),(36,'::1','user@gmail.com',3,'2023-10-24 16:52:28',1),(37,'::1','user@gmail.com',3,'2023-10-25 03:03:20',1),(38,'::1','m.agungmahardika12@gmail.com',2,'2023-10-25 03:10:47',1),(39,'::1','m.agungmahardika12@gmail.com',2,'2023-10-25 10:14:39',1),(40,'::1','user@gmail.com',3,'2023-10-25 10:15:22',1),(41,'::1','m.agungmahardika12@gmail.com',2,'2023-10-25 10:37:26',1),(42,'::1','m.agungmahardika12@gmail.com',2,'2023-10-26 00:40:44',1),(43,'::1','m.agungmahardika12@gmail.com',2,'2023-10-26 01:08:30',1),(44,'::1','m.agungmahardika12@gmail.com',2,'2023-10-26 06:33:39',1),(45,'::1','user@gmail.com',3,'2023-10-26 06:46:15',1),(46,'::1','m.agungmahardika@gmail.com',NULL,'2023-10-26 06:49:28',0),(47,'::1','m.agungmahardika12@gmail.com',2,'2023-10-26 06:49:42',1),(48,'::1','user@gmail.com',3,'2023-10-27 00:31:04',1),(49,'::1','user@gmail.com',3,'2023-10-27 06:40:18',1),(50,'::1','user@gmail.com',NULL,'2023-10-27 10:44:32',0),(51,'::1','user@gmail.com',3,'2023-10-27 10:44:40',1),(52,'::1','user@gmail.com',3,'2023-10-27 13:38:25',1),(53,'::1','user@gmail.com',3,'2023-10-28 01:41:43',1),(54,'::1','m.agungmahardika12@gmail.com',2,'2023-10-28 02:25:05',1),(55,'::1','m.agungmahardika12@gmail.com',2,'2023-10-28 08:40:24',1),(56,'::1','user@gmail.com',3,'2023-10-29 06:34:41',1),(57,'::1','user@gmail.com',3,'2023-11-01 10:15:43',1),(58,'::1','admin@gmail.com',2,'2023-11-01 10:58:58',1),(59,'::1','user@gmail.com',NULL,'2023-11-02 02:07:54',0),(60,'::1','user@gmail.com',3,'2023-11-02 02:08:04',1),(61,'::1','admin@gmail.com',2,'2023-11-02 03:33:50',1),(62,'::1','user@gmail.com',3,'2023-11-02 10:11:38',1),(63,'::1','admin@gmail.com',2,'2023-11-02 10:39:11',1),(64,'::1','user@gmail.com',3,'2023-11-02 13:43:02',1),(65,'::1','admin@gmail.com',2,'2023-11-02 13:54:27',1),(66,'::1','user@gmail.com',3,'2023-11-03 04:05:20',1),(67,'::1','admin@gmail.com',2,'2023-11-03 04:55:26',1),(68,'::1','admin@gmail.com',NULL,'2023-11-04 02:48:00',0),(69,'::1','admin@gmail.com',2,'2023-11-04 02:48:12',1),(70,'::1','user@gmail.com',NULL,'2023-11-04 05:01:21',0),(71,'::1','user@gmail.com',3,'2023-11-04 05:01:28',1),(72,'::1','user@gmail.com',3,'2023-11-11 05:40:54',1),(73,'::1','admin@gmail.com',2,'2023-11-11 05:42:01',1),(74,'::1','tes@gmail.com',4,'2023-11-11 05:48:51',1),(75,'::1','user@gmail.com',3,'2023-11-11 05:49:16',1),(76,'::1','user@gmail.com',3,'2023-11-11 13:00:06',1),(77,'::1','admin@gmail.com',2,'2023-11-11 15:24:17',1),(78,'::1','user@gmail.com',3,'2023-11-12 03:07:50',1),(79,'::1','user@gmail.com',3,'2023-11-12 03:13:00',1),(80,'::1','admin@gmail.com',2,'2023-11-12 04:05:25',1),(81,'::1','user@gmail.com',3,'2023-11-12 09:09:43',1),(82,'::1','admin@gmail.com',2,'2023-11-12 09:10:38',1),(83,'::1','user@gmail.com',3,'2023-11-13 02:02:49',1),(84,'::1','admin@gmail.com',2,'2023-11-13 02:04:18',1),(85,'::1','admin@gmail.com',2,'2023-11-13 10:33:30',1),(86,'::1','user@gmail.com',3,'2023-11-13 11:01:20',1),(87,'::1','user@gmail.com',3,'2023-11-14 08:38:51',1),(88,'::1','admin@gmail.com',2,'2023-11-14 08:42:03',1),(89,'::1','user@gmail.com',3,'2023-11-14 14:19:05',1),(90,'::1','admin@gmail.com',2,'2023-11-14 14:19:17',1),(91,'::1','user@gmail.com',3,'2023-11-15 00:51:21',1),(92,'::1','user@gmail.com',3,'2023-11-15 05:18:48',1),(93,'::1','user@gmail.com',3,'2023-11-15 10:29:20',1),(94,'::1','user@gmail.com',3,'2023-11-15 11:10:26',1),(95,'::1','admin@gmail.com',2,'2023-11-15 13:17:19',1),(96,'::1','user@gmail.com',3,'2023-11-16 00:13:18',1),(97,'::1','admin@gmail.com',2,'2023-11-16 00:14:06',1),(98,'::1','admin@gmail.com',2,'2023-11-16 07:37:35',1),(99,'::1','user@gmail.com',3,'2023-11-19 11:02:47',1),(100,'::1','admin@gmail.com',2,'2023-11-19 11:03:28',1),(101,'::1','user@gmail.com',3,'2023-11-19 22:58:30',1),(102,'::1','admin@gmail.com',2,'2023-11-19 23:02:02',1),(103,'::1','user@gmail.com',3,'2023-11-20 09:08:32',1),(104,'::1','user@gmail.com',3,'2023-11-20 11:57:34',1),(105,'::1','admin@gmail.com',2,'2023-11-20 12:31:17',1),(106,'::1','user@gmail.com',3,'2023-11-21 01:45:02',1),(107,'::1','admin@gmail.com',2,'2023-11-21 01:46:50',1);
 /*!40000 ALTER TABLE `auth_logins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -547,7 +547,7 @@ CREATE TABLE `detail_package` (
   `id_package` varchar(2) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `id_day` varchar(2) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `activity` varchar(2) NOT NULL,
-  `activity_type` varchar(1) DEFAULT NULL,
+  `activity_type` varchar(50) DEFAULT NULL,
   `id_object` varchar(10) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   `description` text,
   PRIMARY KEY (`id_package`,`id_day`,`activity`),
@@ -562,7 +562,7 @@ CREATE TABLE `detail_package` (
 
 LOCK TABLES `detail_package` WRITE;
 /*!40000 ALTER TABLE `detail_package` DISABLE KEYS */;
-INSERT INTO `detail_package` VALUES ('01','17','38','','A01','asdsa'),('01','17','39','','A07','jkhj'),('01','17','40','','C02','kjkj'),('01','18','41','','A02','asdsa'),('03','15','33','','A01','asdsa'),('03','15','34','','C02','Makan Siang'),('03','16','35','','A01','okee'),('03','16','36','','C03','Makan Siang'),('03','16','37','','A02','sadsd'),('04','10','21','','A01','Kuburan Panjang'),('05','19','42','A','A01',''),('05','19','43','A','A12',''),('06','20','44','A','A01','Visit Kuburan Panjang'),('06','20','45','C','C02','Visit Kadai Rafli'),('07','21','46','A','A02','Visit Batu Agam'),('07','21','47','S','S02','Visit Rumah Batik '),('07','21','48','C','C02','Visit Kadai Rafli'),('08','22','49','A','A01','Visit Kuburan Panjang'),('08','22','50','A','A09','Visit Surau Sampono Kayo');
+INSERT INTO `detail_package` VALUES ('01','50','09','Atraksi','A01','Visit Kuburan Panjang'),('01','50','10','Atraksi','A03','Visit Batu 50 Kota'),('01','51','11','Culinary Place','C05','Visit Kadai Gudester'),('05','52','12','Atraksi','A01','Visit Kuburan Panjang'),('05','52','13','Atraksi','A03','Visit Batu 50 Kota'),('05','52','14','Atraksi','A03','Visit Batu 50 Kota'),('05','53','15','Culinary Place','C05','Visit Kadai Gudester'),('06','54','16','Atraksi','A01','Visit Kuburan Panjang'),('06','54','17','Atraksi','A03','Visit Batu 50 Kota'),('06','54','18','Homestay','H01','Visit Homestay tes1'),('06','55','19','Culinary Place','C05','Visit Kadai Gudester'),('07','56','20','Atraksi','A01','Visit Kuburan Panjang'),('07','56','21','Atraksi','A03','Visit Batu 50 Kota'),('07','57','22','Culinary Place','C05','Visit Kadai Gudester'),('07','57','23','Homestay','H01','Visit Homestay tes1'),('08','58','24','Atraksi','A01','Visit Kuburan Panjang'),('08','58','25','Atraksi','A03','Visit Batu 50 Kota'),('08','59','26','Culinary Place','C05','Visit Kadai Gudester'),('08','59','27','Homestay','H01','Visit Homestay tes1'),('09','60','28','Atraksi','A01','Visit Kuburan Panjang'),('09','60','29','Atraksi','A03','Visit Batu 50 Kota'),('09','61','30','Culinary Place','C05','Visit Kadai Gudester'),('09','61','31','Atraksi','A04','Visit Batu Tanah Datar'),('10','62','32','Culinary Place','C02','Visit Kadai Rafli'),('10','62','33','Atraksi','A03','Visit Batu 50 Kota');
 /*!40000 ALTER TABLE `detail_package` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -618,7 +618,7 @@ CREATE TABLE `detail_service_package` (
 
 LOCK TABLES `detail_service_package` WRITE;
 /*!40000 ALTER TABLE `detail_service_package` DISABLE KEYS */;
-INSERT INTO `detail_service_package` VALUES ('01','01',NULL),('01','03',NULL),('01','04',NULL),('01','05','include'),('01','06','include'),('01','07','include'),('01','08','include'),('02','01',NULL),('02','03',NULL),('02','04',NULL),('02','06','include'),('02','07','include'),('02','08','include');
+INSERT INTO `detail_service_package` VALUES ('01','01',NULL),('01','03',NULL),('01','04',NULL),('01','05','include'),('01','07','include'),('01','08','include'),('01','09','include'),('01','10','include'),('02','01',NULL),('02','03',NULL),('02','04',NULL),('02','05','include'),('02','06','include');
 /*!40000 ALTER TABLE `detail_service_package` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -920,7 +920,7 @@ DROP TABLE IF EXISTS `package`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `package` (
   `id` varchar(2) NOT NULL,
-  `name` varchar(25) NOT NULL,
+  `name` varchar(50) NOT NULL,
   `price` int DEFAULT NULL,
   `capacity` int DEFAULT NULL,
   `cp` varchar(13) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
@@ -938,7 +938,7 @@ CREATE TABLE `package` (
 
 LOCK TABLES `package` WRITE;
 /*!40000 ALTER TABLE `package` DISABLE KEYS */;
-INSERT INTO `package` VALUES ('01','Paket wisata tes 1',100000,10,'6281373517899','',NULL,2,NULL),('03','tes',500000,10,'1','',NULL,2,NULL),('04','Costume Package By -user1',10000,3,NULL,NULL,'costum_package.jpg',1,NULL),('05','Costume Package By -user1',10000,3,NULL,NULL,'costum_package.jpg',1,NULL),('06','Costume Package By -user1',0,3,NULL,NULL,'costum_package.jpg',1,NULL),('07','Costume Package By -user1',0,3,NULL,NULL,'costum_package.jpg',1,NULL),('08','Costume Package By -user1',0,3,NULL,NULL,'costum_package.jpg',1,NULL);
+INSERT INTO `package` VALUES ('01','Paket wisata tes 1',100000,10,'6281373517899','','1700443200_0a75e06da1bc76671a19.png',2,NULL),('03','tes',500000,10,'1','',NULL,2,NULL),('04','Costume Package By -user1',10000,3,NULL,NULL,'costum_package.jpg',1,NULL),('05','Paket wisata tes 1 + Cost',0,9,NULL,NULL,'costum_package.jpg',1,NULL),('06','Paket wisata tes 1 + Costum By -user123',0,9,NULL,NULL,'costum_package.jpg',1,NULL),('07','Paket wisata tes 1 + Costum By -user123',0,9,NULL,NULL,'costum_package.jpg',1,NULL),('08','Paket wisata tes 1 + Costum By -user123',0,9,NULL,NULL,'costum_package.jpg',1,NULL),('09','Paket wisata tes 1 + Costum By -user123',0,9,NULL,NULL,'costum_package.jpg',1,NULL),('10','Costume Package By -user123',0,3,NULL,NULL,'costum_package.jpg',1,NULL);
 /*!40000 ALTER TABLE `package` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -965,7 +965,7 @@ CREATE TABLE `package_day` (
 
 LOCK TABLES `package_day` WRITE;
 /*!40000 ALTER TABLE `package_day` DISABLE KEYS */;
-INSERT INTO `package_day` VALUES ('01','17',NULL),('01','18',NULL),('03','15',NULL),('03','16',NULL),('04','10',NULL),('05','19',NULL),('06','20',NULL),('07','21',NULL),('08','22',NULL);
+INSERT INTO `package_day` VALUES ('01','50',NULL),('01','51',NULL),('03','15',NULL),('03','16',NULL),('04','10',NULL),('05','52',NULL),('05','53',NULL),('06','54',NULL),('06','55',NULL),('07','56',NULL),('07','57',NULL),('08','58',NULL),('08','59',NULL),('09','60',NULL),('09','61',NULL),('10','62',NULL);
 /*!40000 ALTER TABLE `package_day` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1154,14 +1154,19 @@ CREATE TABLE `reservation` (
   `number_people` int DEFAULT '0',
   `check_in` timestamp NULL DEFAULT NULL,
   `total_price` bigint DEFAULT '0',
-  `confirmed_at` timestamp NULL DEFAULT NULL,
-  `confirmed_by` int DEFAULT NULL,
   `deposit` int DEFAULT '0',
   `proof_of_deposit` varchar(255) DEFAULT NULL,
-  `deposit_date` varchar(255) DEFAULT NULL,
+  `deposit_date` timestamp NULL DEFAULT NULL,
+  `confirmed_at` timestamp NULL DEFAULT NULL,
+  `confirmed_by` int DEFAULT NULL,
+  `canceled_at` timestamp NULL DEFAULT NULL,
+  `canceled_by` int DEFAULT NULL,
   `proof_of_payment` varchar(255) DEFAULT NULL,
   `payment_accepted_date` timestamp NULL DEFAULT NULL,
   `payment_accepted_by` int DEFAULT NULL,
+  `proof_of_refund` varchar(255) DEFAULT NULL,
+  `refund_date` varchar(255) DEFAULT NULL,
+  `refund_by` int DEFAULT NULL,
   `comment` varchar(255) DEFAULT NULL,
   `review` varchar(255) DEFAULT NULL,
   `rating` int DEFAULT NULL,
@@ -1183,7 +1188,7 @@ CREATE TABLE `reservation` (
 
 LOCK TABLES `reservation` WRITE;
 /*!40000 ALTER TABLE `reservation` DISABLE KEYS */;
-INSERT INTO `reservation` VALUES (3,'01','2023-11-18','5',3,NULL,100000,'2023-11-15 14:41:06',2,100000,'1700059284_02806a451f0505b0f067.png','2023-11-15 21:41:26',NULL,'2023-11-15 14:43:03',2,NULL,NULL,NULL,'2023-11-15 07:40:45','2023-11-15 07:56:52'),(3,'08','2023-11-18','3',3,NULL,30000,'2023-11-15 14:56:01',2,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2023-11-15 07:55:48','2023-11-15 07:57:53');
+INSERT INTO `reservation` VALUES (3,'10','2023-11-29','3',3,NULL,500001,500001,'1700532364_89b82003743783039ba7.png','2023-11-21 02:06:07','2023-11-21 02:05:34',2,'2023-11-21 02:07:42',3,NULL,'2023-11-21 02:06:18',2,'1700532479_02fafb392b28d98ddcad.png','2023-11-21 09:08:02',2,NULL,NULL,NULL,'2023-11-20 19:05:14','2023-11-20 19:08:02');
 /*!40000 ALTER TABLE `reservation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1463,7 +1468,7 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1472,7 +1477,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'fauzanpiliang13@gmail.com','piliang13','fauzan',NULL,NULL,'default.svg','$2y$10$QysUxU6DHFbQT0/wvUR.7O.wePPStPJWIwF5QU5kR9wIIA97yjqwe',NULL,NULL,NULL,NULL,NULL,NULL,1,0,'2023-07-24 15:56:31','2023-07-24 15:56:31',NULL),(2,'admin@gmail.com','admin','admin','',0,'default.svg','$2y$10$hCY/AcGKsIGOLp8ZTyTi5u5tAxtFvRpw3I1EsA3tHyqUNHh.S/bs6',NULL,NULL,NULL,NULL,NULL,NULL,1,0,'2023-10-21 03:22:06','2023-10-21 03:22:06',NULL),(3,'user@gmail.com','user123','user','',0,'default.svg','$2y$10$NT0X7LvN2xBlmBzSj9FO5eUzmJlNhPwhHbpF1/DBta0mWlNBgNt6S',NULL,NULL,NULL,NULL,NULL,NULL,1,0,'2023-10-23 04:29:20','2023-10-23 04:29:20',NULL),(4,'tes@gmail.com','tess','tess',NULL,NULL,'default.svg','$2y$10$TNEYh2pB.L.yLRJCldYli.N5R5lkgcmubl.vA6capCZ1k0D2Nh75.',NULL,NULL,NULL,NULL,NULL,NULL,1,0,'2023-11-11 05:48:45','2023-11-11 05:48:45',NULL);
+INSERT INTO `users` VALUES (1,'fauzanpiliang13@gmail.com','piliang13','fauzan',NULL,NULL,'default.svg','$2y$10$QysUxU6DHFbQT0/wvUR.7O.wePPStPJWIwF5QU5kR9wIIA97yjqwe',NULL,NULL,NULL,NULL,NULL,NULL,1,0,'2023-07-24 15:56:31','2023-07-24 15:56:31',NULL),(2,'admin@gmail.com','admin','admin','',0,'default.svg','$2y$10$hCY/AcGKsIGOLp8ZTyTi5u5tAxtFvRpw3I1EsA3tHyqUNHh.S/bs6',NULL,NULL,NULL,NULL,NULL,NULL,1,0,'2023-10-21 03:22:06','2023-10-21 03:22:06',NULL),(3,'user@gmail.com','user123','user','',0,'default.svg','$2y$10$NT0X7LvN2xBlmBzSj9FO5eUzmJlNhPwhHbpF1/DBta0mWlNBgNt6S',NULL,NULL,NULL,NULL,NULL,NULL,1,0,'2023-10-23 04:29:20','2023-10-23 04:29:20',NULL),(4,'tes@gmail.com','tess','tess',NULL,NULL,'default.svg','$2y$10$TNEYh2pB.L.yLRJCldYli.N5R5lkgcmubl.vA6capCZ1k0D2Nh75.',NULL,NULL,NULL,NULL,NULL,NULL,1,0,'2023-11-11 05:48:45','2023-11-11 05:48:45',NULL),(5,'aa@gmail.com','aaa',NULL,NULL,NULL,'default.svg','$2y$10$7un5wd32cG1MS17XISoKy.ElfKEtb36FHQPyfMGawgr8SFjkFt4qi',NULL,NULL,NULL,NULL,NULL,NULL,1,0,'2023-11-16 00:19:12','2023-11-16 00:19:12',NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1571,4 +1576,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-16  7:12:58
+-- Dump completed on 2023-11-21  9:09:05

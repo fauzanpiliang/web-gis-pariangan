@@ -22,10 +22,12 @@
                                         <?php if (isset($data->description)) : ?>
                                             <p class="card-text"><?= $data->description; ?></p>
                                         <?php endif; ?>
+                                        <?php if (isset($data->date)) : ?>
+                                            <p class="card-text"><small class="text-muted"><?= $data->date; ?></small></p>
+                                        <?php endif; ?>
                                         <?php if (isset($data->price)) : ?>
                                             <p class="card-text"><small class="text-muted"><?= $data->price; ?> IDR</small></p>
                                         <?php endif; ?>
-
                                     </div>
                                     <div class="card-footer text-end" style="border: none;">
                                         <a role="button" class="btn btn-success" href="<?= base_url('package/detail') . '/' . $data->id; ?>">Detail</a>
@@ -49,6 +51,11 @@
                                         <?= $data->description; ?>
                                     </p>
                                 </div>
+                                <?php if (isset($data->date)) : ?>
+                                    <div class="modal-footer">
+                                        <span class="text-lg"><?= $data->date; ?></span>
+                                    </div>
+                                <?php endif; ?>
                                 <?php if (isset($data->price)) : ?>
                                     <div class="modal-footer">
                                         <span class="text-lg"><?= $data->price; ?> IDR</span>
