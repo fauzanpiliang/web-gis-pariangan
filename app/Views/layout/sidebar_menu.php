@@ -114,10 +114,10 @@
                         <i class="iconify" data-icon="fontisto:holiday-village" data-width="25" data-height="25"></i>
                         <a role="button" href="<?= base_url('manage_pariangan') ?>">Village</a>
                     </li>
-                    <li class="submenu-item sidebar-link  <?php if (current_url() == base_url('manage_atraction')) echo 'active'; ?>">
+                    <!-- <li class="submenu-item sidebar-link  <?php if (current_url() == base_url('manage_atraction')) echo 'active'; ?>">
                         <i class="iconify" data-icon="ant-design:star-filled" data-width="25" data-height="25"></i>
                         <a role="button" href="<?= base_url('manage_atraction') ?>">Uniqe Atraction</a>
-                    </li>
+                    </li> -->
                     <li class="submenu-item sidebar-link  <?php if (current_url() == base_url('manage_package')) echo 'active'; ?>">
                         <i class="iconify" data-icon="material-symbols:package-outline-rounded" data-width="25" data-height="25"></i>
                         <a role="button" href="<?= base_url('manage_package') ?>">Package</a>
