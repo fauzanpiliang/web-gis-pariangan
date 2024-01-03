@@ -44,15 +44,16 @@ class DetailPackageModel extends Model
         return $query;
     }
 
-    public function get_objects_by_package_day_id($id_day = null)
+    public function get_objects_by_package_day_id($id_package, $id_day = null)
     {
         $query = $this->db->table($this->table)
-            ->select('*')
+            ->select('detail_package.*')
+            ->join('package', 'package.id = detail_package.id_package')
+            ->where('detail_package.id_package', $id_package)
             ->where('detail_package.id_day', $id_day)
             ->get();
         return $query;
     }
-
 
     public function get_new_id_api()
     {

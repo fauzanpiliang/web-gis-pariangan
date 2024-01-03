@@ -71,7 +71,6 @@ class ManagePackageController extends BaseController
 
     public function edit($id = null)
     {
-        // 
         $package = $this->model->getPackage($id)->getRowArray();
 
         $serviceData = $this->modelservices->getServices()->getResultArray();
@@ -91,12 +90,13 @@ class ManagePackageController extends BaseController
         }
 
         $packageDay = $this->packageDayModel->get_pd_by_package_id_api($id)->getResultArray();
+
         $no = 0;
         foreach ($packageDay as $day) {
-            $packageDay[$no]['detailPackage'] = $this->detailPackageModel->get_objects_by_package_day_id($day['day'])->getResultArray();
+            $packageDay[$no]['detailPackage'] = $this->detailPackageModel->get_objects_by_package_day_id($id, $day['day'])->getResultArray();
             $no++;
         }
-
+        // dd($packageDay);
         $objectData = [];
 
 
@@ -134,7 +134,7 @@ class ManagePackageController extends BaseController
 
         $package['service_package'] =  $selectedService;
         $package['service_package_exclude'] = $selectedServiceExclude;
-        $package['gallery'] = [$package['url']];
+        $package['gallery'] = $package['url'];
         $package['video_url'] = null;
 
         $data = [
@@ -150,7 +150,6 @@ class ManagePackageController extends BaseController
 
     public function save_update($id = null)
     {
-        // 
         $request = $this->request->getPost();
 
         $url = null;
@@ -177,9 +176,9 @@ class ManagePackageController extends BaseController
         $updateTp = $this->model->updatePackage($id, $requestData);
         if (isset($request['packageDetailData'])) {
             $deletePackageDay = $this->packageDayModel->delete_pd_by_package_id($id);
-
+            $noDay = 1;
             foreach ($request['packageDetailData'] as $packageDay) {
-                $packageDayId = $this->packageDayModel->get_new_id_api();
+                $packageDayId = $noDay;
                 $requestPackageDay = [
                     'day' => $packageDayId,
                     'id_package' => $id,
@@ -189,22 +188,27 @@ class ManagePackageController extends BaseController
 
                 if ($addPackageDay) {
                     if (isset($packageDay['detailPackage'])) {
+
+                        $noDetail = 1;
                         foreach ($packageDay['detailPackage'] as $detailPackage) {
-                            $detailPackageId = $this->detailPackageModel->get_new_id_api();
+                            $detailPackageId = $noDetail;
                             $requestDetailPackage = [
                                 'activity' => $detailPackageId,
                                 'id_day' => $packageDayId,
                                 'id_package' => $id,
                                 'id_object' => $detailPackage['id_object'],
                                 'activity_type' => $detailPackage['activity_type'],
+                                'activity_price' => $detailPackage['activity_price'],
                                 'description' => $detailPackage['description']
                             ];
                             $addDetailPackage =  $this->detailPackageModel->add_dp_api($requestDetailPackage);
+                            $noDetail++;
                         }
                     } else {
                         $rollbackPackageDay = $this->packageDayModel->delete_pd_by_day_id($packageDayId);
                     }
                 }
+                $noDay++;
             }
         }
 
@@ -227,9 +231,6 @@ class ManagePackageController extends BaseController
         } else {
             return redirect()->back()->withInput();
         }
-
-        // 
-
     }
     public function insert()
     {
@@ -312,8 +313,9 @@ class ManagePackageController extends BaseController
 
         $addtp = $this->model->addPackage($requestData);
         if (isset($request['packageDetailData'])) {
+            $noDay = 1;
             foreach ($request['packageDetailData'] as $packageDay) {
-                $packageDayId = $this->packageDayModel->get_new_id_api();
+                $packageDayId = $noDay;
                 $requestPackageDay = [
                     'day' => $packageDayId,
                     'id_package' => $id_package,
@@ -322,19 +324,23 @@ class ManagePackageController extends BaseController
                 $addPackageDay = $this->packageDayModel->add_pd_api($requestPackageDay);
 
                 if ($addPackageDay) {
+                    $noDetail = 1;
                     foreach ($packageDay['detailPackage'] as $detailPackage) {
-                        $detailPackageId = $this->detailPackageModel->get_new_id_api();
+                        $detailPackageId =  $noDetail;
                         $requestDetailPackage = [
                             'activity' => $detailPackageId,
                             'id_day' => $packageDayId,
                             'id_package' => $id_package,
                             'id_object' => $detailPackage['id_object'],
+                            'activity_price' => $detailPackage['activity_price'],
                             'activity_type' => $detailPackage['activity_type'],
                             'description' => $detailPackage['description']
                         ];
                         $addDetailPackage =  $this->detailPackageModel->add_dp_api($requestDetailPackage);
+                        $noDetail++;
                     }
                 }
+                $noDay++;
             }
         }
 

@@ -6,6 +6,7 @@ use Myth\Auth\Password;
 use CodeIgniter\Files\File;
 use CodeIgniter\I18n\Time;
 
+date_default_timezone_set('Asia/Jakarta');
 class User extends BaseController
 {
 

@@ -91,7 +91,6 @@
                                 $packageId = $item['id_package'];
                                 $request_date = $item['request_date'];
                                 $packageName = $item['package_name'];
-                                $requestDate = $item['request_date'];
                                 $numberPeople = $item['number_people'];
                                 $reservationIdStatus = $item['id_reservation_status'];
                                 $statusReservation = $item['status'];

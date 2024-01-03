@@ -563,7 +563,6 @@
         } else if (sameDateCheckResult == "true") {
             Swal.fire('Already chose the same date! please select another date', '', 'warning');
         } else {
-            console.log("masuk sini??")
             <?php if (in_groups('user')) : ?>
                 let requestData = {
                     reservation_date: reservationDate,
@@ -618,7 +617,6 @@
         let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
         let yyyy = today.getFullYear();
 
-        console.log(dd)
         today = yyyy + '-' + mm + '-' + dd;
 
         if (reservation_date > today) {

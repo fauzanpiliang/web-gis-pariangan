@@ -161,6 +161,7 @@
                                                     <tr>
                                                         <th>Object code <span class="text-danger">*</span> </th>
                                                         <th>Activity type</th>
+                                                        <th>Activity price</th>
                                                         <th>Activity description <span class="text-danger">*</span></th>
                                                     </tr>
                                                 </thead>
@@ -169,8 +170,9 @@
                                                         <tr id="<?= $noDay ?>-<?= $noDetail ?>">
                                                             <td><input value="<?= $detailPackage['id_object']; ?>" class="form-control" name="packageDetailData[<?= $noDay ?>][detailPackage][<?= $noDetail ?>][id_object]" required readonly></td>
                                                             <td><input value="<?= $detailPackage['activity_type']; ?>" class="form-control" name="packageDetailData[<?= $noDay ?>][detailPackage][<?= $noDetail ?>][activity_type]" readonly></td>
+                                                            <td><input value="<?= $detailPackage['activity_price']; ?>" class="form-control" name="packageDetailData[<?= $noDay ?>][detailPackage][<?= $noDetail ?>][activity_price]" readonly></td>
                                                             <td><input value="<?= $detailPackage['description']; ?>" class="form-control" name="packageDetailData[<?= $noDay ?>][detailPackage][<?= $noDetail ?>][description]" required></td>
-                                                            <td><a class="btn btn-danger" onclick="removeObject('<?= $noDay ?>','<?= $noDetail ?>')"> <i class="fa fa-x"></i> </a></td>
+                                                            <td><a class="btn btn-danger" onclick="removeObject('<?= $noDay ?>','<?= $noDetail ?>','<?= $detailPackage['activity_price']; ?>')"> <i class="fa fa-x"></i> </a></td>
                                                         </tr>
                                                         <?php $noDetail++ ?>
                                                     <?php endforeach; ?>
@@ -202,11 +204,20 @@
 <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
 <script src="<?= base_url('assets/js/extensions/form-element-select.js'); ?>"></script>
 <script>
-    function removeObject(noDay, noDetail) {
-        console.log("masuk sini")
+    function removeObject(noDay, noDetail, price) {
+        // no detail
         $(`#${noDay}-${noDetail}`).remove()
         let current = $(`#lastNoDetail${noDay}`).val()
         $(`#lastNoDetail${noDay}`).val(current - 1)
+
+        // price
+        let currentPrice = parseInt($(`#price`).val())
+        let finalPrice = currentPrice - parseInt(price)
+        $(`#price`).val(finalPrice)
+        console.log("object price" + price)
+        console.log("current price " + currentPrice)
+        console.log("final price " + finalPrice)
+
 
     }
     //open modal package day
@@ -254,6 +265,7 @@
                 <tr>
                     <th>Object code <span class="text-danger">*</span></th>
                     <th>Activity type</th>
+                    <th>Activity price</th>
                     <th>Description <span class="text-danger">*</span></th>
                 </tr>  
             </thead>
@@ -308,7 +320,6 @@
     }
 
     function addObjectValue(object) {
-
         console.log(object)
         let objectData = JSON.parse(object)
         let objectId = objectData.id
@@ -322,7 +333,8 @@
     function saveDetailPackageDay(noDay) {
         //get data from modal input
         let noDetail = parseInt($(`#lastNoDetail${noDay}`).val())
-        console.log(noDetail)
+
+        let object_price = parseInt($("#detail-package-price-object").val())
         let object_id = $("#detail-package-id-object").val()
         let activity_type = ''
         let description = $("#detail-package-description").val()
@@ -344,11 +356,22 @@
           <td>
           <input class="form-control" value="${activity_type}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_type]"  readonly>
           </td>
+          <td>
+          <input class="form-control" value="${object_price}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_price]"  readonly>
+          </td>
           <td><input class="form-control" value="${description}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][description]" required></td>
-          <td><a class="btn btn-danger" onclick="removeObject('${noDay}','${ noDetail }')"> <i class="fa fa-x"></i> </a></td>
+          <td><a class="btn btn-danger" onclick="removeObject('${noDay}','${ noDetail }','${object_price}')"> <i class="fa fa-x"></i> </a></td>
         </tr>     
         `)
         $(`#lastNoDetail${noDay}`).val(noDetail + 1)
+        // price counting
+        let currentPrice = parseInt($('#price').val())
+        let finalPrice = currentPrice + object_price
+        console.log("current price : " + currentPrice)
+        console.log("object price :" + object_price)
+        console.log("final price : " + finalPrice)
+
+        $('#price').val(finalPrice)
     }
 </script>
 
@@ -371,11 +394,9 @@
         credits: false,
     })
 
-    <?php if (count($data['gallery']) > 0) : ?>
-
+    <?php if ($data['gallery'] != null) : ?>
         pond.addFiles(
-            <?php foreach ($data['gallery'] as $gallery) : ?> `<?= base_url('media/photos/package/' . $gallery); ?>`,
-            <?php endforeach; ?>
+            `<?= base_url('media/photos/package/' . $data['gallery']); ?>`,
         );
     <?php endif; ?>
 

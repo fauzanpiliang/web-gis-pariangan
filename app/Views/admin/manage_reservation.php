@@ -293,7 +293,7 @@
             if (result['id_reservation_status'] == '4') {
                 $("#userPayment").append(`
                 <div class="text-end">
-                <span class="badge bg-success"> payed </span>
+                <span class="badge bg-success"> paid </span>
                 </div>
                 `)
             } else {

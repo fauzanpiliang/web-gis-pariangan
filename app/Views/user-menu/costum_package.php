@@ -203,9 +203,6 @@
         $(`#${noDay}-${noDetail}`).remove()
         let current = $(`#lastNoDetail${noDay}`).val()
         $(`#lastNoDetail${noDay}`).val(current - 1)
-        // totalPrice -= parseInt(objectPrice)
-        // $("#totalPrice").val(totalPrice)
-
     }
     //open modal package day
 
@@ -322,8 +319,6 @@
         //get data from modal input
         let noDetail = parseInt($(`#lastNoDetail${noDay}`).val())
         let object_price = $("#detail-package-price-object").val() == null ? 0 : parseInt($("#detail-package-price-object").val())
-        // totalPrice += parseInt(object_price)
-        // $("#totalPrice").val(totalPrice)
 
         let object_id = $("#detail-package-id-object").val()
         let activity_type = ''
