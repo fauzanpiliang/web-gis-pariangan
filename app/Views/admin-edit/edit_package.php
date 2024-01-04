@@ -82,7 +82,7 @@
                                 </div>
                             </div>
                             <div class="form-group mb-4">
-                                <label for="capacity" class="mb-2">Capacity</label>
+                                <label for="capacity" class="mb-2">Maks Capacity</label>
                                 <input type="text" value="<?= $data['capacity'] ?>" id="capacity" class="form-control" name="capacity" placeholder="capacity" value="">
                             </div>
                             <div class="form-group mb-4">

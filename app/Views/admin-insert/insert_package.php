@@ -82,8 +82,8 @@
                                 </div>
                             </div>
                             <div class="form-group mb-4">
-                                <label for="capacity" class="mb-2">Capacity</label>
-                                <input type="text" id="capacity" class="form-control" name="capacity" placeholder="capacity" value="">
+                                <label for="capacity" class="mb-2">Capacity <span class="text-danger">*</span></label>
+                                <input type="text" id="capacity" class="form-control" name="capacity" placeholder="capacity" value="" required>
                             </div>
                             <div class="form-group mb-4">
                                 <label for="contact_person" class="mb-2">Contact Person</label>
@@ -167,6 +167,8 @@
     function removeObject(noDay, noDetail, price) {
         $(`#${noDay}-${noDetail}`).remove()
         let current = $(`#lastNoDetail${noDay}`).val()
+        $(`#lastNoDetail${noDay}`).val(current - 1)
+
         let currentPrice = parseInt($(`#price`).val())
         let finalPrice = currentPrice - parseInt(price)
         console.log("object price" + price)
@@ -174,7 +176,7 @@
         console.log("final price " + finalPrice)
 
         $(`#price`).val(finalPrice)
-        $(`#lastNoDetail${noDay}`).val(current - 1)
+
     }
 
     //open modal package day

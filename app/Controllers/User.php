@@ -58,14 +58,14 @@ class User extends BaseController
             $dayConvert = $dateConvert['mday'] - 3;
             $requestDateMin3 = $yearConvert . "-" . $monthConvert . "-" . $dayConvert;
 
+            // update status
             if ($dateNow == $requestDateMin3 && ($reservation_status == 2 || $reservation_status == 1) && $deposit_date == null) {
-                // update status
                 $users_reservation[$no]['id_reservation_status'] = 3;
                 $this->reservationModel->update_r_api($id, $package_id, $request_date, ['id_reservation_status' => 3]);
             }
 
+            // update status
             if ($request_date  < $dateNow && $reservation_status != 3) {
-                // update status
                 $users_reservation[$no]['id_reservation_status'] = 5;
                 $this->reservationModel->update_r_api($id, $package_id, $request_date, ['id_reservation_status' => 5]);
             }

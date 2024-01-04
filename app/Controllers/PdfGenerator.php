@@ -78,7 +78,7 @@ class PdfGenerator extends BaseController
             $package_day = $this->packageDayModel->get_pd_by_package_id_api($id_package)->getResultArray();
 
             for ($i = 0; $i < count($package_day); $i++) {
-                $package_day[$i]['package_day_detail'] = $this->detailPackageModel->get_detail_package_by_dp_api($package_day[$i]['day'])->getResultArray();
+                $package_day[$i]['package_day_detail'] = $this->detailPackageModel->get_detail_package_by_dp_api($id_package, $package_day[$i]['day'])->getResultArray();
             }
 
             $package['reservation'] = $reservation;
@@ -117,7 +117,7 @@ class PdfGenerator extends BaseController
             $package_day = $this->packageDayModel->get_pd_by_package_id_api($id_package)->getResultArray();
 
             for ($i = 0; $i < count($package_day); $i++) {
-                $package_day[$i]['package_day_detail'] = $this->detailPackageModel->get_detail_package_by_dp_api($package_day[$i]['day'])->getResultArray();
+                $package_day[$i]['package_day_detail'] = $this->detailPackageModel->get_detail_package_by_dp_api($id_package, $package_day[$i]['day'])->getResultArray();
             }
 
             $package['reservation'] = $reservation;

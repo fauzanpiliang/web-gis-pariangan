@@ -62,12 +62,19 @@
                         </div>
                         <div class="card-body">
                             <div class="form-group mb-4">
-                                <label for="reservation_date" class="mb-2"> Select reservation date <span class="text-danger">*</span></label>
+                                <label for="reservation_date" class="mb-2"> Select booking date (Min H-7) <span class="text-danger">*</span></label>
                                 <input type="date" id="reservation_date" name="reservationData[reservation_date]" class="form-control" required>
                             </div>
                             <div class="form-group mb-4">
-                                <label for="number_people" class="mb-2"> Number of people <span class="text-danger">*</span> </label>
-                                <input type="number" id="number_people" name="reservationData[number_people]" class="form-control" required>
+                                <label for="number_people" class="mb-2"> Number of people<span class="text-danger">*</span> </label>
+                                <input type="number" oninput="suitPrice()" value="1" id="number_people" name="reservationData[number_people]" class="form-control" required>
+                            </div>
+                            <div class="form-group mb-4">
+                                <label for="price" class="mb-2">Price </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">Rp </span>
+                                    <input type="number" id="price" class="form-control" name="price" placeholder="price" aria-label="price" aria-describedby="price" value="0" required readonly>
+                                </div>
                             </div>
                             <div class="form-group mb-4">
                                 <label for="service_package" class="mb-2">Service Package</label>
@@ -105,48 +112,6 @@
 
                             <div class="p-4" id="package-day-container">
                                 <?php $noDay = 1; ?>
-                                <?php if ($packageDayData) : ?>
-
-                                    <?php foreach ($packageDayData as $packageDay) : ?>
-                                        <div class="border shadow-sm p-4 mb-4 table-responsive">
-                                            <span> Day </span> <input value="<?= $noDay ?>" type="text" name="packageDetailData[<?= $noDay ?>][day]" class="d-block" id="input-day-<?= $noDay ?>" readonly>
-                                            <span> Object count </span> <input disabled type="text" id="lastNoDetail<?= $noDay ?>" class="d-block" required>
-                                            <!-- give day order -->
-                                            <span> Description </span> <input value="<?= $packageDay['description'] ?>" name="packageDetailData[<?= $noDay ?>][packageDayDescription]" class="d-block">
-
-                                            <br>
-                                            <br>
-                                            <?php $noDetail = 0; ?>
-
-                                            <a class="btn btn-outline-success btn-sm" onclick="openDetailPackageModal(<?= $noDay ?>)" data-bs-toggle="modal" data-bs-target="#modalPackage"> <i class="fa fa-plus"> </i> </a>
-                                            <table class="table table-sm table-border" id="table-day">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Object code <span class="text-danger">*</span> </th>
-                                                        <th>Activity type</th>
-                                                        <th>Activity description <span class="text-danger">*</span></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="body-detail-package-<?= $noDay ?>">
-                                                    <?php foreach ($packageDay['detailPackage'] as $detailPackage) : ?>
-                                                        <tr id="<?= $noDay ?>-<?= $noDetail ?>">
-                                                            <td><input value="<?= $detailPackage['id_object']; ?>" class="form-control" name="packageDetailData[<?= $noDay ?>][detailPackage][<?= $noDetail ?>][id_object]" required readonly></td>
-                                                            <td><input value="<?= $detailPackage['activity_type']; ?>" class="form-control" name="packageDetailData[<?= $noDay ?>][detailPackage][<?= $noDetail ?>][activity_type]"></td>
-                                                            <td><input value="<?= $detailPackage['description']; ?>" class="form-control" name="packageDetailData[<?= $noDay ?>][detailPackage][<?= $noDetail ?>][description]" required></td>
-                                                            <td><a class="btn btn-danger" onclick="removeObject('<?= $noDay ?>','<?= $noDetail ?>')"> <i class="fa fa-x"></i> </a></td>
-                                                        </tr>
-                                                        <?php $noDetail++ ?>
-                                                    <?php endforeach; ?>
-                                                    <script>
-                                                        $(`#lastNoDetail<?= $noDay ?>`).val(<?= $noDetail ?>)
-                                                    </script>
-
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <?php $noDay++ ?>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -165,6 +130,9 @@
 <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
 <script src="<?= base_url('assets/js/extensions/form-element-select.js'); ?>"></script>
 <script>
+    let totalPrice = 0
+    let noDay = <?= $noDay ?>
+
     let dateNow = new Date();
     $('#reservation_date').datepicker({
         format: 'yyyy-mm-dd',
@@ -173,11 +141,33 @@
         todayHighlight: true
     });
 
+
+
+    function suitPrice() {
+        let numberPeople = parseInt($('#number_people').val())
+        console.log(typeof numberPeople)
+        // check if number people less than 1
+        if (isNaN(numberPeople)) {
+            // $('#number_people').val(1)
+            // numberPeople = 1
+        } else if (numberPeople < 1 || isNaN(numberPeople)) {
+            Swal.fire('Need 1 people at least', '', 'warning');
+            $('#number_people').val(1)
+            numberPeople = 1
+        } else {
+            console.log("totalllll :" + totalPrice)
+            console.log("numberPeople :" + numberPeople)
+            let finalPrice = totalPrice * numberPeople
+            console.log("final price" + finalPrice)
+            $('#price').val(finalPrice)
+
+        }
+    }
+
     function checkRequired(event) {
         let reservationDate = $('#reservation_date').val()
-        let numberPeople = $('#number_people').val()
+        let numberPeople = parseInt($('#number_people').val())
         let sameDateCheckResult = "true"
-
 
         let checkDetailPackage = $('#checkDetailPackage').val()
         let today = new Date();
@@ -189,13 +179,14 @@
         if (reservationDate <= today) {
             event.preventDefault();
             Swal.fire('Cannot create costume package, out of date, Maximum H-1 reservation', '', 'warning');
-        } else if (numberPeople <= 0) {
+        } else if (numberPeople <= 0 || isNaN(numberPeople)) {
             event.preventDefault();
             Swal.fire('Need 1 people at least', '', 'warning');
         } else if (!checkDetailPackage) {
             event.preventDefault();
             Swal.fire('You dont have any activities, please add 1 at least', '', 'warning');
         }
+
     }
 
 
@@ -203,6 +194,11 @@
         $(`#${noDay}-${noDetail}`).remove()
         let current = $(`#lastNoDetail${noDay}`).val()
         $(`#lastNoDetail${noDay}`).val(current - 1)
+
+        totalPrice -= parseInt(objectPrice)
+        console.log("object price" + objectPrice)
+        console.log("total price  " + totalPrice)
+        suitPrice()
     }
     //open modal package day
 
@@ -230,7 +226,6 @@
         )
     }
 
-    let noDay = <?= $noDay ?>
 
     // add package day to container
     function addPackageDay() {
@@ -248,6 +243,7 @@
                 <tr>
                     <th>Object code <span class="text-danger">*</span></th>
                     <th>Activity type</th>
+                    <th>Activity price</th>
                     <th>Description <span class="text-danger">*</span></th>
                 </tr>  
             </thead>
@@ -302,8 +298,6 @@
     }
 
     function addObjectValue(object) {
-
-        console.log(object)
         let objectData = JSON.parse(object)
         let objectId = objectData.id
         let objectName = objectData.name
@@ -313,15 +307,13 @@
         $("#detail-package-price-object").val(objectPrice)
     }
 
-    let totalPrice = 0
-
     function saveDetailPackageDay(noDay) {
         //get data from modal input
         let noDetail = parseInt($(`#lastNoDetail${noDay}`).val())
-        let object_price = $("#detail-package-price-object").val() == null ? 0 : parseInt($("#detail-package-price-object").val())
-
+        let objectPrice = parseInt($("#detail-package-price-object").val())
         let object_id = $("#detail-package-id-object").val()
         let activity_type = ''
+        let activity_price = parseInt($('#detail-package-price-object').val())
         let description = $("#detail-package-description").val()
         if (object_id.substring(0, 1) == 'A') {
             activity_type = 'Atraksi'
@@ -334,17 +326,22 @@
         } else if (object_id.substring(0, 1) == 'H') {
             activity_type = 'Homestay'
         }
-
         $(`#body-detail-package-${noDay}`).append(`
             <tr id="${noDay}-${noDetail}"> 
               <td><input class="form-control" value="${object_id}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][id_object]" required readonly></td>
               <td><input class="form-control" value="${activity_type}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_type]" readonly></td>
+              <td><input class="form-control" value="${activity_price}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_price]" readonly></td>
               <td><input class="form-control" value="${description}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][description]"></td>
-              <td><a class="btn btn-danger" onclick="removeObject('${noDay}','${ noDetail }','${object_price}')"> <i class="fa fa-x"></i> </a></td>
+              <td><a class="btn btn-danger" onclick="removeObject('${noDay}','${ noDetail }','${objectPrice}')"> <i class="fa fa-x"></i> </a></td>
             </tr>     
             `)
         $(`#lastNoDetail${noDay}`).val(noDetail + 1)
         $('#checkDetailPackage').val('oke')
+        // price counting
+        totalPrice += objectPrice
+        console.log("object price :" + objectPrice)
+        console.log("after :" + totalPrice)
+        suitPrice()
     }
 </script>
 

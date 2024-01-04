@@ -129,7 +129,7 @@
                                 <div class="list-group list-group-horizontal-sm mb-4 text-center" role="tablist">
                                     <?php $dayNumber = 1; ?>
                                     <?php foreach ($data['package_day'] as $day) : ?>
-                                        <a onclick="getObjectsByPackageDayId('<?= $day['day'] ?>')" class="list-group-item list-group-item-action <?= $dayNumber == 1 ? "active" : "" ?>" id="list-<?= $dayNumber; ?>-list" data-bs-toggle="list" href="#list-<?= $dayNumber; ?>" role="tab" aria-selected="<?= $dayNumber == 1 ? "true" : "false" ?>"> Day <?= $dayNumber; ?></a>
+                                        <a onclick="getObjectsByPackageDayId('<?= $data['id'] ?>','<?= $day['day'] ?>')" class="list-group-item list-group-item-action <?= $dayNumber == 1 ? "active" : "" ?>" id="list-<?= $dayNumber; ?>-list" data-bs-toggle="list" href="#list-<?= $dayNumber; ?>" role="tab" aria-selected="<?= $dayNumber == 1 ? "true" : "false" ?>"> Day <?= $dayNumber; ?></a>
                                         <?php $dayNumber++; ?>
                                     <?php endforeach; ?>
                                 </div>
@@ -186,8 +186,33 @@
     let geomPariangan = JSON.parse('<?= $parianganData->geoJSON; ?>')
     let latPariangan = parseFloat(<?= $parianganData->lat; ?>)
     let lngPariangan = parseFloat(<?= $parianganData->lng; ?>)
+
+    let totalPrice = parseInt('<?= $data['price'] ?>');
     currentObjectRating()
 
+    function suitPrice() {
+        let numberPeople = parseInt($('#number_people').val())
+        console.log(typeof numberPeople)
+        // check if number people less than 1
+        if (isNaN(numberPeople)) {
+            console.log("not number")
+        } else if (numberPeople < 1 || isNaN(numberPeople)) {
+            Swal.fire('Need 1 people at least', '', 'warning');
+            $('#number_people').val(1)
+            numberPeople = 1
+        } else {
+            console.log("totalllll :" + totalPrice)
+            console.log("numberPeople :" + numberPeople)
+            let finalPrice = totalPrice * numberPeople
+            console.log("final booking Price: " + finalPrice)
+            $('#bookingPrice').html('Rp.' + rupiah(finalPrice))
+            $('#package_price').val(finalPrice)
+        }
+    }
+
+    function rupiah(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
 
     function currentObjectRating() {
         $.ajax({
@@ -253,13 +278,12 @@
     let routeArray = []
 
     <?php if ($data['package_day'] != null) : ?>
-        getObjectsByPackageDayId('<?= $data['package_day'][0]['day'] ?>')
+        getObjectsByPackageDayId('<?= $data['id'] ?>', '<?= $data['package_day'][0]['day'] ?>')
     <?php endif; ?>
 
-    function getObjectsByPackageDayId(id_day) {
-
+    function getObjectsByPackageDayId(id_package, id_day) {
         $.ajax({
-            url: `<?= base_url('package'); ?>/objects/package_day/${id_day}`,
+            url: `<?= base_url('package'); ?>/objects/package_day/${id_package}/${id_day}`,
             type: "GET",
             contentType: "application/json",
             success: function(response) {
@@ -418,7 +442,7 @@
                                             <?php endif; ?>
                                             <tr>
                                                 <td class="fw-bold">Price</td>
-                                                <td><?= 'Rp ' . number_format(esc($data['price']), 0, ',', '.'); ?></td>
+                                                <td id="bookingPrice"><?= 'Rp ' . number_format(esc($data['price']), 0, ',', '.'); ?></td>
                                             </tr>
                                             <tr>
                                                 <td class="fw-bold">Maks Capacity</td>
@@ -443,7 +467,7 @@
                     </div>
                     <div class="form-group mb-2">
                         <label for="number_people" class="mb-2"> Number of people </label>
-                        <input type="number" id="number_people" placeholder="maksimum capacity is <?= esc($data['capacity']) ?>" class="form-control" required >
+                        <input type="number" oninput="suitPrice()" value="1"  id="number_people" placeholder="maksimum capacity is <?= esc($data['capacity']) ?>" class="form-control" required >
                     </div>
                     <div class="form-group mb-2">
                         <label for="comment" class="mb-2"> Additional information </label>

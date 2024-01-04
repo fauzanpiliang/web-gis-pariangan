@@ -46,7 +46,7 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body text-center">
-                                    <img class="img-fluid w-100" src="<?= base_url('media/photos'); ?>/<?= $data->url; ?>" alt="Card image cap">
+                                    <img class="img-fluid w-100" src="<?= base_url('media/photos/package'); ?>/<?= $data->url; ?>" alt="Card image cap">
                                     <p class="card-text my-4" style="text-align: justify;">
                                         <?= $data->description; ?>
                                     </p>
