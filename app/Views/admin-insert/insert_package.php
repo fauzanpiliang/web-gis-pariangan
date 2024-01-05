@@ -78,12 +78,12 @@
                                 <label for="price" class="mb-2">Price <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text">Rp </span>
-                                    <input type="number" id="price" class="form-control" name="price" placeholder="price" aria-label="price" aria-describedby="price" value="" required>
+                                    <input type="number" id="price" class="form-control" name="price" placeholder="price" aria-label="price" aria-describedby="price" value="0" required>
                                 </div>
                             </div>
                             <div class="form-group mb-4">
-                                <label for="capacity" class="mb-2">Capacity</label>
-                                <input type="tel" id="capacity" class="form-control" name="capacity" placeholder="capacity" value="">
+                                <label for="capacity" class="mb-2">Capacity <span class="text-danger">*</span></label>
+                                <input type="text" id="capacity" class="form-control" name="capacity" placeholder="capacity" value="" required>
                             </div>
                             <div class="form-group mb-4">
                                 <label for="contact_person" class="mb-2">Contact Person</label>
@@ -137,48 +137,6 @@
 
                             <div class="p-4" id="package-day-container">
                                 <?php $noDay = 1; ?>
-                                <?php if ($packageDayData) : ?>
-
-                                    <?php foreach ($packageDayData as $packageDay) : ?>
-                                        <div class="border shadow-sm p-4 mb-4 table-responsive">
-                                            <span> Day </span> <input value="<?= $noDay ?>" type="text" name="packageDetailData[<?= $noDay ?>][day]" class="d-block" id="input-day-<?= $noDay ?>" readonly>
-                                            <span> Object count </span> <input disabled type="text" id="lastNoDetail<?= $noDay ?>" class="d-block">
-                                            <!-- give day order -->
-                                            <span> Description </span> <input value="<?= $packageDay['description'] ?>" name="packageDetailData[<?= $noDay ?>][packageDayDescription]" class="d-block">
-
-                                            <br>
-                                            <br>
-                                            <?php $noDetail = 0; ?>
-
-                                            <a class="btn btn-outline-success btn-sm" onclick="openDetailPackageModal(<?= $noDay ?>)" data-bs-toggle="modal" data-bs-target="#modalPackage"> <i class="fa fa-plus"> </i> </a>
-                                            <table class="table table-sm table-border" id="table-day">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Object code <span class="text-danger">*</span> </th>
-                                                        <th>Activity type</th>
-                                                        <th>Activity description <span class="text-danger">*</span></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="body-detail-package-<?= $noDay ?>">
-                                                    <?php foreach ($packageDay['detailPackage'] as $detailPackage) : ?>
-                                                        <tr id="<?= $noDay ?>-<?= $noDetail ?>">
-                                                            <td><input value="<?= $detailPackage['id_object']; ?>" class="form-control" name="packageDetailData[<?= $noDay ?>][detailPackage][<?= $noDetail ?>][id_object]" required readonly></td>
-                                                            <td><input value="<?= $detailPackage['activity_type']; ?>" class="form-control" name="packageDetailData[<?= $noDay ?>][detailPackage][<?= $noDetail ?>][activity_type]"></td>
-                                                            <td><input value="<?= $detailPackage['description']; ?>" class="form-control" name="packageDetailData[<?= $noDay ?>][detailPackage][<?= $noDetail ?>][description]" required></td>
-                                                            <td><a class="btn btn-danger" onclick="removeObject('<?= $noDay ?>','<?= $noDetail ?>')"> <i class="fa fa-x"></i> </a></td>
-                                                        </tr>
-                                                        <?php $noDetail++ ?>
-                                                    <?php endforeach; ?>
-                                                    <script>
-                                                        $(`#lastNoDetail<?= $noDay ?>`).val(<?= $noDetail ?>)
-                                                    </script>
-
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <?php $noDay++ ?>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -206,15 +164,22 @@
         }
     }
 
-    function removeObject(noDay, noDetail) {
-        console.log("masuk sini")
+    function removeObject(noDay, noDetail, price) {
         $(`#${noDay}-${noDetail}`).remove()
         let current = $(`#lastNoDetail${noDay}`).val()
         $(`#lastNoDetail${noDay}`).val(current - 1)
 
-    }
-    //open modal package day
+        let currentPrice = parseInt($(`#price`).val())
+        let finalPrice = currentPrice - parseInt(price)
+        console.log("object price" + price)
+        console.log("current price " + currentPrice)
+        console.log("final price " + finalPrice)
 
+        $(`#price`).val(finalPrice)
+
+    }
+
+    //open modal package day
     function openPackageDayModal(noDay) {
         $("#modalHeader").html(`New package day`)
         $("#modalBody").html(
@@ -243,7 +208,6 @@
 
     // add package day to container
     function addPackageDay() {
-        console.log(noDay)
         let packageDayDescription = $("#package-day-description").val()
         $("#package-day-container").append(`
         <div class="border shadow-sm p-2 mb-2">
@@ -258,6 +222,7 @@
                 <tr>
                     <th>Object code <span class="text-danger">*</span></th>
                     <th>Activity type</th>
+                    <th>Activity price</th>
                     <th>Description <span class="text-danger">*</span></th>
                 </tr>  
             </thead>
@@ -312,8 +277,6 @@
     }
 
     function addObjectValue(object) {
-
-        console.log(object)
         let objectData = JSON.parse(object)
         let objectId = objectData.id
         let objectName = objectData.name
@@ -326,9 +289,10 @@
     function saveDetailPackageDay(noDay) {
         //get data from modal input
         let noDetail = parseInt($(`#lastNoDetail${noDay}`).val())
-
+        let object_price = parseInt($("#detail-package-price-object").val())
         let object_id = $("#detail-package-id-object").val()
         let activity_type = ""
+        let activity_price = parseInt($('#detail-package-price-object').val())
         let description = $("#detail-package-description").val()
 
         if (object_id.substring(0, 1) == 'A') {
@@ -342,18 +306,27 @@
         } else if (object_id.substring(0, 1) == 'H') {
             activity_type = 'Homestay'
         }
-        console.log(activity_type)
         $(`#body-detail-package-${noDay}`).append(`
         <tr id="${noDay}-${noDetail}"> 
           <td><input class="form-control" value="${object_id}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][id_object]" required readonly></td>
           <td><input class="form-control" value="${activity_type}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_type]"
           readonly></td>
+          <td><input class="form-control" value="${activity_price}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_price]"
+          readonly></td>
           <td><input class="form-control" value="${description}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][description]" required></td>
-          <td><a class="btn btn-danger" onclick="removeObject('${noDay}','${ noDetail }')"> <i class="fa fa-x"></i> </a></td>
+          <td><a class="btn btn-danger" onclick="removeObject('${noDay}','${ noDetail }','${object_price}')"> <i class="fa fa-x"></i> </a></td>
         </tr>     
         `)
         $(`#lastNoDetail${noDay}`).val(noDetail + 1)
         $('#checkDetailPackage').val('oke')
+        // price counting
+        let currentPrice = parseInt($('#price').val())
+        let finalPrice = currentPrice + object_price
+        console.log("current price : " + currentPrice)
+        console.log("object price :" + object_price)
+        console.log("final price : " + finalPrice)
+
+        $('#price').val(finalPrice)
     }
 </script>
 

@@ -24,6 +24,7 @@
                             <th>No</th>
 
                             <th>Name</th>
+                            <th>Price</th>
                             <th class="text-center">Action</th>
                         </tr>
                     </thead>
@@ -32,6 +33,7 @@
                             <tr>
                                 <td><?= $no++; ?></td>
                                 <td><?= $package->name; ?></td>
+                                <td><?= $package->price; ?></td>
                                 <td class="text-center">
                                     <a class="btn btn-outline-primary btn-sm" title="Detail package" href="<?= base_url('manage_package/edit/' . $package->id); ?>"><i class="fa fa-info"></i> </a>
                                     <a class="btn btn-outline-danger btn-sm" title="Delete Event" data-bs-toggle="modal" data-bs-target="#deleteModal<?= $package->id; ?>">

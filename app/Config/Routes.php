@@ -147,7 +147,7 @@ $routes->group('package', function ($routes) {
     $routes->get('costumExisting/(:segment)', 'packageController::costumExisting/$1');
     $routes->post('saveCostumExisting', 'packageController::saveCostumExisting');
     $routes->get('getActivityGallery/(:segment)', 'packageController::getActivityGallery/$1');
-    $routes->get('objects/package_day/(:segment)', 'packageController::getObjectsByPackageDayId/$1');
+    $routes->get('objects/package_day/(:segment)/(:segment)', 'packageController::getObjectsByPackageDayId/$1/$2');
 });
 
 // Menu product

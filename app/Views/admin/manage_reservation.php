@@ -169,9 +169,9 @@
         if (reservationStatus == '1' && result['package_costum'] == '1') {
             reservationInfo =
                 `<a class ="btn btn-outline-danger m-1" onclick="cancelReservation('${id_user}','${id_package}','${request_date}')"> Cancel  </a>
-               <a class ="btn btn-outline-success m-1" onclick="confirmCostumReservation('${id_user}','${id_package}','${request_date}')"> Confirm</a>
+               <a class ="btn btn-outline-success m-1" onclick="confirmReservation('${id_user}','${id_package}','${request_date}')"> Confirm</a>
                <a class ="btn btn-outline-primary m-1" onclick="previewPackage('${id_package}')"> preview</a>`
-            reservationPrice = '<input class="form-input" title="input the costume package price" id="inputPriceReservation" type="number"></input>'
+            reservationPrice = rupiah(result['total_price'])
         } else if (reservationStatus == '1') {
             reservationInfo =
                 `<a class ="btn btn-outline-danger m-1" onclick="cancelReservation('${id_user}','${id_package}','${request_date}')"> Cancel  </a>
@@ -293,7 +293,7 @@
             if (result['id_reservation_status'] == '4') {
                 $("#userPayment").append(`
                 <div class="text-end">
-                <span class="badge bg-success"> payed </span>
+                <span class="badge bg-success"> paid </span>
                 </div>
                 `)
             } else {
@@ -511,7 +511,7 @@
 
         let no = 1
         result.package_day.forEach(element => {
-            buttonDay += `<a class="btn btn-outline-primary btn-sm" onclick="getObjectsByPackageDayId('${element.day}')">Day ${no}</a>`
+            buttonDay += `<a class="btn btn-outline-primary btn-sm" onclick="getObjectsByPackageDayId('${id_package}','${element.day}')">Day ${no}</a>`
             no++
         });
         $("#buttonDay").html(buttonDay)
@@ -526,10 +526,10 @@
     let routeArray = []
 
 
-    function getObjectsByPackageDayId(id_day) {
+    function getObjectsByPackageDayId(id_package, id_day) {
 
         $.ajax({
-            url: `<?= base_url('package'); ?>/objects/package_day/${id_day}`,
+            url: `<?= base_url('package'); ?>/objects/package_day/${id_package}/${id_day}`,
             type: "GET",
             contentType: "application/json",
             success: function(response) {
@@ -722,41 +722,41 @@
 
     }
 
-    function confirmCostumReservation(id_user, id_package, request_date) {
-        // check if it costum package or not
-        let inputPriceCostum = $("#inputPriceReservation").val()
-        if (!inputPriceCostum) {
-            return swal.fire("please input the price")
-        }
+    // function confirmCostumReservation(id_user, id_package, request_date) {
+    //     // check if it costum package or not
+    //     let inputPriceCostum = $("#inputPriceReservation").val()
+    //     if (!inputPriceCostum) {
+    //         return swal.fire("please input the price")
+    //     }
 
-        let requestData = {
-            id_reservation_status: 2,
-            confirmed_at: "true",
-            confirmed_by: '<?= user()->id ?>',
-            total_price: inputPriceCostum
-        }
+    //     let requestData = {
+    //         id_reservation_status: 2,
+    //         confirmed_at: "true",
+    //         confirmed_by: '<?= user()->id ?>',
+    //         total_price: inputPriceCostum
+    //     }
 
-        $.ajax({
-            url: `<?= base_url('reservation/update'); ?>/${id_user}/${id_package}/${request_date}`,
-            type: "PUT",
-            data: requestData,
-            async: false,
-            contentType: "application/json",
-            success: function(response) {
-                Swal.fire(
-                    'Booking confirmed',
-                    '',
-                    'success'
-                ).then(() => {
-                    window.location.reload()
-                });
-            },
-            error: function(err) {
-                console.log(err.responseText)
-            }
-        })
+    //     $.ajax({
+    //         url: `<?= base_url('reservation/update'); ?>/${id_user}/${id_package}/${request_date}`,
+    //         type: "PUT",
+    //         data: requestData,
+    //         async: false,
+    //         contentType: "application/json",
+    //         success: function(response) {
+    //             Swal.fire(
+    //                 'Booking confirmed',
+    //                 '',
+    //                 'success'
+    //             ).then(() => {
+    //                 window.location.reload()
+    //             });
+    //         },
+    //         error: function(err) {
+    //             console.log(err.responseText)
+    //         }
+    //     })
 
-    }
+    // }
 
 
     function acceptReservation(id_user, id_package, request_date) {

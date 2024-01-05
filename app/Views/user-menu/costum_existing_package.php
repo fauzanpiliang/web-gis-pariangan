@@ -66,9 +66,18 @@
                                     <input type="date" id="reservation_date" name="reservationData[reservation_date]" class="form-control" required>
                                 </div>
                             <?php endif;  ?>
+
                             <div class="form-group mb-4">
                                 <label for="number_people" class="mb-2"> Number of people<span class="text-danger">*</span> <span class="text-primary"> ( Max <?= $data['capacity'] ?> people ) </span> </label>
-                                <input type="number" id="number_people" placeholder="Maksimum <?= $data['capacity'] ?> people only" name="reservationData[number_people]" class="form-control" required>
+                                <input type="number" oninput="suitPrice()" value="1" id="number_people" name="reservationData[number_people]" class="form-control" required>
+                            </div>
+
+                            <div class="form-group mb-4">
+                                <label for="price" class="mb-2">Price <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text">Rp </span>
+                                    <input type="number" value="<?= $data['price'] ?>" id="price" class="form-control" name="price" placeholder="price" aria-label="price" aria-describedby="price" value="0" required>
+                                </div>
                             </div>
                             <!-- service package include -->
                             <div class="form-group mb-4">
@@ -170,6 +179,9 @@
 <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
 <script src="<?= base_url('assets/js/extensions/form-element-select.js'); ?>"></script>
 <script>
+    let totalPrice = parseInt('<?= $data['price'] ?>');
+    console.log(totalPrice)
+    let noDay = <?= $noDay ?>;
     <?php if ($data['date'] == null) : ?>
         let dateNow = new Date();
         $('#reservation_date').datepicker({
@@ -179,6 +191,27 @@
             todayHighlight: true
         });
     <?php endif; ?>
+
+    function suitPrice() {
+        let numberPeople = parseInt($('#number_people').val())
+        console.log(typeof numberPeople)
+        // check if number people less than 1
+        if (isNaN(numberPeople)) {
+            // $('#number_people').val(1)
+            // numberPeople = 1
+        } else if (numberPeople < 1 || isNaN(numberPeople)) {
+            Swal.fire('Need 1 people at least', '', 'warning');
+            $('#number_people').val(1)
+            numberPeople = 1
+        } else {
+            console.log("totalllll :" + totalPrice)
+            console.log("numberPeople :" + numberPeople)
+            let finalPrice = totalPrice * numberPeople
+            console.log("final price" + finalPrice)
+            $('#price').val(finalPrice)
+
+        }
+    }
 
     function checkRequired(event) {
         let reservationDate = $('#reservation_date').val()
@@ -204,11 +237,15 @@
         }
     }
 
-    function removeObject(noDay, noDetail) {
-        console.log("masuk sini")
+    function removeObject(noDay, noDetail, objectPrice) {
         $(`#${noDay}-${noDetail}`).remove()
         let current = $(`#lastNoDetail${noDay}`).val()
         $(`#lastNoDetail${noDay}`).val(current - 1)
+
+        totalPrice -= parseInt(objectPrice)
+        console.log("object price" + objectPrice)
+        console.log("total price  " + totalPrice)
+        suitPrice()
 
     }
     //open modal package day
@@ -237,7 +274,7 @@
         )
     }
 
-    let noDay = <?= $noDay ?>
+
 
     // add package day to container
     function addPackageDay() {
@@ -309,8 +346,6 @@
     }
 
     function addObjectValue(object) {
-
-        console.log(object)
         let objectData = JSON.parse(object)
         let objectId = objectData.id
         let objectName = objectData.name
@@ -323,7 +358,8 @@
     function saveDetailPackageDay(noDay) {
         //get data from modal input
         let noDetail = parseInt($(`#lastNoDetail${noDay}`).val())
-        console.log(noDetail)
+        let objectPrice = parseInt($("#detail-package-price-object").val())
+
         let object_id = $("#detail-package-id-object").val()
         let activity_type = ''
         let description = $("#detail-package-description").val()
@@ -346,10 +382,15 @@
           <input class="form-control" value="${activity_type}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_type]"  readonly>
           </td>
           <td><input class="form-control" value="${description}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][description]" required></td>
-          <td><a class="btn btn-danger" onclick="removeObject('${noDay}','${ noDetail }')"> <i class="fa fa-x"></i> </a></td>
+          <td><a class="btn btn-danger" onclick="removeObject('${noDay}','${ noDetail }','${objectPrice}')"> <i class="fa fa-x"></i> </a></td>
         </tr>     
         `)
         $(`#lastNoDetail${noDay}`).val(noDetail + 1)
+        // price counting
+        totalPrice += objectPrice
+        console.log("object price :" + objectPrice)
+        console.log("after :" + totalPrice)
+        suitPrice()
     }
 </script>
 

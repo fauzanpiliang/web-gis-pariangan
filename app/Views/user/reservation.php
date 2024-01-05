@@ -89,9 +89,8 @@
                                 <?php
                                 $userId = $item['id_user'];
                                 $packageId = $item['id_package'];
-                                $request_date = $item['request_date'];
-                                $packageName = $item['package_name'];
                                 $requestDate = $item['request_date'];
+                                $packageName = $item['package_name'];
                                 $numberPeople = $item['number_people'];
                                 $reservationIdStatus = $item['id_reservation_status'];
                                 $statusReservation = $item['status'];
@@ -162,21 +161,21 @@
                                     </td>
                                     <td class="text-start checkSingle text-sm" style="width: 150px;">
 
-                                        <a class="btn btn-outline-primary btn-sm " title="detail booking" data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="showInfoReservation('<?= $userId ?>','<?= $packageId ?>','<?= $request_date ?>')">
+                                        <a class="btn btn-outline-primary btn-sm " title="detail booking" data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="showInfoReservation('<?= $userId ?>','<?= $packageId ?>','<?= $requestDate ?>')">
                                             <i title="detail booking" class="fa fa-info"></i>
                                         </a>
-                                        <a class='btn btn-outline-primary btn-sm ' title="transaction history" data-bs-toggle='modal' data-bs-target='#reservationModal' onclick="showHistory('<?= $userId ?>','<?= $packageId ?>','<?= $request_date ?>')">
+                                        <a class='btn btn-outline-primary btn-sm ' title="transaction history" data-bs-toggle='modal' data-bs-target='#reservationModal' onclick="showHistory('<?= $userId ?>','<?= $packageId ?>','<?= $requestDate ?>')">
                                             <i title="transaction history" class="fa fa-history"></i>
                                         </a>
 
-                                        <a title="rate and comment" class="btn btn-outline-primary  btn-sm <?= $reservationIdStatus == 5 && $rating == null ? '' : 'd-none' ?>" data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="openModalRatingReservation('<?= $userId ?>','<?= $packageId ?>','<?= $request_date ?>')"> <i class="fa fa-star-o"></i></a>
+                                        <a title="rate and comment" class="btn btn-outline-primary  btn-sm <?= $reservationIdStatus == 5 && $rating == null ? '' : 'd-none' ?>" data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="openModalRatingReservation('<?= $userId ?>','<?= $packageId ?>','<?= $requestDate ?>')"> <i class="fa fa-star-o"></i></a>
 
                                         <a title="rate and comment info" class="btn btn-outline-primary btn-sm <?= $reservationIdStatus == 5 && $rating != null ? '' : 'd-none' ?> " data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="openInfoRating('<?= $rating ?>','<?= $review ?>','<?= $item['updated_at']; ?>')"> <i class="fa fa-star"></i></a>
 
 
                                     </td>
                                     <td class="d-none text-center checkAll text-sm">
-                                        <input type="checkbox" <?= $reservationIdStatus == 2 && $requestDate > $dateNow ? '' : 'disabled' ?> name="idPackage[]" value="<?= $userId . $packageId . $request_date  ?>">
+                                        <input type="checkbox" <?= $reservationIdStatus == 2 && $requestDate > $dateNow ? '' : 'disabled' ?> name="idPackage[]" value="<?= $userId . $packageId . $requestDate  ?>">
                                     </td>
 
                                 </tr>
