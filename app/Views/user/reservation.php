@@ -755,6 +755,7 @@
                 request_date: request_date
             },
             success: function(response) {
+                console.log(response)
 
                 window.open('<?= base_url('pdf/invoice'); ?>' + '/' + JSON.stringify(response));
             },
