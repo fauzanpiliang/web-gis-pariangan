@@ -138,6 +138,7 @@
                                                     <tr>
                                                         <th>Object code <span class="text-danger">*</span> </th>
                                                         <th>Activity type</th>
+                                                        <th>Activity price</th>
                                                         <th>Activity description <span class="text-danger">*</span></th>
                                                     </tr>
                                                 </thead>
@@ -146,6 +147,7 @@
                                                         <tr id="<?= $noDay ?>-<?= $noDetail ?>">
                                                             <td><input value="<?= $detailPackage['id_object']; ?>" class="form-control" name="packageDetailData[<?= $noDay ?>][detailPackage][<?= $noDetail ?>][id_object]" required readonly></td>
                                                             <td><input value="<?= $detailPackage['activity_type']; ?>" class="form-control" name="packageDetailData[<?= $noDay ?>][detailPackage][<?= $noDetail ?>][activity_type]" readonly></td>
+                                                            <td><input value="<?= $detailPackage['activity_price']; ?>" class="form-control" name="packageDetailData[<?= $noDay ?>][detailPackage][<?= $noDetail ?>][activity_price]" readonly></td>
                                                             <td><input value="<?= $detailPackage['description']; ?>" class="form-control" name="packageDetailData[<?= $noDay ?>][detailPackage][<?= $noDetail ?>][description]" required readonly></td>
 
                                                         </tr>
@@ -293,6 +295,7 @@
                 <tr>
                     <th>Object code <span class="text-danger">*</span></th>
                     <th>Activity type</th>
+                    <th>Activity price</th>
                     <th>Description <span class="text-danger">*</span></th>
                 </tr>  
             </thead>
@@ -362,6 +365,7 @@
 
         let object_id = $("#detail-package-id-object").val()
         let activity_type = ''
+        let activity_price = parseInt($('#detail-package-price-object').val())
         let description = $("#detail-package-description").val()
 
         if (object_id.substring(0, 1) == 'A') {
@@ -380,6 +384,9 @@
           <td><input class="form-control" value="${object_id}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][id_object]" required readonly></td>
           <td>
           <input class="form-control" value="${activity_type}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_type]"  readonly>
+          </td>
+          <td>
+          <input class="form-control" value="${activity_price}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_price]" readonly>
           </td>
           <td><input class="form-control" value="${description}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][description]" required></td>
           <td><a class="btn btn-danger" onclick="removeObject('${noDay}','${ noDetail }','${objectPrice}')"> <i class="fa fa-x"></i> </a></td>

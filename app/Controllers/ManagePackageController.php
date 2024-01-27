@@ -93,11 +93,12 @@ class ManagePackageController extends BaseController
 
         $no = 0;
         foreach ($packageDay as $day) {
-            $packageDay[$no]['detailPackage'] = $this->detailPackageModel->get_objects_by_package_day_id($id, $day['day'])->getResultArray();
+            $packageDay[$no]['detailPackage'] = $this->detailPackageModel->get_objects_by_package_day_id($id, $day['day']);
             $no++;
         }
         // dd($packageDay);
         $objectData = [];
+
 
 
         $atractionData = $this->atractionModel->getAtractions();
@@ -198,7 +199,7 @@ class ManagePackageController extends BaseController
                                 'id_package' => $id,
                                 'id_object' => $detailPackage['id_object'],
                                 'activity_type' => $detailPackage['activity_type'],
-                                'activity_price' => $detailPackage['activity_price'],
+                                // 'activity_price' => $detailPackage['activity_price'],
                                 'description' => $detailPackage['description']
                             ];
                             $addDetailPackage =  $this->detailPackageModel->add_dp_api($requestDetailPackage);
@@ -332,7 +333,7 @@ class ManagePackageController extends BaseController
                             'id_day' => $packageDayId,
                             'id_package' => $id_package,
                             'id_object' => $detailPackage['id_object'],
-                            'activity_price' => $detailPackage['activity_price'],
+                            // 'activity_price' => $detailPackage['activity_price'],
                             'activity_type' => $detailPackage['activity_type'],
                             'description' => $detailPackage['description']
                         ];
