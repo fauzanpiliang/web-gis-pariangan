@@ -152,7 +152,7 @@ class ManagePackageController extends BaseController
     public function save_update($id = null)
     {
         $request = $this->request->getPost();
-
+        // dd($request);
         $url = null;
         if (isset($request['gallery'])) {
             $folder = $request['gallery'][0];
@@ -199,14 +199,13 @@ class ManagePackageController extends BaseController
                                 'id_package' => $id,
                                 'id_object' => $detailPackage['id_object'],
                                 'activity_type' => $detailPackage['activity_type'],
-                                // 'activity_price' => $detailPackage['activity_price'],
                                 'description' => $detailPackage['description']
                             ];
-                            $addDetailPackage =  $this->detailPackageModel->add_dp_api($requestDetailPackage);
+                            $this->detailPackageModel->add_dp_api($requestDetailPackage);
                             $noDetail++;
                         }
                     } else {
-                        $rollbackPackageDay = $this->packageDayModel->delete_pd_by_day_id($packageDayId);
+                        $this->packageDayModel->delete_pd_by_day_id($packageDayId);
                     }
                 }
                 $noDay++;

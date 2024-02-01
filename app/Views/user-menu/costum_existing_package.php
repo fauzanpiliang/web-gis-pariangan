@@ -76,7 +76,7 @@
                                 <label for="price" class="mb-2">Price <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text">Rp </span>
-                                    <input type="number" value="<?= $data['price'] ?>" id="price" class="form-control" name="price" placeholder="price" aria-label="price" aria-describedby="price" value="0" required>
+                                    <input type="number" value="<?= $data['price'] ?>" id="price" class="form-control" name="price" placeholder="price" aria-label="price" aria-describedby="price" value="0" required readonly>
                                 </div>
                             </div>
                             <!-- service package include -->
@@ -244,10 +244,7 @@
         let current = $(`#lastNoDetail${noDay}`).val()
         $(`#lastNoDetail${noDay}`).val(current - 1)
 
-        totalPrice -= parseInt(objectPrice)
-        console.log("object price" + objectPrice)
-        console.log("total price  " + totalPrice)
-        suitPrice()
+        removePrice(parseInt(objectPrice))
 
     }
     //open modal package day
@@ -394,10 +391,48 @@
         `)
         $(`#lastNoDetail${noDay}`).val(noDetail + 1)
         // price counting
-        totalPrice += objectPrice
-        console.log("object price :" + objectPrice)
-        console.log("after :" + totalPrice)
-        suitPrice()
+        addPrice(objectPrice)
+    }
+
+    function addPrice(price) {
+        let numberPeople = $('#number_people').val()
+        numberPeople = checkNumberPeople(numberPeople)
+        console.log("number people : " + numberPeople)
+        if (numberPeople != false) {
+            let finalPrice = price * numberPeople
+            totalPrice += finalPrice
+            numberPeoples = numberPeople
+            console.log("total price : " + totalPrice)
+            $('#price').val(totalPrice)
+        } else {
+            Swal.fire('Need 1 people at least', '', 'warning');
+        }
+
+    }
+
+    function removePrice(price) {
+        let numberPeople = $('#number_people').val()
+        numberPeople = checkNumberPeople(numberPeople)
+        if (numberPeople != false) {
+            let finalPrice = price * numberPeople
+            totalPrice -= finalPrice
+            numberPeoples = numberPeople
+            $('#price').val(totalPrice)
+        } else {
+            Swal.fire('Need 1 people at least', '', 'warning');
+        }
+    }
+
+    function checkNumberPeople(numberPeople) {
+        let result = true
+        if (isNaN(numberPeople)) {
+            result = false
+        } else if (numberPeople < 1) {
+            result = 1
+        } else {
+            result = numberPeople
+        }
+        return result
     }
 </script>
 

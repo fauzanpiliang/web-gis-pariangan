@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col table-responsive">
-        <table class="table table-borderless">
+        <table class="table table-borderless text-dark">
             <tbody>
                 <?php
                 if ($url == 'atraction') {

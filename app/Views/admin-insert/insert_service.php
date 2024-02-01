@@ -38,12 +38,24 @@
                                     <div class="col">
                                         <input type="text" class="form-control" name="name" autocomplete="off" required>
                                     </div>
+                                    <label for="name" class="col col-form-label">Price</label>
+                                    <div class="col">
+                                        <input type="number" class="form-control" name="price" autocomplete="off" required>
+                                    </div>
+                                    <label for="name" class="col col-form-label">Group</label>
+                                    <div class="col">
+                                        <select name="is_group" class="form-control">
+                                            <option value="0">false</option>
+                                            <option value="1">true</option>
+                                        </select>
+
+                                    </div>
                                 </div>
 
                                 <button type="submit" class="btn btn-success btn-sm">Save</button>
-                        <button type="reset" class="btn btn-danger btn-sm">cancel</button>
+                                <button type="reset" class="btn btn-danger btn-sm">cancel</button>
                             </div>
-                           
+
                         </div>
                     </div>
                 </div>

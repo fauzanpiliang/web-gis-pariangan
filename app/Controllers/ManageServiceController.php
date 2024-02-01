@@ -93,7 +93,7 @@ class ManageServiceController extends BaseController
     }
     public function insert()
     {
-       
+
         $data = [
             'title' => $this->title
         ];
@@ -108,7 +108,9 @@ class ManageServiceController extends BaseController
 
         $insertRequest = [
             'id' => $id,
-            'name' => $this->request->getPost('name')
+            'name' => $this->request->getPost('name'),
+            'price' => $this->request->getPost('price'),
+            'is_group' => $this->request->getPost('is_group'),
         ];
         // unset empty value
         foreach ($insertRequest as $key => $value) {
