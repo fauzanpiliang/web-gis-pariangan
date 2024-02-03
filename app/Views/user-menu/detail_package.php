@@ -64,7 +64,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col table-responsive">
-                            <table class="table table-borderless">
+                            <table class="table table-borderless text-dark">
                                 <tbody>
                                     <tr>
                                         <td class="fw-bold">Name</td>
@@ -425,7 +425,7 @@
                                         <tbody>
                                         <?php if ($data['url'] != null) : ?>
                                             <tr>
-                                                <td colspan="2"><img class="img-fluid img-thumbnail rounded" src="<?= base_url('media/photos') . '/' . $data['url'] ?>" width="100%"></td>
+                                                <td colspan="2"><img class="img-fluid img-thumbnail rounded" src="<?= base_url('media/photos') . '/package' . '/' . $data['url'] ?>" width="100%"></td>
                                             </tr>
                                             <?php endif; ?>
                                             <tr>

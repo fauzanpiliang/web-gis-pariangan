@@ -11,7 +11,9 @@ class serviceModel extends Model
     protected $table = 'service_package';
     protected $columns = '
     service_package.id,
-    service_package.name
+    service_package.name,
+    service_package.price,
+    service_package.is_group,
     ';
 
     public function get_new_id()
@@ -41,7 +43,7 @@ class serviceModel extends Model
             ->get();
         return $query;
     }
-  
+
     // --------------------------------------Admin-------------------------------------------
     public function addservice($data)
     {

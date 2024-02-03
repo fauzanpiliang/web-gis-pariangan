@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Database\Migrations\Atraction;
 use CodeIgniter\I18n\Time;
 use CodeIgniter\Model;
 
@@ -54,7 +55,27 @@ class DetailPackageModel extends Model
             ->where('detail_package.id_package', $id_package)
             ->where('detail_package.id_day', $id_day)
             ->get();
-        return $query;
+
+        $queryNew = $query->getResultArray();
+        $no = 0;
+        foreach ($queryNew as $newData) {
+            $queryNew[$no]['activity_price'] = 0;
+            $idObject = $newData['id_object'];
+            if (substr($idObject, 0, 1) == 'A') {
+                $atractionModel = new atractionModel();
+                $atractionId = substr($idObject, 1, 2);
+                $atractionPrice = $atractionModel->getAtraction($atractionId)->getFirstRow()->price;
+                $queryNew[$no]['activity_price'] = $atractionPrice != null ? $atractionPrice : 0;
+            }
+            if (substr($idObject, 0, 1) == 'H') {
+                $homestayModel = new homestayModel();
+                $homestayId = substr($idObject, 1, 2);
+                $homestayPrice = $homestayModel->getHomestay($homestayId)->getFirstRow()->price;
+                $queryNew[$no]['activity_price'] = $homestayPrice != null ? $atractionPrice : 0;
+            }
+            $no++;
+        }
+        return $queryNew;
     }
 
     public function get_new_id_api()

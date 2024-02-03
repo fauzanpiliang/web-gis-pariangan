@@ -87,20 +87,22 @@
                             </div>
                             <div class="form-group mb-4">
                                 <label for="contact_person" class="mb-2">Contact Person</label>
-                                <input type="tel" id="contact_person" class="form-control" name="cp" placeholder="Contact Person" value="">
+                                <input type="text" id="contact_person" class="form-control" name="cp" placeholder="Contact Person" value="">
                             </div>
                             <!-- service package include -->
+
                             <div class="form-group mb-4">
                                 <label for="service_package" class="mb-2">Service Package (include)</label>
-                                <select class="choices form-select multiple-remove" multiple="multiple" id="service_package" name="service_package[]">
+                                <select class="choices form-select multiple-remove" multiple="multiple" id="service_package" onchange="addServicePackage()">
                                     <?php foreach ($serviceData as $service) : ?>
-
-                                        <option value="<?= esc($service['id']); ?>"><?= esc($service['name']); ?></option>
-
+                                        <option value="<?= esc(json_encode($service)); ?>"><?= esc($service['name'] . ' (' . $service['price'] . ')'); ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
 
+                            <span id="service_package_form">
+
+                            </span>
                             <!-- service package exclude -->
                             <div class="form-group mb-4">
                                 <label for="service_package_exclude" class="mb-2">Service Package (exclude) </label>
@@ -157,11 +159,33 @@
 <script>
     function checkRequired(event) {
         let checkDetailPackage = $('#checkDetailPackage').val()
-
         if (!checkDetailPackage) {
             event.preventDefault();
             Swal.fire('You dont have any activities, please add 1 at least', '', 'warning');
         }
+    }
+
+    let lastServicePrice = 0
+
+    function addServicePackage() {
+        let services = $('#service_package').val()
+        let servicePackageForm = $('#service_package_form')
+        let totalServicePrice = 0
+        servicePackageForm.empty()
+        services.forEach(service => {
+            let serviceParsed = JSON.parse(service)
+            totalServicePrice += parseInt(serviceParsed.price)
+            servicePackageForm.append(`<input type="hidden" name="service_package[]" value="${serviceParsed.id}" />`)
+        });
+        let currentPrice = parseInt($("#price").val())
+        if (lastServicePrice != 0) {
+            currentPrice = currentPrice - lastServicePrice
+        }
+        let finalPrice = currentPrice + totalServicePrice
+        $('#price').val(finalPrice)
+        lastServicePrice = totalServicePrice
+        console.log(lastServicePrice)
+
     }
 
     function removeObject(noDay, noDetail, price) {

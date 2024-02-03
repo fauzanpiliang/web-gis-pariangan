@@ -138,7 +138,7 @@ class packageController extends BaseController
     function getObjectsByPackageDayId($id_package, $id_day)
     {
 
-        $objectsData = $this->detailPackageModel->get_objects_by_package_day_id($id_package, $id_day)->getResultArray();
+        $objectsData = $this->detailPackageModel->get_objects_by_package_day_id($id_package, $id_day);
         return json_encode($objectsData);
     }
 
@@ -210,9 +210,9 @@ class packageController extends BaseController
 
         // create package day + detail package
         if (isset($request['packageDetailData'])) {
+            $noDay = 1;
             foreach ($request['packageDetailData'] as $packageDay) {
                 if (isset($packageDay['detailPackage'])) {
-                    $noDay = 1;
                     $packageDayId = $noDay;
                     $requestPackageDay = [
                         'day' => $packageDayId,
@@ -231,15 +231,15 @@ class packageController extends BaseController
                                 'id_package' => $id_package,
                                 'id_object' => $detailPackage['id_object'],
                                 'activity_type' => $detailPackage['activity_type'],
-                                'activity_price' => $detailPackage['activity_price'],
+                                // 'activity_price' => $detailPackage['activity_price'],
                                 'description' => $detailPackage['description']
                             ];
                             $addDetailPackage =  $this->detailPackageModel->add_dp_api($requestDetailPackage);
                             $noDetail++;
                         }
                     }
-                    $noDay++;
                 }
+                $noDay++;
             }
         }
 
@@ -297,7 +297,7 @@ class packageController extends BaseController
         $packageDay = $this->packageDayModel->get_pd_by_package_id_api($id)->getResultArray();
         $no = 0;
         foreach ($packageDay as $day) {
-            $packageDay[$no]['detailPackage'] = $this->detailPackageModel->get_objects_by_package_day_id($id, $day['day'])->getResultArray();
+            $packageDay[$no]['detailPackage'] = $this->detailPackageModel->get_objects_by_package_day_id($id, $day['day']);
             $no++;
         }
 

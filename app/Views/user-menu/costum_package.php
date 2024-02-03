@@ -67,7 +67,7 @@
                             </div>
                             <div class="form-group mb-4">
                                 <label for="number_people" class="mb-2"> Number of people<span class="text-danger">*</span> </label>
-                                <input type="number" oninput="suitPrice()" value="1" id="number_people" name="reservationData[number_people]" class="form-control" required>
+                                <input type="number" oninput="changeNumberPeople()" value="1" id="number_people" name="reservationData[number_people]" class="form-control" required>
                             </div>
                             <div class="form-group mb-4">
                                 <label for="price" class="mb-2">Price </label>
@@ -78,14 +78,17 @@
                             </div>
                             <div class="form-group mb-4">
                                 <label for="service_package" class="mb-2">Service Package</label>
-                                <select class="choices form-select multiple-remove" multiple="multiple" id="service_package" name="service_package[]">
+                                <select class="choices form-select multiple-remove" multiple="multiple" id="service_package" onchange="addServicePackage()">
                                     <?php foreach ($serviceData as $service) : ?>
 
-                                        <option value="<?= esc($service['id']); ?>"><?= esc($service['name']); ?></option>
+                                        <option value="<?= esc(json_encode($service)); ?>"><?= esc($service['name'] . ' (' . $service['price'] . ')'); ?></option>
 
                                     <?php endforeach; ?>
                                 </select>
                             </div>
+                            <span id="service_package_form">
+
+                            </span>
                             <div class="form-group mb-4">
                                 <label for="comment" class="mb-2"> Additional information </label>
                                 <input type="text" id="comment" name="reservationData[comment]" class="form-control">
@@ -130,7 +133,8 @@
 <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
 <script src="<?= base_url('assets/js/extensions/form-element-select.js'); ?>"></script>
 <script>
-    let totalPrice = 0
+    let numberPeoples = 1
+    let lastServicePrice = 0
     let noDay = <?= $noDay ?>
 
     let dateNow = new Date();
@@ -142,25 +146,44 @@
     });
 
 
-
-    function suitPrice() {
+    function addServicePackage() {
+        let services = $('#service_package').val()
         let numberPeople = parseInt($('#number_people').val())
-        console.log(typeof numberPeople)
-        // check if number people less than 1
-        if (isNaN(numberPeople)) {
-            // $('#number_people').val(1)
-            // numberPeople = 1
-        } else if (numberPeople < 1 || isNaN(numberPeople)) {
-            Swal.fire('Need 1 people at least', '', 'warning');
-            $('#number_people').val(1)
-            numberPeople = 1
-        } else {
-            console.log("totalllll :" + totalPrice)
-            console.log("numberPeople :" + numberPeople)
-            let finalPrice = totalPrice * numberPeople
-            console.log("final price" + finalPrice)
-            $('#price').val(finalPrice)
+        let totalPrice = $('#price').val()
+        numberPeople = checkNumberPeople(numberPeople)
+        if (numberPeople != false) {
+            let servicePackageForm = $('#service_package_form')
+            let servicePrice = 0
+            servicePackageForm.empty()
+            services.forEach(service => {
+                let serviceParsed = JSON.parse(service)
+                console.log(serviceParsed.is_group)
+                console.log(typeof serviceParsed.is_group)
+                // if (serviceParsed.is_group == "0") {
+                servicePrice += parseInt(serviceParsed.price) * numberPeople
+                // } else {
+                //     servicePrice += parseInt(serviceParsed.price)
+                // }
+                servicePackageForm.append(`<input type="hidden" name="service_package[]" value="${serviceParsed.id}" />`)
+            });
+            if (lastServicePrice != 0) {
+                totalPrice = totalPrice - lastServicePrice
+            }
+            totalPrice = totalPrice + servicePrice
+            $('#price').val(totalPrice)
+            numberPeoples = numberPeople
+            lastServicePrice = servicePrice
+        }
+    }
 
+    function changeNumberPeople() {
+        let numberPeople = $('#number_people').val()
+        let totalPrice = $('#price').val()
+        numberPeople = checkNumberPeople(numberPeople)
+        if (numberPeople != false) {
+            totalPrice = (totalPrice / numberPeoples) * numberPeople
+            numberPeoples = numberPeople
+            $('#price').val(totalPrice)
         }
     }
 
@@ -195,10 +218,7 @@
         let current = $(`#lastNoDetail${noDay}`).val()
         $(`#lastNoDetail${noDay}`).val(current - 1)
 
-        totalPrice -= parseInt(objectPrice)
-        console.log("object price" + objectPrice)
-        console.log("total price  " + totalPrice)
-        suitPrice()
+        removePrice(parseInt(objectPrice))
     }
     //open modal package day
 
@@ -338,10 +358,51 @@
         $(`#lastNoDetail${noDay}`).val(noDetail + 1)
         $('#checkDetailPackage').val('oke')
         // price counting
-        totalPrice += objectPrice
-        console.log("object price :" + objectPrice)
-        console.log("after :" + totalPrice)
-        suitPrice()
+        addPrice(objectPrice)
+    }
+
+
+    function addPrice(price) {
+        let numberPeople = $('#number_people').val()
+        let totalPrice = $('#price').val()
+        numberPeople = checkNumberPeople(numberPeople)
+        console.log("number people : " + numberPeople)
+        if (numberPeople != false) {
+            let finalPrice = price * numberPeople
+            totalPrice += finalPrice
+            numberPeoples = numberPeople
+            console.log("total price : " + totalPrice)
+            $('#price').val(totalPrice)
+        } else {
+            Swal.fire('Need 1 people at least', '', 'warning');
+        }
+
+    }
+
+    function removePrice(price) {
+        let numberPeople = $('#number_people').val()
+        let totalPrice = $('#price').val()
+        numberPeople = checkNumberPeople(numberPeople)
+        if (numberPeople != false) {
+            let finalPrice = price * numberPeople
+            totalPrice -= finalPrice
+            numberPeoples = numberPeople
+            $('#price').val(totalPrice)
+        } else {
+            Swal.fire('Need 1 people at least', '', 'warning');
+        }
+    }
+
+    function checkNumberPeople(numberPeople) {
+        let result = true
+        if (isNaN(numberPeople)) {
+            result = false
+        } else if (numberPeople < 1) {
+            result = 1
+        } else {
+            result = numberPeople
+        }
+        return result
     }
 </script>
 

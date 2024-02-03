@@ -40,6 +40,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
 
     <?= $this->renderSection('head'); ?>
+    <style>
+        body {
+            color: black;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+    </style>
 </head>
 
 <body>
@@ -51,11 +57,9 @@
         <!-- Main Content -->
         <div id="main">
             <?= $this->include('message/message.php'); ?>
-
             <?php if (isset($currentUrl) != 'mobile') : ?>
                 <?= $this->include('layout/navbar'); ?>
             <?php endif; ?>
-
             <?= $this->renderSection('content'); ?>
             <?= $this->include('layout/footer'); ?>
         </div>

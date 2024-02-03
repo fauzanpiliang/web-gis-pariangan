@@ -93,16 +93,19 @@
                             <!-- service package include -->
                             <div class="form-group mb-4">
                                 <label for="service_package" class="mb-2">Service Package (Include) </label>
-                                <select class="choices form-select multiple-remove" multiple="multiple" id="service_package" name="service_package[]">
+                                <select class="choices form-select multiple-remove" multiple="multiple" id="service_package" onchange="addServicePackage()">
                                     <?php foreach ($serviceData as $service) : ?>
                                         <?php if (in_array(esc($service['name']), $data['service_package'])) : ?>
-                                            <option value="<?= esc($service['id']); ?>" selected><?= esc($service['name']); ?></option>
+                                            <option value="<?= esc(json_encode($service)); ?>" selected><?= esc($service['name'] . ' (' . $service['price'] . ')'); ?></option>
                                         <?php else : ?>
-                                            <option value="<?= esc($service['id']); ?>"><?= esc($service['name']); ?></option>
+                                            <option value="<?= esc(json_encode($service)); ?>"><?= esc($service['name'] . ' (' . $service['price'] . ')'); ?></option>
                                         <?php endif; ?>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
+                            <span id="service_package_form">
+
+                            </span>
                             <!-- service package exclude -->
                             <div class="form-group mb-4">
                                 <label for="service_package_exclude" class="mb-2">Service Package (exclude) </label>
@@ -204,6 +207,53 @@
 <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
 <script src="<?= base_url('assets/js/extensions/form-element-select.js'); ?>"></script>
 <script>
+    let lastServicePrice = 0
+    checkServicePrice()
+
+    function checkServicePrice() {
+        let serviceData = <?= json_encode($serviceData); ?>;
+        let servicePackage = <?= json_encode($data['service_package']); ?>;
+        console.log(serviceData)
+        let servicePackageForm = $('#service_package_form')
+        let totalServicePrice = 0
+
+        let no = 0;
+        serviceData.forEach(service => {
+            if (service.name == servicePackage[no]) {
+                totalServicePrice += parseInt(service.price)
+                console.log(service.id)
+                servicePackageForm.append(`<input type="hidden" name="service_package[]" value="${service.id}" />`)
+            }
+        });
+        lastServicePrice = totalServicePrice
+    }
+
+    function addServicePackage() {
+        let services = $('#service_package').val()
+        let servicePackageForm = $('#service_package_form')
+        let totalServicePrice = 0
+        servicePackageForm.empty()
+        services.forEach(service => {
+            let serviceParsed = JSON.parse(service)
+            totalServicePrice += parseInt(serviceParsed.price)
+            servicePackageForm.append(`<input type="hidden" name="service_package[]" value="${serviceParsed.id}" />`)
+        });
+        let currentPrice = parseInt($("#price").val())
+        console.log("current price :" + currentPrice)
+        console.log("lastServicePricee :" + lastServicePrice)
+
+        if (lastServicePrice != 0) {
+            currentPrice = currentPrice - lastServicePrice
+        }
+        console.log("current after price :" + currentPrice)
+        let finalPrice = currentPrice + totalServicePrice
+        $('#price').val(finalPrice)
+        lastServicePrice = totalServicePrice
+        console.log(lastServicePrice)
+
+    }
+
+
     function removeObject(noDay, noDetail, price) {
         // no detail
         $(`#${noDay}-${noDetail}`).remove()

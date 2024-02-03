@@ -76,7 +76,7 @@
                                 <label for="price" class="mb-2">Price <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text">Rp </span>
-                                    <input type="number" value="<?= $data['price'] ?>" id="price" class="form-control" name="price" placeholder="price" aria-label="price" aria-describedby="price" value="0" required>
+                                    <input type="number" value="<?= $data['price'] ?>" id="price" class="form-control" name="price" placeholder="price" aria-label="price" aria-describedby="price" value="0" required readonly>
                                 </div>
                             </div>
                             <!-- service package include -->
@@ -138,6 +138,7 @@
                                                     <tr>
                                                         <th>Object code <span class="text-danger">*</span> </th>
                                                         <th>Activity type</th>
+                                                        <th>Activity price</th>
                                                         <th>Activity description <span class="text-danger">*</span></th>
                                                     </tr>
                                                 </thead>
@@ -146,6 +147,7 @@
                                                         <tr id="<?= $noDay ?>-<?= $noDetail ?>">
                                                             <td><input value="<?= $detailPackage['id_object']; ?>" class="form-control" name="packageDetailData[<?= $noDay ?>][detailPackage][<?= $noDetail ?>][id_object]" required readonly></td>
                                                             <td><input value="<?= $detailPackage['activity_type']; ?>" class="form-control" name="packageDetailData[<?= $noDay ?>][detailPackage][<?= $noDetail ?>][activity_type]" readonly></td>
+                                                            <td><input value="<?= $detailPackage['activity_price']; ?>" class="form-control" name="packageDetailData[<?= $noDay ?>][detailPackage][<?= $noDetail ?>][activity_price]" readonly></td>
                                                             <td><input value="<?= $detailPackage['description']; ?>" class="form-control" name="packageDetailData[<?= $noDay ?>][detailPackage][<?= $noDetail ?>][description]" required readonly></td>
 
                                                         </tr>
@@ -242,10 +244,7 @@
         let current = $(`#lastNoDetail${noDay}`).val()
         $(`#lastNoDetail${noDay}`).val(current - 1)
 
-        totalPrice -= parseInt(objectPrice)
-        console.log("object price" + objectPrice)
-        console.log("total price  " + totalPrice)
-        suitPrice()
+        removePrice(parseInt(objectPrice))
 
     }
     //open modal package day
@@ -293,6 +292,7 @@
                 <tr>
                     <th>Object code <span class="text-danger">*</span></th>
                     <th>Activity type</th>
+                    <th>Activity price</th>
                     <th>Description <span class="text-danger">*</span></th>
                 </tr>  
             </thead>
@@ -362,6 +362,7 @@
 
         let object_id = $("#detail-package-id-object").val()
         let activity_type = ''
+        let activity_price = parseInt($('#detail-package-price-object').val())
         let description = $("#detail-package-description").val()
 
         if (object_id.substring(0, 1) == 'A') {
@@ -381,16 +382,57 @@
           <td>
           <input class="form-control" value="${activity_type}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_type]"  readonly>
           </td>
+          <td>
+          <input class="form-control" value="${activity_price}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_price]" readonly>
+          </td>
           <td><input class="form-control" value="${description}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][description]" required></td>
           <td><a class="btn btn-danger" onclick="removeObject('${noDay}','${ noDetail }','${objectPrice}')"> <i class="fa fa-x"></i> </a></td>
         </tr>     
         `)
         $(`#lastNoDetail${noDay}`).val(noDetail + 1)
         // price counting
-        totalPrice += objectPrice
-        console.log("object price :" + objectPrice)
-        console.log("after :" + totalPrice)
-        suitPrice()
+        addPrice(objectPrice)
+    }
+
+    function addPrice(price) {
+        let numberPeople = $('#number_people').val()
+        numberPeople = checkNumberPeople(numberPeople)
+        console.log("number people : " + numberPeople)
+        if (numberPeople != false) {
+            let finalPrice = price * numberPeople
+            totalPrice += finalPrice
+            numberPeoples = numberPeople
+            console.log("total price : " + totalPrice)
+            $('#price').val(totalPrice)
+        } else {
+            Swal.fire('Need 1 people at least', '', 'warning');
+        }
+
+    }
+
+    function removePrice(price) {
+        let numberPeople = $('#number_people').val()
+        numberPeople = checkNumberPeople(numberPeople)
+        if (numberPeople != false) {
+            let finalPrice = price * numberPeople
+            totalPrice -= finalPrice
+            numberPeoples = numberPeople
+            $('#price').val(totalPrice)
+        } else {
+            Swal.fire('Need 1 people at least', '', 'warning');
+        }
+    }
+
+    function checkNumberPeople(numberPeople) {
+        let result = true
+        if (isNaN(numberPeople)) {
+            result = false
+        } else if (numberPeople < 1) {
+            result = 1
+        } else {
+            result = numberPeople
+        }
+        return result
     }
 </script>
 
