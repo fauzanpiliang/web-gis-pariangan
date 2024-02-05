@@ -69,7 +69,7 @@
 
                             <div class="form-group mb-4">
                                 <label for="number_people" class="mb-2"> Number of people<span class="text-danger">*</span> <span class="text-primary"> ( Max <?= $data['capacity'] ?> people ) </span> </label>
-                                <input type="number" oninput="suitPrice()" value="1" id="number_people" name="reservationData[number_people]" class="form-control" required>
+                                <input type="number" oninput="setPrice()" value="1" id="number_people" name="reservationData[number_people]" class="form-control" required>
                             </div>
 
                             <div class="form-group mb-4">
@@ -82,16 +82,22 @@
                             <!-- service package include -->
                             <div class="form-group mb-4">
                                 <label for="service_package" class="mb-2">Service Package </label>
-                                <select class="choices form-select multiple-remove" multiple="multiple" id="service_package" name="service_package[]">
+                                <select class="choices form-select multiple-remove" multiple="multiple" id="service_package" onchange="setPrice()">
                                     <?php foreach ($serviceData as $service) : ?>
+                                        <?php $type =  $service['is_group'] == 0 ? " / person" : " / group";  ?>
                                         <?php if (in_array(esc($service['name']), $data['service_package'])) : ?>
-                                            <option value="<?= esc($service['id']); ?>" selected><?= esc($service['name']); ?></option>
+                                            <option value="<?= esc(json_encode($service)); ?>" selected><?= esc($service['name']  . ' (' . $service['price'] . $type . ')'); ?></option>
+                                            <!-- <option value="<?= esc($service['id']); ?>" selected><?= esc($service['name']); ?></option> -->
                                         <?php else : ?>
-                                            <option value="<?= esc($service['id']); ?>"><?= esc($service['name']); ?></option>
+                                            <option value="<?= esc(json_encode($service)); ?>"><?= esc($service['name']  . ' (' . $service['price'] . $type . ')'); ?></option>
+                                            <!-- <option value="<?= esc($service['id']); ?>"><?= esc($service['name']); ?></option> -->
                                         <?php endif; ?>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
+                            <span id="service_package_form">
+
+                            </span>
 
                             <div class="form-group mb-4">
                                 <label for="comment" class="mb-2"> Additional information </label>
@@ -143,7 +149,16 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody id="body-detail-package-<?= $noDay ?>">
+                                                    <script>
+                                                        let arrayPrice = []
+                                                    </script>
                                                     <?php foreach ($packageDay['detailPackage'] as $detailPackage) : ?>
+                                                        <script>
+                                                            arrayPrice.push({
+                                                                id: '<?= $detailPackage['id_object']  ?>',
+                                                                price: parseInt('<?= $detailPackage['activity_price']  ?>')
+                                                            })
+                                                        </script>
                                                         <tr id="<?= $noDay ?>-<?= $noDetail ?>">
                                                             <td><input value="<?= $detailPackage['id_object']; ?>" class="form-control" name="packageDetailData[<?= $noDay ?>][detailPackage][<?= $noDetail ?>][id_object]" required readonly></td>
                                                             <td><input value="<?= $detailPackage['activity_type']; ?>" class="form-control" name="packageDetailData[<?= $noDay ?>][detailPackage][<?= $noDetail ?>][activity_type]" readonly></td>
@@ -182,8 +197,9 @@
 <script src="<?= base_url('assets/js/extensions/form-element-select.js'); ?>"></script>
 <script>
     let totalPrice = parseInt('<?= $data['price'] ?>');
-    console.log(totalPrice)
     let noDay = <?= $noDay ?>;
+
+    console.log("array price :" + arrayPrice)
     <?php if ($data['date'] == null) : ?>
         let dateNow = new Date();
         $('#reservation_date').datepicker({
@@ -194,23 +210,37 @@
         });
     <?php endif; ?>
 
-    function suitPrice() {
+    function setPrice() {
+        let services = $('#service_package').val()
         let numberPeople = parseInt($('#number_people').val())
-        console.log(typeof numberPeople)
-        // check if number people less than 1
-        if (isNaN(numberPeople)) {
-            // $('#number_people').val(1)
-            // numberPeople = 1
-        } else if (numberPeople < 1 || isNaN(numberPeople)) {
-            Swal.fire('Need 1 people at least', '', 'warning');
-            $('#number_people').val(1)
-            numberPeople = 1
-        } else {
-            console.log("totalllll :" + totalPrice)
-            console.log("numberPeople :" + numberPeople)
-            let finalPrice = totalPrice * numberPeople
-            console.log("final price" + finalPrice)
-            $('#price').val(finalPrice)
+        let totalPrice = 0
+        numberPeople = checkNumberPeople(numberPeople)
+        if (numberPeople != false) {
+            let servicePackageForm = $('#service_package_form')
+            let servicePrice = 0
+            servicePackageForm.empty()
+            services.forEach(service => {
+                let serviceParsed = JSON.parse(service)
+                if (serviceParsed.is_group == "0") {
+                    servicePrice += parseInt(serviceParsed.price) * numberPeople
+                } else {
+                    servicePrice += parseInt(serviceParsed.price)
+                }
+                servicePackageForm.append(`<input type="hidden" name="service_package[]" value="${serviceParsed.id}" />`)
+            });
+
+            let objectPrice = 0
+            arrayPrice.forEach(element => {
+                console.log(element)
+
+                objectPrice += element.price * numberPeople
+            })
+
+            console.log("total service price = " + servicePrice)
+            console.log("total object price = " + objectPrice)
+            totalPrice = servicePrice + objectPrice
+
+            $('#price').val(totalPrice)
 
         }
     }
@@ -239,12 +269,12 @@
         }
     }
 
-    function removeObject(noDay, noDetail, objectPrice) {
+    function removeObject(noDay, noDetail, objectId, objectPrice) {
         $(`#${noDay}-${noDetail}`).remove()
         let current = $(`#lastNoDetail${noDay}`).val()
         $(`#lastNoDetail${noDay}`).val(current - 1)
 
-        removePrice(parseInt(objectPrice))
+        removePrice(parseInt(objectId))
 
     }
     //open modal package day
@@ -386,41 +416,25 @@
           <input class="form-control" value="${activity_price}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_price]" readonly>
           </td>
           <td><input class="form-control" value="${description}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][description]" required></td>
-          <td><a class="btn btn-danger" onclick="removeObject('${noDay}','${ noDetail }','${objectPrice}')"> <i class="fa fa-x"></i> </a></td>
+          <td><a class="btn btn-danger" onclick="removeObject('${noDay}','${ noDetail }','${object_id}', '${objectPrice}')"> <i class="fa fa-x"></i> </a></td>
         </tr>     
         `)
         $(`#lastNoDetail${noDay}`).val(noDetail + 1)
         // price counting
-        addPrice(objectPrice)
+        addPrice(object_id, objectPrice)
     }
 
-    function addPrice(price) {
-        let numberPeople = $('#number_people').val()
-        numberPeople = checkNumberPeople(numberPeople)
-        console.log("number people : " + numberPeople)
-        if (numberPeople != false) {
-            let finalPrice = price * numberPeople
-            totalPrice += finalPrice
-            numberPeoples = numberPeople
-            console.log("total price : " + totalPrice)
-            $('#price').val(totalPrice)
-        } else {
-            Swal.fire('Need 1 people at least', '', 'warning');
-        }
-
+    function addPrice(id, price) {
+        arrayPrice.push({
+            id: id,
+            price: price
+        })
+        setPrice()
     }
 
-    function removePrice(price) {
-        let numberPeople = $('#number_people').val()
-        numberPeople = checkNumberPeople(numberPeople)
-        if (numberPeople != false) {
-            let finalPrice = price * numberPeople
-            totalPrice -= finalPrice
-            numberPeoples = numberPeople
-            $('#price').val(totalPrice)
-        } else {
-            Swal.fire('Need 1 people at least', '', 'warning');
-        }
+    function removePrice(id) {
+        arrayPrice = arrayPrice.filter(element => element.id != id);
+        setPrice()
     }
 
     function checkNumberPeople(numberPeople) {
