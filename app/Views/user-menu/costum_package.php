@@ -67,7 +67,7 @@
                             </div>
                             <div class="form-group mb-4">
                                 <label for="number_people" class="mb-2"> Number of people<span class="text-danger">*</span> </label>
-                                <input type="number" oninput="changeNumberPeople()" value="1" id="number_people" name="reservationData[number_people]" class="form-control" required>
+                                <input type="number" oninput="setPrice()" value="1" id="number_people" name="reservationData[number_people]" class="form-control" required>
                             </div>
                             <div class="form-group mb-4">
                                 <label for="price" class="mb-2">Price </label>
@@ -78,10 +78,10 @@
                             </div>
                             <div class="form-group mb-4">
                                 <label for="service_package" class="mb-2">Service Package</label>
-                                <select class="choices form-select multiple-remove" multiple="multiple" id="service_package" onchange="addServicePackage()">
+                                <select class="choices form-select multiple-remove" multiple="multiple" id="service_package" onchange="setPrice()">
                                     <?php foreach ($serviceData as $service) : ?>
-
-                                        <option value="<?= esc(json_encode($service)); ?>"><?= esc($service['name'] . ' (' . $service['price'] . ')'); ?></option>
+                                        <?php $type =  $service['is_group'] == 0 ? " / person" : " / group";  ?>
+                                        <option value="<?= esc(json_encode($service)); ?>"><?= esc($service['name']  . ' (' . $service['price'] . $type . ')'); ?></option>
 
                                     <?php endforeach; ?>
                                 </select>
@@ -135,7 +135,8 @@
 <script>
     let numberPeoples = 1
     let lastServicePrice = 0
-    let noDay = <?= $noDay ?>
+    let noDay = <?= $noDay ?>;
+    let arrayPrice = []
 
     let dateNow = new Date();
     $('#reservation_date').datepicker({
@@ -145,11 +146,10 @@
         todayHighlight: true
     });
 
-
-    function addServicePackage() {
+    function setPrice() {
         let services = $('#service_package').val()
         let numberPeople = parseInt($('#number_people').val())
-        let totalPrice = $('#price').val()
+        let totalPrice = 0
         numberPeople = checkNumberPeople(numberPeople)
         if (numberPeople != false) {
             let servicePackageForm = $('#service_package_form')
@@ -157,35 +157,30 @@
             servicePackageForm.empty()
             services.forEach(service => {
                 let serviceParsed = JSON.parse(service)
-                console.log(serviceParsed.is_group)
-                console.log(typeof serviceParsed.is_group)
-                // if (serviceParsed.is_group == "0") {
-                servicePrice += parseInt(serviceParsed.price) * numberPeople
-                // } else {
-                //     servicePrice += parseInt(serviceParsed.price)
-                // }
+                if (serviceParsed.is_group == "0") {
+                    servicePrice += parseInt(serviceParsed.price) * numberPeople
+                } else {
+                    servicePrice += parseInt(serviceParsed.price)
+                }
                 servicePackageForm.append(`<input type="hidden" name="service_package[]" value="${serviceParsed.id}" />`)
             });
-            if (lastServicePrice != 0) {
-                totalPrice = totalPrice - lastServicePrice
-            }
-            totalPrice = totalPrice + servicePrice
+
+            let objectPrice = 0
+            arrayPrice.forEach(element => {
+                console.log(element)
+
+                objectPrice += element.price * numberPeople
+            })
+
+            console.log("total service price = " + servicePrice)
+            console.log("total object price = " + objectPrice)
+            totalPrice = servicePrice + objectPrice
+
             $('#price').val(totalPrice)
-            numberPeoples = numberPeople
-            lastServicePrice = servicePrice
+
         }
     }
 
-    function changeNumberPeople() {
-        let numberPeople = $('#number_people').val()
-        let totalPrice = $('#price').val()
-        numberPeople = checkNumberPeople(numberPeople)
-        if (numberPeople != false) {
-            totalPrice = (totalPrice / numberPeoples) * numberPeople
-            numberPeoples = numberPeople
-            $('#price').val(totalPrice)
-        }
-    }
 
     function checkRequired(event) {
         let reservationDate = $('#reservation_date').val()
@@ -213,12 +208,12 @@
     }
 
 
-    function removeObject(noDay, noDetail, objectPrice) {
+    function removeObject(noDay, noDetail, objectId, objectPrice) {
         $(`#${noDay}-${noDetail}`).remove()
         let current = $(`#lastNoDetail${noDay}`).val()
         $(`#lastNoDetail${noDay}`).val(current - 1)
 
-        removePrice(parseInt(objectPrice))
+        removePrice(objectId)
     }
     //open modal package day
 
@@ -327,6 +322,7 @@
         $("#detail-package-price-object").val(objectPrice)
     }
 
+
     function saveDetailPackageDay(noDay) {
         //get data from modal input
         let noDetail = parseInt($(`#lastNoDetail${noDay}`).val())
@@ -335,6 +331,7 @@
         let activity_type = ''
         let activity_price = parseInt($('#detail-package-price-object').val())
         let description = $("#detail-package-description").val()
+
         if (object_id.substring(0, 1) == 'A') {
             activity_type = 'Atraksi'
         } else if (object_id.substring(0, 1) == 'C') {
@@ -352,45 +349,27 @@
               <td><input class="form-control" value="${activity_type}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_type]" readonly></td>
               <td><input class="form-control" value="${activity_price}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_price]" readonly></td>
               <td><input class="form-control" value="${description}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][description]"></td>
-              <td><a class="btn btn-danger" onclick="removeObject('${noDay}','${ noDetail }','${objectPrice}')"> <i class="fa fa-x"></i> </a></td>
+              <td><a class="btn btn-danger" onclick="removeObject('${noDay}','${ noDetail }','${object_id}', '${objectPrice}')"> <i class="fa fa-x"></i> </a></td>
             </tr>     
             `)
         $(`#lastNoDetail${noDay}`).val(noDetail + 1)
         $('#checkDetailPackage').val('oke')
         // price counting
-        addPrice(objectPrice)
+        addPrice(object_id, objectPrice)
     }
 
 
-    function addPrice(price) {
-        let numberPeople = $('#number_people').val()
-        let totalPrice = $('#price').val()
-        numberPeople = checkNumberPeople(numberPeople)
-        console.log("number people : " + numberPeople)
-        if (numberPeople != false) {
-            let finalPrice = price * numberPeople
-            totalPrice += finalPrice
-            numberPeoples = numberPeople
-            console.log("total price : " + totalPrice)
-            $('#price').val(totalPrice)
-        } else {
-            Swal.fire('Need 1 people at least', '', 'warning');
-        }
-
+    function addPrice(id, price) {
+        arrayPrice.push({
+            id: id,
+            price: price
+        })
+        setPrice()
     }
 
-    function removePrice(price) {
-        let numberPeople = $('#number_people').val()
-        let totalPrice = $('#price').val()
-        numberPeople = checkNumberPeople(numberPeople)
-        if (numberPeople != false) {
-            let finalPrice = price * numberPeople
-            totalPrice -= finalPrice
-            numberPeoples = numberPeople
-            $('#price').val(totalPrice)
-        } else {
-            Swal.fire('Need 1 people at least', '', 'warning');
-        }
+    function removePrice(id) {
+        arrayPrice = arrayPrice.filter(element => element.id != id);
+        setPrice()
     }
 
     function checkNumberPeople(numberPeople) {
