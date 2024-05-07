@@ -120,6 +120,8 @@
                                     $proggres = "Transaction finish, please rate and comment ";
                                 } else if ($reservationIdStatus == 5 && $rating != null) {
                                     $proggres = "Transaction finish, thank you for visiting";
+                                } else if ($reservationIdStatus == 6) {
+                                    $proggres = "Package close, thank you";
                                 }
                                 ?>
                                 <tr>
@@ -153,6 +155,11 @@
                                         <a class="btn btn-sm">
                                             <?= $reservationIdStatus == 5  ?  '<i class="fa fa-check-circle text-primary" aria-hidden="true"></i>' : '' ?>
                                             Finish
+                                        </a>
+                                        <i class="fa fa-arrow-right fa-sm" aria-hidden="true"></i>
+                                        <a class="btn btn-sm">
+                                            <?= $reservationIdStatus == 6  ?  '<i class="fa fa-check-circle text-primary" aria-hidden="true"></i>' : '' ?>
+                                            Close
                                         </a>
 
                                     </td>
@@ -261,7 +268,7 @@
             let accPaymentBy = result.payment_accepted_by
 
             if (accPaymentAt != null && accPaymentBy != null) {
-                let acceptorPaymentData = getUser(confirmedBy)
+                let acceptorPaymentData = getUser(accPaymentBy)
                 let acceptorPaymentName = acceptorPaymentData.fullname
                 historyData += `<tr><td>Accepted at</td><td>${accPaymentAt}</td><td>by</td><td>${acceptorPaymentName} (Admin)</td></tr>`
             }
@@ -269,6 +276,16 @@
             // finish
             if (idReservationStatus == 5) {
                 historyData += `<tr><td>Finish</td></tr>`
+            }
+
+            // close package
+            let closedPackageAt = result.closed_at
+            let closedPackageBy = result.closed_by
+
+            if (closedPackageAt != null && closedPackageBy != null) {
+                let acceptorClosedPackageBy = getUser(closedPackageBy)
+                let acceptorClosedPackageName = acceptorClosedPackageBy.fullname
+                historyData += `<tr><td>Closed at</td><td>${closedPackageAt}</td><td>by</td><td>${acceptorClosedPackageName} (Admin)</td></tr>`
             }
         }
 
