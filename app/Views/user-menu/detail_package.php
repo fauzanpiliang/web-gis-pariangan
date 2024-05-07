@@ -125,7 +125,7 @@
                         <div class="col border p-2">
                             <p class="fw-bold">Detail Packages </p>
                             <?php if ($data['package_day'] != null) : ?>
-                                <a href="<?= base_url('package/costumExisting') . '/' . $data['id'] ?>" class="btn btn-outline-primary mb-2">Costume this package</a>
+                                <a href="<?= base_url('package/costumExisting') . '/' . $data['id'] ?>" class="btn btn-outline-primary mb-2">Extend this package</a>
                                 <div class="list-group list-group-horizontal-sm mb-4 text-center" role="tablist">
                                     <?php $dayNumber = 1; ?>
                                     <?php foreach ($data['package_day'] as $day) : ?>

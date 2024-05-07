@@ -147,7 +147,7 @@
                         <a role="button" href="<?= base_url('manage_facility') ?>">Facility</a>
                     </li>
                     <li class="submenu-item sidebar-link  <?php if (current_url() == base_url('manage_homestay')) echo 'active'; ?>">
-                        <i class="iconify" data-icon="mdi:tools" data-width="25" data-height="25"></i>
+                        <i class="iconify" data-icon="fa-solid:hotel" data-width="25" data-height="25"></i>
                         <a role="button" href="<?= base_url('manage_homestay') ?>">Homestay</a>
                     </li>
                 </ul>

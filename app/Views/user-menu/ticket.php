@@ -22,7 +22,7 @@
 
         @font-face {
             font-family: 'Open Sans';
-            font-style: italic;
+            font-style: arial;
             font-weight: normal;
             src: local('Open Sans Italic'), local('OpenSans-Italic'), url(http://themes.googleusercontent.com/static/fonts/opensans/v7/O4NhV7_qs9r9seTo7fnsVCZ2oysoEQEeKwjgmXLRnTc.ttf) format('truetype');
         }

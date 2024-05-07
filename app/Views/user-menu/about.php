@@ -29,7 +29,7 @@
                         <div class="col-xl-4 col-lg-4 text-center">
 
                             <img class="shadow rounded" src="/img/pariangan/bg-about.JPG" width="100%">
-                            <figcaption style="font-family: italic; font-size:13px; margin-top:5px">Top 50 Indonesian Tourism Village Award 2021 (ADWI)</figcaption>
+                            <figcaption style="font-family: arial; font-size:13px; margin-top:5px">Top 50 Indonesian Tourism Village Award 2021 (ADWI)</figcaption>
 
                         </div>
                     </div>

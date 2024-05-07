@@ -85,7 +85,7 @@ p.lead {
     line-height: 1.4;
 }
 .source span.line .number {
-    color: #666;
+    color: #000000;
 }
 .source .line .highlight {
     display: block;

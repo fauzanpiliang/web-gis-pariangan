@@ -14,7 +14,7 @@
                                     <div class="card-body">
                                         <h4 class="card-title"><?= $data->name; ?></h4>
                                         <?php if (isset($data->price)) : ?>
-                                            <small class="text-muted"><?= $data->price; ?> IDR</small>
+                                            <small class=""><?= $data->price; ?> IDR</small>
                                         <?php endif; ?>
                                     </div>
                                 </a>
