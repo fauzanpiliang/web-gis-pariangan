@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This file is part of CodeIgniter 4 framework.
  *
@@ -13,9 +15,7 @@ namespace CodeIgniter\Session;
 
 use CodeIgniter\Cookie\Cookie;
 use CodeIgniter\I18n\Time;
-use Config\App;
 use Config\Cookie as CookieConfig;
-use Config\Services;
 use Config\Session as SessionConfig;
 use Psr\Log\LoggerAwareTrait;
 use SessionHandlerInterface;
@@ -27,6 +27,7 @@ use SessionHandlerInterface;
  * variables in app/config/App.php
  *
  * @property string $session_id
+ * @see \CodeIgniter\Session\SessionTest
  */
 class Session implements SessionInterface
 {
@@ -241,7 +242,7 @@ class Session implements SessionInterface
         $this->startSession();
 
         // Is session ID auto-regeneration configured? (ignoring ajax requests)
-        if ((empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) !== 'xmlhttprequest')
+        if ((! isset($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) !== 'xmlhttprequest')
             && ($regenerateTime = $this->config->timeToUpdate) > 0
         ) {
             if (! isset($_SESSION['__ci_last_regenerate'])) {
@@ -299,7 +300,7 @@ class Session implements SessionInterface
             ini_set('session.gc_maxlifetime', (string) $this->config->expiration);
         }
 
-        if (! empty($this->config->savePath)) {
+        if ($this->config->savePath !== '') {
             ini_set('session.save_path', $this->config->savePath);
         }
 
@@ -368,7 +369,7 @@ class Session implements SessionInterface
      */
     protected function initVars()
     {
-        if (empty($_SESSION['__ci_vars'])) {
+        if (! isset($_SESSION['__ci_vars'])) {
             return;
         }
 
@@ -384,7 +385,7 @@ class Session implements SessionInterface
             }
         }
 
-        if (empty($_SESSION['__ci_vars'])) {
+        if ($_SESSION['__ci_vars'] === []) {
             unset($_SESSION['__ci_vars']);
         }
     }
@@ -404,7 +405,7 @@ class Session implements SessionInterface
 
     private function removeOldSessionCookie(): void
     {
-        $response              = Services::response();
+        $response              = service('response');
         $cookieStoreInResponse = $response->getCookieStore();
 
         if (! $cookieStoreInResponse->has($this->config->cookieName)) {
@@ -486,21 +487,21 @@ class Session implements SessionInterface
      *
      * Replaces the legacy method $session->userdata();
      *
-     * @param string|null $key Identifier of the session property to retrieve
+     * @param non-empty-string|null $key Identifier of the session property to retrieve
      *
      * @return array|bool|float|int|object|string|null The property value(s)
      */
     public function get(?string $key = null)
     {
-        if (! empty($key) && (null !== ($value = $_SESSION[$key] ?? null) || null !== ($value = dot_array_search($key, $_SESSION ?? [])))) {
+        if ($key !== null && $key !== '' && (null !== ($value = $_SESSION[$key] ?? null) || null !== ($value = dot_array_search($key, $_SESSION ?? [])))) {
             return $value;
         }
 
-        if (empty($_SESSION)) {
+        if (! isset($_SESSION) || $_SESSION === []) {
             return $key === null ? [] : null;
         }
 
-        if (! empty($key)) {
+        if ($key !== null && $key !== '') {
             return null;
         }
 
@@ -646,7 +647,7 @@ class Session implements SessionInterface
 
         $flashdata = [];
 
-        if (! empty($_SESSION['__ci_vars'])) {
+        if (isset($_SESSION['__ci_vars'])) {
             foreach ($_SESSION['__ci_vars'] as $key => &$value) {
                 if (! is_int($value)) {
                     $flashdata[$key] = $_SESSION[$key];
@@ -706,7 +707,7 @@ class Session implements SessionInterface
      */
     public function unmarkFlashdata($key)
     {
-        if (empty($_SESSION['__ci_vars'])) {
+        if (! isset($_SESSION['__ci_vars'])) {
             return;
         }
 
@@ -720,7 +721,7 @@ class Session implements SessionInterface
             }
         }
 
-        if (empty($_SESSION['__ci_vars'])) {
+        if ($_SESSION['__ci_vars'] === []) {
             unset($_SESSION['__ci_vars']);
         }
     }
@@ -778,7 +779,7 @@ class Session implements SessionInterface
 
         $tempdata = [];
 
-        if (! empty($_SESSION['__ci_vars'])) {
+        if (isset($_SESSION['__ci_vars'])) {
             foreach ($_SESSION['__ci_vars'] as $key => &$value) {
                 if (is_int($value)) {
                     $tempdata[$key] = $_SESSION[$key];
@@ -856,7 +857,7 @@ class Session implements SessionInterface
      */
     public function unmarkTempdata($key)
     {
-        if (empty($_SESSION['__ci_vars'])) {
+        if (! isset($_SESSION['__ci_vars'])) {
             return;
         }
 
@@ -870,7 +871,7 @@ class Session implements SessionInterface
             }
         }
 
-        if (empty($_SESSION['__ci_vars'])) {
+        if ($_SESSION['__ci_vars'] === []) {
             unset($_SESSION['__ci_vars']);
         }
     }
@@ -929,7 +930,7 @@ class Session implements SessionInterface
         $expiration   = $this->config->expiration === 0 ? 0 : Time::now()->getTimestamp() + $this->config->expiration;
         $this->cookie = $this->cookie->withValue(session_id())->withExpires($expiration);
 
-        $response = Services::response();
+        $response = service('response');
         $response->setCookie($this->cookie);
     }
 }

@@ -52,9 +52,9 @@ class ManageReservationController extends BaseController
                 $contents[$no]['id_reservation_status'] = 3;
                 $this->model->update_r_api($user_id, $package_id, $request_date, ['id_reservation_status' => 3]);
             }
-            if ($request_date < $dateNow && $reservation_status != 3) {
+            if ($request_date < $dateNow && $reservation_status != 3 && $reservation_status == 4) {
                 // update status
-                $contents[$no]['id_reservation_status'] = 4;
+                $contents[$no]['id_reservation_status'] = 5;
                 $this->model->update_r_api($user_id, $package_id, $request_date, ['id_reservation_status' => 4]);
             }
             $reservation_status_id = $contents[$no]['id_reservation_status'];

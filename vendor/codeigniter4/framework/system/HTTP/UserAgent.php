@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This file is part of CodeIgniter 4 framework.
  *
@@ -12,11 +14,14 @@
 namespace CodeIgniter\HTTP;
 
 use Config\UserAgents;
+use Stringable;
 
 /**
  * Abstraction for an HTTP user agent
+ *
+ * @see \CodeIgniter\HTTP\UserAgentTest
  */
-class UserAgent
+class UserAgent implements Stringable
 {
     /**
      * Current user-agent
@@ -258,7 +263,7 @@ class UserAgent
         // Set the new user-agent string and parse it, unless empty
         $this->agent = $string;
 
-        if (! empty($string)) {
+        if ($string !== '') {
             $this->compileData();
         }
     }

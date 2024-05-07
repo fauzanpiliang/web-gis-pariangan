@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This file is part of CodeIgniter 4 framework.
  *
@@ -18,6 +20,8 @@ use Config\Mimes;
 
 /**
  * HTTP response when a download is requested.
+ *
+ * @see \CodeIgniter\HTTP\DownloadResponseTest
  */
 class DownloadResponse extends Response
 {
@@ -34,7 +38,7 @@ class DownloadResponse extends Response
     /**
      * mime set flag
      */
-    private bool $setMime;
+    private readonly bool $setMime;
 
     /**
      * Download for binary
@@ -192,7 +196,7 @@ class DownloadResponse extends Response
 
         $result = sprintf('attachment; filename="%s"', $downloadFilename);
 
-        if ($utf8Filename) {
+        if ($utf8Filename !== '') {
             $result .= '; filename*=UTF-8\'\'' . rawurlencode($utf8Filename);
         }
 

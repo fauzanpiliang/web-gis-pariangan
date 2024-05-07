@@ -9,7 +9,7 @@
         <div class="row">
             <div class="col order-md-2 order-first">
                 <h3>Tourism Village</h3>
-                <p class="text-subtitle text-muted">Desa Wisata Nagari Tuo Pariangan</p>
+                <p class="text-dark">Desa Wisata Nagari Tuo Pariangan</p>
             </div>
             <div class="col  d-flex order-md-2 order-second justify-content-end">
                 <!-- Facebook -->

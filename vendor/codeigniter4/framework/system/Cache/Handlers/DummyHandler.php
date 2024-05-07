@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This file is part of CodeIgniter 4 framework.
  *
@@ -15,6 +17,8 @@ use Closure;
 
 /**
  * Dummy cache handler
+ *
+ * @see \CodeIgniter\Cache\Handlers\DummyHandlerTest
  */
 class DummyHandler extends BaseHandler
 {

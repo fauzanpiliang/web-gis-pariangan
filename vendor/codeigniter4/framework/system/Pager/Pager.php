@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This file is part of CodeIgniter 4 framework.
  *
@@ -24,6 +26,8 @@ use Config\Pager as PagerConfig;
  * pagination links and reading the current url's query variable, "page"
  * to determine the current page. This class can support multiple
  * paginations on a single page.
+ *
+ * @see \CodeIgniter\Pager\PagerTest
  */
 class Pager implements PagerInterface
 {
@@ -58,9 +62,9 @@ class Pager implements PagerInterface
     /**
      * List of only permitted queries
      *
-     * @var array
+     * @var list<string>|null
      */
-    protected $only = [];
+    protected $only;
 
     /**
      * Constructor.
@@ -134,7 +138,7 @@ class Pager implements PagerInterface
      */
     public function store(string $group, int $page, ?int $perPage, int $total, int $segment = 0)
     {
-        if ($segment) {
+        if ($segment !== 0) {
             $this->setSegment($segment, $group);
         }
 
@@ -274,7 +278,7 @@ class Pager implements PagerInterface
             $uri->addQuery($this->groups[$group]['pageSelector'], $page);
         }
 
-        if ($this->only) {
+        if ($this->only !== null) {
             $query = array_intersect_key($_GET, array_flip($this->only));
 
             if (! $segment) {
@@ -308,7 +312,7 @@ class Pager implements PagerInterface
         $curr = $this->getCurrentPage($group);
         $page = null;
 
-        if (! empty($last) && ! empty($curr) && $last === $curr) {
+        if (! empty($last) && $curr !== 0 && $last === $curr) {
             return null;
         }
 
@@ -332,7 +336,7 @@ class Pager implements PagerInterface
         $curr  = $this->getCurrentPage($group);
         $page  = null;
 
-        if (! empty($first) && ! empty($curr) && $first === $curr) {
+        if ($first !== 0 && $curr !== 0 && $first === $curr) {
             return null;
         }
 
@@ -407,7 +411,7 @@ class Pager implements PagerInterface
 
         $this->calculateCurrentPage($group);
 
-        if ($_GET) {
+        if ($_GET !== []) {
             $this->groups[$group]['uri'] = $this->groups[$group]['uri']->setQueryArray($_GET);
         }
     }
@@ -423,7 +427,7 @@ class Pager implements PagerInterface
             try {
                 $this->groups[$group]['currentPage'] = (int) $this->groups[$group]['currentUri']
                     ->setSilent(false)->getSegment($this->segment[$group]);
-            } catch (HTTPException $e) {
+            } catch (HTTPException) {
                 $this->groups[$group]['currentPage'] = 1;
             }
         } else {

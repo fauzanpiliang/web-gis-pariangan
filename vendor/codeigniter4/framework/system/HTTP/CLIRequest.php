@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This file is part of CodeIgniter 4 framework.
  *
@@ -25,6 +27,8 @@ use RuntimeException;
  * originally made available under.
  *
  * http://fuelphp.com
+ *
+ * @see \CodeIgniter\HTTP\CLIRequestTest
  */
 class CLIRequest extends Request
 {
@@ -54,7 +58,7 @@ class CLIRequest extends Request
      *
      * @var string
      */
-    protected $method = 'cli';
+    protected $method = 'CLI';
 
     /**
      * Constructor
@@ -71,6 +75,9 @@ class CLIRequest extends Request
         ignore_user_abort(true);
 
         $this->parseCommand();
+
+        // Set SiteURI for this request
+        $this->uri = new SiteURI($config, $this->getPath());
     }
 
     /**
@@ -90,7 +97,7 @@ class CLIRequest extends Request
     {
         $path = implode('/', $this->segments);
 
-        return empty($path) ? '' : $path;
+        return ($path === '') ? '' : $path;
     }
 
     /**
@@ -142,7 +149,7 @@ class CLIRequest extends Request
      */
     public function getOptionString(bool $useLongOpts = false): string
     {
-        if (empty($this->options)) {
+        if ($this->options === []) {
             return '';
         }
 
@@ -310,7 +317,7 @@ class CLIRequest extends Request
     /**
      * Checks this request type.
      *
-     * @param string $type HTTP verb or 'json' or 'ajax'
+     * @param         string                                                                    $type HTTP verb or 'json' or 'ajax'
      * @phpstan-param string|'get'|'post'|'put'|'delete'|'head'|'patch'|'options'|'json'|'ajax' $type
      */
     public function is(string $type): bool

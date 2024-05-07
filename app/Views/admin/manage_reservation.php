@@ -48,7 +48,7 @@
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-border" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
+                    <thead class="text-dark">
                         <?php $no = 1; ?>
                         <tr>
                             <th>No</th>
@@ -60,7 +60,7 @@
                             <th class="text-center">Action</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="text-dark">
                         <?php foreach ($data as $reservation) : ?>
                             <?php
                             $userId = $reservation['id_user'];
@@ -91,6 +91,8 @@
                                 $proggres = "Canceled, money returned";
                             } else if ($reservationIdStatus == 4) {
                                 $proggres = "Transaction Success";
+                            } else if ($reservationIdStatus == 5) {
+                                $proggres = "Finish and package closed";
                             }
                             ?>
 
@@ -111,6 +113,8 @@
                                                                 echo "danger";
                                                             } else if ($reservationIdStatus == 4) {
                                                                 echo "success";
+                                                            } else if ($reservationIdStatus == 5) {
+                                                                echo "secondary";
                                                             }; ?>"> <?= $reservationStatus; ?></span>
                                 </td>
                                 <td class="text-start">
@@ -335,6 +339,8 @@
             `)
             setStar(rating)
         }
+
+        // finish package
         $('#modalFooter').html(``)
     }
     const rupiah = (number) => {

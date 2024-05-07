@@ -71,7 +71,7 @@ class DetailPackageModel extends Model
                 $homestayModel = new homestayModel();
                 $homestayId = substr($idObject, 1, 2);
                 $homestayPrice = $homestayModel->getHomestay($homestayId)->getFirstRow()->price;
-                $queryNew[$no]['activity_price'] = $homestayPrice != null ? $atractionPrice : 0;
+                $queryNew[$no]['activity_price'] = $homestayPrice != null ? $homestayPrice : 0;
             }
             $no++;
         }

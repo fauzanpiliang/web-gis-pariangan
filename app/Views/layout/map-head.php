@@ -20,13 +20,13 @@
         <?php if (base_url('list_object')) : ?>
             <div class="col">
                 <div class="input-group">
-                    <label class="input-group-text" for="area_geom">Area Level</label>
-                    <select class="form-select" id="area_geom" onchange="changeAreaGeom()">
-                        <option value="country">Country</option>
-                        <option value="province" selected>Province</option>
-                        <option value="city">City/Regency</option>
-                        <option value="subdistric">Sub District</option>
-                        <option value="village">Tourism Village</option>
+                    <label class="input-group-text text-dark" for="area_geom">Area Level</label>
+                    <select class="form-select" id="area_geom" onchange="changeAreaGeom()" class="text-dark">
+                        <option value="country" class="text-dark">Country</option>
+                        <option value="province"  class="text-dark" selected>Province</option>
+                        <option value="city" class="text-dark">City/Regency</option>
+                        <option value="subdistric" class="text-dark">Sub District</option>
+                        <option value="village" class="text-dark">Tourism Village</option>
                     </select>
                 </div>
             </div>

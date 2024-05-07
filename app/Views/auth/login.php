@@ -35,7 +35,7 @@
 
                                     <?php else : ?>
                                         <div class="form-group">
-                                            <input type="text" autocomplete="off" class="form-control form-control-user <?php if (session('errors.login')) : ?>is-invalid<?php endif ?>" name="login" placeholder="<?= lang('Auth.emailOrUsername') ?>">
+                                            <input type="text" autocomplete="off" class="form-control form-control-user <?php if (session('errors.login')) : ?>is-invalid<?php endif ?> text-dark" name="login" placeholder="<?= lang('Auth.emailOrUsername') ?>">
                                             <div class="invalid-feedback">
                                                 <?= session('errors.login') ?>
                                             </div>
@@ -44,7 +44,7 @@
 
                                     <!-- Password -->
                                     <div class="form-group">
-                                        <input type="password" name="password" class="form-control form-control-user<?php if (session('errors.password')) : ?>is-invalid<?php endif ?>" placeholder="<?= lang('Auth.password') ?>">
+                                        <input type="password" name="password" class="form-control form-control-user<?php if (session('errors.password')) : ?>is-invalid<?php endif ?> text-dark" placeholder="<?= lang('Auth.password') ?>">
                                         <div class="invalid-feedback">
                                             <?= session('errors.password') ?>
                                         </div>
@@ -79,7 +79,7 @@
 
                                 <?php if ($config->allowRegistration) : ?>
                                     <div class="text-center">
-                                        <a class="small" href="<?= base_url('register') ?>"> Create an Account!</a>
+                                        <a class="text-dark" href="<?= base_url('register') ?>"> Create an Account!</a>
                                     </div>
                                 <?php endif; ?>
                             </div>

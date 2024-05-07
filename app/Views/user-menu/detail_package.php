@@ -129,7 +129,7 @@
                                 <div class="list-group list-group-horizontal-sm mb-4 text-center" role="tablist">
                                     <?php $dayNumber = 1; ?>
                                     <?php foreach ($data['package_day'] as $day) : ?>
-                                        <a onclick="getObjectsByPackageDayId('<?= $data['id'] ?>','<?= $day['day'] ?>')" class="list-group-item list-group-item-action <?= $dayNumber == 1 ? "active" : "" ?>" id="list-<?= $dayNumber; ?>-list" data-bs-toggle="list" href="#list-<?= $dayNumber; ?>" role="tab" aria-selected="<?= $dayNumber == 1 ? "true" : "false" ?>"> Day <?= $dayNumber; ?></a>
+                                        <a onclick="getObjectsByPackageDayId('<?= $data['id'] ?>','<?= $day['day'] ?>','<?= $dayNumber ?>')" class="list-group-item list-group-item-action <?= $dayNumber == 1 ? "active" : "" ?>" id="list-<?= $dayNumber; ?>-list" data-bs-toggle="list" href="#list-<?= $dayNumber; ?>" role="tab" aria-selected="<?= $dayNumber == 1 ? "true" : "false" ?>"> Day <?= $dayNumber; ?></a>
                                         <?php $dayNumber++; ?>
                                     <?php endforeach; ?>
                                 </div>
@@ -168,6 +168,9 @@
                 </div>
 
                 <?= $this->include('layout/map-body'); ?>
+                <div class="card-footer text-center">
+                    <h3>Day <span id="day-info">1</span></h3>
+                </div>
 
             </div>
 
@@ -278,17 +281,18 @@
     let routeArray = []
 
     <?php if ($data['package_day'] != null) : ?>
-        getObjectsByPackageDayId('<?= $data['id'] ?>', '<?= $data['package_day'][0]['day'] ?>')
+        getObjectsByPackageDayId('<?= $data['id'] ?>', '<?= $data['package_day'][0]['day'] ?>', 1)
     <?php endif; ?>
 
-    function getObjectsByPackageDayId(id_package, id_day) {
+    function getObjectsByPackageDayId(id_package, id_day, number_day) {
         $.ajax({
             url: `<?= base_url('package'); ?>/objects/package_day/${id_package}/${id_day}`,
             type: "GET",
             contentType: "application/json",
             success: function(response) {
                 let objects = JSON.parse(response)
-                getObjectById(objects)
+                $('#day-info').html(number_day)
+                getObjectById(objects, number_day)
             },
             error: function(err) {
                 console.log(err.responseText)
@@ -297,7 +301,7 @@
     }
 
 
-    function getObjectById(objects = null) {
+    function getObjectById(objects = null, number_day) {
         let objectNumber = 1
         let flightPlanCoordinates = []
         clearMarker()
@@ -335,9 +339,13 @@
                 dataType: 'json',
                 success: function(response) {
                     if (response.objectData.length > 0) {
+
                         let data = response.objectData[0]
+                        data.geoJSON = null
+                        console.log(data.geoJSON)
+                        console.log(data.lat + " " + data.lng)
                         let latlng = new google.maps.LatLng(data.lat, data.lng)
-                        showObjectOnMap(objectNumber, data)
+                        showObjectOnMap(objectNumber, data, true, number_day)
                         boundObject.extend(latlng)
                     }
 
@@ -350,7 +358,7 @@
         map.setCenter(boundObject.getCenter())
     }
     // Display marker for loaded object
-    function showObjectOnMap(objectNumber, data, anim = true) {
+    function showObjectOnMap(objectNumber, data, anim = true, number_day) {
         let id = data.id
         let lat = data.lat
         let lng = data.lng
@@ -370,7 +378,7 @@
             marker.setAnimation(null);
         }
         marker.addListener('click', () => {
-            openInfoWindow(marker, infoMarkerData(data, url = null))
+            openInfoWindow(marker, infoMarkerData(data, url = null, number_day))
         });
         markerArray.push(marker);
         if (objectNumber == 1) {

@@ -25,10 +25,10 @@
                                             <p class="card-text"><?= $data->description; ?></p>
                                         <?php endif; ?>
                                         <?php if (isset($data->date)) : ?>
-                                            <p class="card-text"><small class="text-muted"><?= $data->date; ?></small></p>
+                                            <p class="card-text"><small class="text-dark"><?= $data->date; ?></small></p>
                                         <?php endif; ?>
                                         <?php if (isset($data->price)) : ?>
-                                            <p class="card-text"><small class="text-muted"><?= $data->price; ?> IDR</small></p>
+                                            <p class="card-text"><small class="text-dark"><?= $data->price; ?> IDR</small></p>
                                         <?php endif; ?>
                                     </div>
                                     <div class="card-footer text-end" style="border: none;">

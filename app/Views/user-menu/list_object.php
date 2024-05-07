@@ -56,7 +56,7 @@
                 </div>
             </div>
             <div class="row card shadow">
-                <div class="overflow-auto" id="panel">
+                <div class="overflow-auto text-dark" id="panel">
                 </div>
             </div>
         </div>
