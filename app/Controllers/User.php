@@ -65,9 +65,9 @@ class User extends BaseController
             }
 
             // update status
-            if ($request_date  < $dateNow && $reservation_status != 3) {
+            if ($request_date  < $dateNow && $reservation_status != 3 && $reservation_status == 4) {
                 $users_reservation[$no]['id_reservation_status'] = 5;
-                $this->reservationModel->update_r_api($id, $package_id, $request_date, ['id_reservation_status' => 5]);
+                $this->reservationModel->update_r_api($id, $package_id, $request_date, ['id_reservation_status' => $users_reservation[$no]['id_reservation_status']]);
             }
             $reservation_status_id = $users_reservation[$no]['id_reservation_status'];
 

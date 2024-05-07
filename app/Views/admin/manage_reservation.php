@@ -92,7 +92,9 @@
                             } else if ($reservationIdStatus == 4) {
                                 $proggres = "Transaction Success";
                             } else if ($reservationIdStatus == 5) {
-                                $proggres = "Finish and package closed";
+                                $proggres = "Finish";
+                            } else if ($reservationIdStatus == 6) {
+                                $proggres = "Package closed";
                             }
                             ?>
 
@@ -115,6 +117,8 @@
                                                                 echo "success";
                                                             } else if ($reservationIdStatus == 5) {
                                                                 echo "secondary";
+                                                            } else if ($reservationIdStatus == 6) {
+                                                                echo "dark";
                                                             }; ?>"> <?= $reservationStatus; ?></span>
                                 </td>
                                 <td class="text-start">
@@ -191,6 +195,9 @@
         $('#modalBody').html(`
         <div class="p-2">
                
+                <div id="closePackage">
+                    
+                </div>  
                 <div id="userRating">
     
                 </div>  
@@ -338,10 +345,19 @@
                 <p> ${review} </p>
             `)
             setStar(rating)
-        }
 
+        }
+        // close package
+        if (reservationStatus == 5) {
+            $("#closePackage").html(`<a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="closePackageModal('${id_user}', '${id_package}', '${request_date}')"><i class="fa fa-x"> </i> Click to close this package !</a>`)
+        }
         // finish package
         $('#modalFooter').html(``)
+    }
+
+    function closePackageModal(idUser, idPackage, requestDate) {
+        $('#modalTitle').html("halo")
+        $('#modalBody').html(`<input type="text" class="form-input"> </input>`)
     }
     const rupiah = (number) => {
         return new Intl.NumberFormat("id-ID", {
