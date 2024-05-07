@@ -349,16 +349,21 @@
         }
         // close package
         if (reservationStatus == 5) {
-            $("#closePackage").html(`<a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="closePackageModal('${id_user}', '${id_package}', '${request_date}')"><i class="fa fa-x"> </i> Click to close this package !</a>`)
+            $("#closePackage").addClass("mb-2 shadow-sm p-4 rounded")
+            $("#closePackage").html(`
+                <p class="text-center fw-bold text-dark"> Close the package </p>
+                <input type="text" id="closeInput" class="form-control mb-2 text-dark" placeholder="Write your comment here"> </input>
+                <div class="text-center">
+                    <a class="btn btn-primary" onclick="closeReservation('${id_user}', '${id_package}', '${request_date}')">Close</a>
+                </div>
+                
+            `)
         }
         // finish package
         $('#modalFooter').html(``)
     }
 
-    function closePackageModal(idUser, idPackage, requestDate) {
-        $('#modalTitle').html("halo")
-        $('#modalBody').html(`<input type="text" class="form-input"> </input>`)
-    }
+
     const rupiah = (number) => {
         return new Intl.NumberFormat("id-ID", {
             style: "currency",
@@ -744,41 +749,6 @@
 
     }
 
-    // function confirmCostumReservation(id_user, id_package, request_date) {
-    //     // check if it costum package or not
-    //     let inputPriceCostum = $("#inputPriceReservation").val()
-    //     if (!inputPriceCostum) {
-    //         return swal.fire("please input the price")
-    //     }
-
-    //     let requestData = {
-    //         id_reservation_status: 2,
-    //         confirmed_at: "true",
-    //         confirmed_by: '<?= user()->id ?>',
-    //         total_price: inputPriceCostum
-    //     }
-
-    //     $.ajax({
-    //         url: `<?= base_url('reservation/update'); ?>/${id_user}/${id_package}/${request_date}`,
-    //         type: "PUT",
-    //         data: requestData,
-    //         async: false,
-    //         contentType: "application/json",
-    //         success: function(response) {
-    //             Swal.fire(
-    //                 'Booking confirmed',
-    //                 '',
-    //                 'success'
-    //             ).then(() => {
-    //                 window.location.reload()
-    //             });
-    //         },
-    //         error: function(err) {
-    //             console.log(err.responseText)
-    //         }
-    //     })
-
-    // }
 
 
     function acceptReservation(id_user, id_package, request_date) {
@@ -834,6 +804,39 @@
                 console.log(err.responseText)
             }
         });
+    }
+
+
+    function closeReservation(id_user, id_package, request_date) {
+        let closedComment = $('#closeInput').val()
+
+        let requestData = {
+            id_reservation_status: 6,
+            closed_at: "true",
+            closed_comment: closedComment,
+            closed_by: '<?= user()->id ?>'
+        }
+
+        $.ajax({
+            url: `<?= base_url('reservation/update'); ?>/${id_user}/${id_package}/${request_date}`,
+            type: "PUT",
+            data: requestData,
+            async: false,
+            contentType: "application/json",
+            success: function(response) {
+                Swal.fire(
+                    'Booking closed',
+                    '',
+                    'success'
+                ).then(() => {
+                    window.location.reload()
+                });
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
+
     }
 </script>
 <script>

@@ -90,6 +90,12 @@ class ReservationController extends BaseController
             $request['payment_accepted_date'] = Time::now("Asia/Jakarta");
         }
 
+        // execute when close the package
+        if (isset($request['closed_at'])) {
+            $request['closed_at'] = Time::now("Asia/Jakarta");
+        }
+
+
 
         // execute when upload proof of refund
         if (isset($request['proof_of_refund'])) {
