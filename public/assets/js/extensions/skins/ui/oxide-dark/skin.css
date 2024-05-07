@@ -1958,7 +1958,7 @@ body.tox-dialog__disable-scroll {
   justify-content: center;
 }
 .tox .tox-image-tools__image {
-  background-color: #666;
+  background-color: #000000;
   height: 380px;
   overflow: auto;
   position: relative;

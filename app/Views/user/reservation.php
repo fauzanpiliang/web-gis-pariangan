@@ -21,7 +21,6 @@
         line-height: 1;
         text-align: center;
         background: linear-gradient(90deg, rgba(186, 148, 62, 1) 0%, rgba(236, 172, 32, 1) 20%, rgba(186, 148, 62, 1) 39%, rgba(249, 244, 180, 1) 50%, rgba(186, 148, 62, 1) 60%, rgba(236, 172, 32, 1) 80%, rgba(186, 148, 62, 1) 100%);
-        -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         animation: shine 3s infinite;
         background-size: 200%;
