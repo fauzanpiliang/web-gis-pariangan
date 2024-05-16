@@ -53,11 +53,11 @@ class PdfGenerator extends BaseController
     public function getInvoiceData()
     {
         if ($this->request->isAJAX()) {
-            $id_user = $this->request->getPost('id_user');
+            $id = $this->request->getPost('id');
             $id_package = $this->request->getPost('id_package');
-            $request_date = $this->request->getPost('request_date');
 
-            $reservation  = $this->reservationModel->get_r_by_id_api($id_user, $id_package, $request_date)->getRowArray();
+
+            $reservation  = $this->reservationModel->get_r_by_id_api($id)->getRowArray();
 
             // package
             $package = $this->modelPackage->getPackage($id_package)->getRowArray();
@@ -92,11 +92,11 @@ class PdfGenerator extends BaseController
     public function getTicketData()
     {
         if ($this->request->isAJAX()) {
-            $id_user = $this->request->getPost('id_user');
+            $id = $this->request->getPost('id');
             $id_package = $this->request->getPost('id_package');
-            $request_date = $this->request->getPost('request_date');
 
-            $reservation  = $this->reservationModel->get_r_by_id_api($id_user, $id_package, $request_date)->getRowArray();
+
+            $reservation  = $this->reservationModel->get_r_by_id_api($id)->getRowArray();
 
             // package
             $package = $this->modelPackage->getPackage($id_package)->getRowArray();

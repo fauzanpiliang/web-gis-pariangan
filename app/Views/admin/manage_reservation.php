@@ -63,6 +63,7 @@
                     <tbody class="text-dark">
                         <?php foreach ($data as $reservation) : ?>
                             <?php
+                            $id = $reservation['id'];
                             $userId = $reservation['id_user'];
                             $packageId = $reservation['id_package'];
                             $request_date = $reservation['request_date'];
@@ -125,7 +126,7 @@
                                     <?= $proggres ?>
                                 </td>
                                 <td class="text-center">
-                                    <a class="btn btn-outline-success btn-sm " title="confirm" data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="showInfoReservation('<?= $userId ?>','<?= $packageId ?>','<?= $request_date ?>')">
+                                    <a class="btn btn-outline-success btn-sm " title="confirm" data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="showInfoReservation('<?= $id ?>')">
                                         <i class="fa fa-info"></i>
                                     </a>
                                 </td>
@@ -153,12 +154,12 @@
     new DataTable("#dataTable")
     let photo, pond, galleryValue
 
-    function showInfoReservation(id_user, id_package, request_date) {
+    function showInfoReservation(id) {
         let statusData = JSON.parse('<?= json_encode($statusData) ?>')
         let result
         let reservationStatus, reservationInfo, reservationPrice
         $.ajax({
-            url: `<?= base_url('reservation/show'); ?>/${id_user}/${id_package}/${request_date}`,
+            url: `<?= base_url('reservation/show'); ?>/${id}`,
             type: "GET",
             async: false,
             contentType: "application/json",
@@ -176,14 +177,14 @@
         reservationStatus = result['id_reservation_status']
         if (reservationStatus == '1' && result['package_costum'] == '1') {
             reservationInfo =
-                `<a class ="btn btn-outline-danger m-1" onclick="cancelReservation('${id_user}','${id_package}','${request_date}')"> Cancel  </a>
-               <a class ="btn btn-outline-success m-1" onclick="confirmReservation('${id_user}','${id_package}','${request_date}')"> Confirm</a>
+                `<a class ="btn btn-outline-danger m-1" onclick="cancelReservation('${id}')"> Cancel  </a>
+               <a class ="btn btn-outline-success m-1" onclick="confirmReservation('${id}')"> Confirm</a>
                <a class ="btn btn-outline-primary m-1" onclick="previewPackage('${id_package}')"> preview</a>`
             reservationPrice = rupiah(result['total_price'])
         } else if (reservationStatus == '1') {
             reservationInfo =
-                `<a class ="btn btn-outline-danger m-1" onclick="cancelReservation('${id_user}','${id_package}','${request_date}')"> Cancel  </a>
-               <a class ="btn btn-outline-success m-1" onclick="confirmReservation('${id_user}','${id_package}','${request_date}')"> Confirm</a>`
+                `<a class ="btn btn-outline-danger m-1" onclick="cancelReservation('${id}')"> Cancel  </a>
+               <a class ="btn btn-outline-success m-1" onclick="confirmReservation('${id}')"> Confirm</a>`
             console.log(result['total_price'])
             reservationPrice = rupiah(result['total_price'])
 
@@ -310,7 +311,7 @@
             } else {
                 $("#userPayment").append(`
                 <div class="text-end">
-                <a class="btn btn-success" onclick="acceptReservation('${id_user}','${id_package}','${request_date}')"> Accept payment</a>
+                <a class="btn btn-success" onclick="acceptReservation('${id}')"> Accept payment</a>
                 </div>
                 `)
             }
@@ -321,7 +322,7 @@
             let deposit = result['deposit']
             let proofRefund = result['proof_of_refund']
             $("#userRefund").addClass("mb-2 shadow-sm p-4 rounded")
-            $("#userRefund").html(`<a class="btn btn-outline-primary" onclick="addRefundBody('${id_user}','${id_package}','${request_date}','${deposit}','${proofRefund}')">Refund</a>`)
+            $("#userRefund").html(`<a class="btn btn-outline-primary" onclick="addRefundBody('${id}','${deposit}','${proofRefund}')">Refund</a>`)
 
         }
 
@@ -354,7 +355,7 @@
                 <p class="text-center fw-bold text-dark"> Close the package </p>
                 <input type="text" id="closeInput" class="form-control mb-2 text-dark" placeholder="Write your comment here"> </input>
                 <div class="text-center">
-                    <a class="btn btn-primary" onclick="closeReservation('${id_user}', '${id_package}', '${request_date}')">Close</a>
+                    <a class="btn btn-primary" onclick="closeReservation('${id}')">Close</a>
                 </div>
                 
             `)
@@ -396,10 +397,10 @@
         }
     }
 
-    function addRefundBody(id_user, id_package, request_date, deposit, proofRefund) {
+    function addRefundBody(id, deposit, proofRefund) {
         let userDeposit = parseInt(deposit)
         let refund = userDeposit / 2
-        $(`#userRefund`).html(`<a class="btn btn-outline-primary" onclick="cancelRefundBody('${id_user}','${id_package}','${request_date}','${userDeposit}','${proofRefund}')">Cancel refund</a>`)
+        $(`#userRefund`).html(`<a class="btn btn-outline-primary" onclick="cancelRefundBody('${id}','${userDeposit}','${proofRefund}')">Cancel refund</a>`)
         $(`#userRefund`).append(`
                 <p class="text-center fw-bold text-dark"> Upload Your Refund </p>
                 <p ></p>
@@ -409,7 +410,7 @@
                     <input class="form-control" accept="image/*" type="file" name="gallery[]" id="gallery">
                 </div>
                 <div class="text-end">
-                    <a class="btn btn-success" onclick="saveRefund('${id_user}','${id_package}','${request_date}')" > Refund</a>
+                    <a class="btn btn-success" onclick="saveRefund('${id}')" > Refund</a>
                 </div>
            
         `)
@@ -468,12 +469,12 @@
         })
     }
 
-    function cancelRefundBody(id_user, id_package, request_date, deposit, proofRefund) {
+    function cancelRefundBody(id, deposit, proofRefund) {
         let userDeposit = parseInt(deposit)
-        $(`#userRefund`).html(`<a class="btn btn-outline-primary" onclick="addRefundBody('${id_user}','${id_package}','${request_date}','${deposit}','${proofRefund}')">Add refund</a>`)
+        $(`#userRefund`).html(`<a class="btn btn-outline-primary" onclick="addRefundBody('${id}','${deposit}','${proofRefund}')">Add refund</a>`)
     }
 
-    function saveRefund(id_user, id_package, request_date) {
+    function saveRefund(id) {
         let proofRefund = galleryValue
         if (proofRefund == null) {
             Swal.fire(
@@ -487,7 +488,7 @@
                 proof_of_refund: proofRefund
             }
             $.ajax({
-                url: `<?= base_url('reservation/update'); ?>/${id_user}/${id_package}/${request_date}`,
+                url: `<?= base_url('reservation/update'); ?>/${id}`,
                 type: "PUT",
                 data: requestData,
                 async: false,
@@ -690,7 +691,7 @@
 
     // end of the map
 
-    function cancelReservation(id_user, id_package, request_date) {
+    function cancelReservation(id) {
         let requestData = {
             id_reservation_status: 3,
             canceled_at: "true",
@@ -698,7 +699,7 @@
         }
 
         $.ajax({
-            url: `<?= base_url('reservation/update'); ?>/${id_user}/${id_package}/${request_date}`,
+            url: `<?= base_url('reservation/update'); ?>/${id}`,
             type: "PUT",
             data: requestData,
             async: false,
@@ -719,7 +720,7 @@
 
     }
 
-    function confirmReservation(id_user, id_package, request_date) {
+    function confirmReservation(id) {
 
         let requestData = {
             id_reservation_status: 2,
@@ -728,7 +729,7 @@
         }
 
         $.ajax({
-            url: `<?= base_url('reservation/update'); ?>/${id_user}/${id_package}/${request_date}`,
+            url: `<?= base_url('reservation/update'); ?>/${id}`,
             type: "PUT",
             data: requestData,
             async: false,
@@ -751,7 +752,7 @@
 
 
 
-    function acceptReservation(id_user, id_package, request_date) {
+    function acceptReservation(id) {
         let requestData = {
             id_reservation_status: 4,
             payment_accepted_date: "true",
@@ -759,7 +760,7 @@
         }
 
         $.ajax({
-            url: `<?= base_url('reservation/update'); ?>/${id_user}/${id_package}/${request_date}`,
+            url: `<?= base_url('reservation/update'); ?>/${id}`,
             type: "PUT",
             data: requestData,
             async: false,
@@ -780,13 +781,13 @@
 
     }
 
-    function changeReservationStatus(id_user, id_package, request_date, status) {
+    function changeReservationStatus(id) {
         let requestData = {
             id_reservation_status: status, //status
         }
 
         $.ajax({
-            url: `<?= base_url('reservation/update'); ?>/${id_user}/${id_package}/${request_date}`,
+            url: `<?= base_url('reservation/update'); ?>/${id}`,
             type: "PUT",
             data: requestData,
             async: false,
@@ -807,7 +808,7 @@
     }
 
 
-    function closeReservation(id_user, id_package, request_date) {
+    function closeReservation(id) {
         let closedComment = $('#closeInput').val()
 
         let requestData = {
@@ -818,7 +819,7 @@
         }
 
         $.ajax({
-            url: `<?= base_url('reservation/update'); ?>/${id_user}/${id_package}/${request_date}`,
+            url: `<?= base_url('reservation/update'); ?>/${id}`,
             type: "PUT",
             data: requestData,
             async: false,
@@ -921,10 +922,10 @@
         let comment = $("#comment").val()
         let numberCheckResult = checkNumberPeople(numberPeople, capacityOfPackage)
         let dateCheckResult = checkIsDateExpired(reservationDate)
-        let sameDateCheckResult = "true"
-        if (reservationDate) {
-            sameDateCheckResult = checkIsDateDuplicate(userId, packageId, reservationDate)
-        }
+        // let sameDateCheckResult = "true"
+        // if (reservationDate) {
+        //     sameDateCheckResult = checkIsDateDuplicate(userId, packageId, reservationDate)
+        // }
 
         if (!reservationDate) {
             Swal.fire('Please select booking date', '', 'warning');
@@ -934,9 +935,11 @@
             Swal.fire('Out of capacity, maksimal ' + `${capacityOfPackage}` + ' people', '', 'warning');
         } else if (dateCheckResult == false) {
             Swal.fire('Cannot Reserve, out of date, maksimal H-1 booking', '', 'warning');
-        } else if (sameDateCheckResult == "true") {
-            Swal.fire('Already chose the same date! please select another date', '', 'warning');
-        } else {
+        }
+        //  else if (sameDateCheckResult == "true") {
+        //     Swal.fire('Already chose the same date! please select another date', '', 'warning');
+        // }
+        else {
             <?php if (in_groups('admin')) : ?>
                 let requestData = {
                     reservation_date: reservationDate,

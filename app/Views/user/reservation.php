@@ -169,7 +169,7 @@
                                     </td>
                                     <td class="text-start checkSingle text-sm" style="width: 150px;">
 
-                                        <a class="btn btn-outline-primary btn-sm " title="detail booking" data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="showInfoReservation('<?= $id ?>')">
+                                        <a class="btn btn-outline-primary btn-sm " title="detail booking" data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="showInfoReservation('<?= $id ?>','<?= $packageId ?>', '<?= $requestDate ?>')">
                                             <i title="detail booking" class="fa fa-info"></i>
                                         </a>
                                         <a class='btn btn-outline-primary btn-sm ' title="transaction history" data-bs-toggle='modal' data-bs-target='#reservationModal' onclick="showHistory('<?= $id ?>')">
@@ -302,7 +302,7 @@
     }
 
 
-    function showInfoReservation(id) {
+    function showInfoReservation(id, id_package, request_date) {
         let result
         $.ajax({
             url: `<?= base_url('reservation/show'); ?>/${id}`,
@@ -403,7 +403,7 @@
                 <p ></p>
                 <p>Note <br><span class="text-danger">*</span> You must pay before <span class="text-primary"> ${dat} </span> ( H-3 )</span>  or booking will be cancel by the system<br><span class="text-danger">*</span> Before uploading proof of deposit, make sure the payment amount is the same as the invoice, please print the invoice to see the deposit amount</p>
                 <div class="text-start mb-4">
-                    <a class="btn btn-primary" onclick="openInvoice('${id}')" > <i class="fa fa-print"> </i> print invoice</a>
+                    <a class="btn btn-primary" onclick="openInvoice('${id}','${id_package}')" > <i class="fa fa-print"> </i> print invoice</a>
                 </div>
                 <div class="form-group mb-4">
                    <label for="deposit" class="mb-2"> Deposit <span class="text-danger">*</span></label>
@@ -501,7 +501,7 @@
             $("#userTicket").addClass("background-effect mb-2 shadow-sm p-4 rounded border border-warning")
             $("#userTicket").css('height', '250px');
             $("#userTicket").html(`
-                <a class="btn" onclick="printTicket('${id}')">
+                <a class="btn" onclick="printTicket('${id}','${id_package}')">
                     <h1 class=" gold text-center fw-bold text-dark"> Print Your Ticket Here </h1>
                 </a>
             `)
@@ -584,7 +584,7 @@
 
     }
 
-    function printTicket(id) {
+    function printTicket(id, id_package) {
 
         $.ajax({
             url: '<?= base_url("pdf/ticket-data") ?>',
@@ -592,6 +592,7 @@
             dataType: "json",
             data: {
                 id: id,
+                id_package: id_package
             },
             success: function(response) {
                 window.open('<?= base_url('pdf/ticket'); ?>' + '/' + JSON.stringify(response));
@@ -757,13 +758,15 @@
         });
     }
 
-    function openInvoice(id) {
+    function openInvoice(id, id_package) {
         $.ajax({
             url: '<?= base_url("pdf/invoice-data") ?>',
             type: "POST",
             dataType: "json",
             data: {
-                id: id
+                id: id,
+                id_package: id_package
+
             },
             success: function(response) {
                 console.log(response)
