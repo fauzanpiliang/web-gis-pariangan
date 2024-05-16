@@ -208,12 +208,12 @@
     }
 
 
-    function removeObject(noDay, noDetail, objectId, objectPrice) {
+    function removeObject(noDay, noDetail, objectId, objectPrice, generatedId) {
         $(`#${noDay}-${noDetail}`).remove()
         let current = $(`#lastNoDetail${noDay}`).val()
         $(`#lastNoDetail${noDay}`).val(current - 1)
 
-        removePrice(objectId)
+        removePrice(generatedId, objectId)
     }
     //open modal package day
 
@@ -332,6 +332,7 @@
         let activity_price = parseInt($('#detail-package-price-object').val())
         let description = $("#detail-package-description").val()
 
+        const generatedIds = generateId()
         if (object_id.substring(0, 1) == 'A') {
             activity_type = 'Atraksi'
         } else if (object_id.substring(0, 1) == 'C') {
@@ -349,26 +350,33 @@
               <td><input class="form-control" value="${activity_type}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_type]" readonly></td>
               <td><input class="form-control" value="${activity_price}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_price]" readonly></td>
               <td><input class="form-control" value="${description}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][description]"></td>
-              <td><a class="btn btn-danger" onclick="removeObject('${noDay}','${ noDetail }','${object_id}', '${objectPrice}')"> <i class="fa fa-x"></i> </a></td>
+              <td><a class="btn btn-danger" onclick="removeObject('${noDay}','${ noDetail }','${object_id}', '${objectPrice}','${generatedIds}')"> <i class="fa fa-x"></i> </a></td>
             </tr>     
             `)
         $(`#lastNoDetail${noDay}`).val(noDetail + 1)
         $('#checkDetailPackage').val('oke')
         // price counting
-        addPrice(object_id, objectPrice)
+        addPrice(generatedIds, object_id, objectPrice)
+    }
+
+    function generateId() {
+        // Menghasilkan bilangan acak dengan rentang 0 sampai 999999
+        const randomId = Math.floor(Math.random() * 1000000);
+        return randomId;
     }
 
 
-    function addPrice(id, price) {
+    function addPrice(generatedId, id, price) {
         arrayPrice.push({
             id: id,
-            price: price
+            price: price,
+            generatedId: generatedId
         })
         setPrice()
     }
 
-    function removePrice(id) {
-        arrayPrice = arrayPrice.filter(element => element.id != id);
+    function removePrice(generatedId, id) {
+        arrayPrice = arrayPrice.filter(element => element.generatedId != generatedId);
         setPrice()
     }
 

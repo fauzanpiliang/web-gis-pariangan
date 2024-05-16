@@ -279,7 +279,7 @@
         $(`#lastNoDetail${noDay}`).val(current - 1)
 
         console.log(objectPrice)
-        removePrice(generatedId, parseInt(objectId))
+        removePrice(generatedId, objectId)
 
     }
     //open modal package day
