@@ -215,7 +215,9 @@
         let numberPeople = parseInt($('#number_people').val())
         let totalPrice = 0
         numberPeople = checkNumberPeople(numberPeople)
+        console.log(arrayPrice)
         if (numberPeople != false) {
+            // count service price
             let servicePackageForm = $('#service_package_form')
             let servicePrice = 0
             servicePackageForm.empty()
@@ -229,6 +231,7 @@
                 servicePackageForm.append(`<input type="hidden" name="service_package[]" value="${serviceParsed.id}" />`)
             });
 
+            // count object price
             let objectPrice = 0
             arrayPrice.forEach(element => {
                 console.log(element)
@@ -236,6 +239,7 @@
                 objectPrice += element.price * numberPeople
             })
 
+            // sum service and object price
             console.log("total service price = " + servicePrice)
             console.log("total object price = " + objectPrice)
             totalPrice = servicePrice + objectPrice
@@ -269,12 +273,13 @@
         }
     }
 
-    function removeObject(noDay, noDetail, objectId, objectPrice) {
+    function removeObject(noDay, noDetail, objectId, objectPrice, generatedId) {
         $(`#${noDay}-${noDetail}`).remove()
         let current = $(`#lastNoDetail${noDay}`).val()
         $(`#lastNoDetail${noDay}`).val(current - 1)
 
-        removePrice(parseInt(objectId))
+        console.log(objectPrice)
+        removePrice(generatedId, parseInt(objectId))
 
     }
     //open modal package day
@@ -392,9 +397,9 @@
 
         let object_id = $("#detail-package-id-object").val()
         let activity_type = ''
-        let activity_price = parseInt($('#detail-package-price-object').val())
         let description = $("#detail-package-description").val()
 
+        const generatedIds = generateId()
         if (object_id.substring(0, 1) == 'A') {
             activity_type = 'Atraksi'
         } else if (object_id.substring(0, 1) == 'C') {
@@ -413,27 +418,35 @@
           <input class="form-control" value="${activity_type}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_type]"  readonly>
           </td>
           <td>
-          <input class="form-control" value="${activity_price}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_price]" readonly>
+          <input class="form-control" value="${objectPrice}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][activity_price]" readonly>
           </td>
           <td><input class="form-control" value="${description}" name="packageDetailData[${noDay}][detailPackage][${noDetail}][description]" required></td>
-          <td><a class="btn btn-danger" onclick="removeObject('${noDay}','${ noDetail }','${object_id}', '${objectPrice}')"> <i class="fa fa-x"></i> </a></td>
+          <td><a class="btn btn-danger" onclick="removeObject('${noDay}','${ noDetail }','${object_id}', '${objectPrice}','${generatedIds}')"> <i class="fa fa-x"></i> </a></td>
         </tr>     
         `)
         $(`#lastNoDetail${noDay}`).val(noDetail + 1)
+
         // price counting
-        addPrice(object_id, objectPrice)
+        addPrice(generatedIds, object_id, objectPrice)
     }
 
-    function addPrice(id, price) {
+    function generateId() {
+        // Menghasilkan bilangan acak dengan rentang 0 sampai 999999
+        const randomId = Math.floor(Math.random() * 1000000);
+        return randomId;
+    }
+
+    function addPrice(generatedId, id, price) {
         arrayPrice.push({
             id: id,
-            price: price
+            price: price,
+            generatedId: generatedId
         })
         setPrice()
     }
 
-    function removePrice(id) {
-        arrayPrice = arrayPrice.filter(element => element.id != id);
+    function removePrice(generatedId, id) {
+        arrayPrice = arrayPrice.filter(element => element.generatedId != generatedId);
         setPrice()
     }
 
