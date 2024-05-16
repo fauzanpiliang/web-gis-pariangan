@@ -87,6 +87,7 @@
 
                             <?php foreach ($data as $item) : ?>
                                 <?php
+                                $id = $item['id'];
                                 $userId = $item['id_user'];
                                 $packageId = $item['id_package'];
                                 $requestDate = $item['request_date'];
@@ -168,21 +169,21 @@
                                     </td>
                                     <td class="text-start checkSingle text-sm" style="width: 150px;">
 
-                                        <a class="btn btn-outline-primary btn-sm " title="detail booking" data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="showInfoReservation('<?= $userId ?>','<?= $packageId ?>','<?= $requestDate ?>')">
+                                        <a class="btn btn-outline-primary btn-sm " title="detail booking" data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="showInfoReservation('<?= $id ?>')">
                                             <i title="detail booking" class="fa fa-info"></i>
                                         </a>
-                                        <a class='btn btn-outline-primary btn-sm ' title="transaction history" data-bs-toggle='modal' data-bs-target='#reservationModal' onclick="showHistory('<?= $userId ?>','<?= $packageId ?>','<?= $requestDate ?>')">
+                                        <a class='btn btn-outline-primary btn-sm ' title="transaction history" data-bs-toggle='modal' data-bs-target='#reservationModal' onclick="showHistory('<?= $id ?>')">
                                             <i title="transaction history" class="fa fa-history"></i>
                                         </a>
 
-                                        <a title="rate and comment" class="btn btn-outline-primary  btn-sm <?= $reservationIdStatus == 5 && $rating == null ? '' : 'd-none' ?>" data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="openModalRatingReservation('<?= $userId ?>','<?= $packageId ?>','<?= $requestDate ?>')"> <i class="fa fa-star-o"></i></a>
+                                        <a title="rate and comment" class="btn btn-outline-primary  btn-sm <?= $reservationIdStatus == 5 && $rating == null ? '' : 'd-none' ?>" data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="openModalRatingReservation('<?= $id ?>')"> <i class="fa fa-star-o"></i></a>
 
                                         <a title="rate and comment info" class="btn btn-outline-primary btn-sm <?= $reservationIdStatus == 5 && $rating != null ? '' : 'd-none' ?> " data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="openInfoRating('<?= $rating ?>','<?= $review ?>','<?= $item['updated_at']; ?>')"> <i class="fa fa-star"></i></a>
 
 
                                     </td>
                                     <td class="d-none text-center checkAll text-sm">
-                                        <input type="checkbox" <?= $reservationIdStatus == 2 && $requestDate > $dateNow ? '' : 'disabled' ?> name="idPackage[]" value="<?= $userId . $packageId . $requestDate  ?>">
+                                        <input type="checkbox" <?= $reservationIdStatus == 2 && $requestDate > $dateNow ? '' : 'disabled' ?> name="idPackage[]" value="<?= $id  ?>">
                                     </td>
 
                                 </tr>
@@ -210,10 +211,10 @@
     new DataTable('#dataTable')
     let photo, pond, galleryValue
 
-    function showHistory(id_user, id_package, request_date) {
+    function showHistory(id) {
         let result, historyData = ""
         $.ajax({
-            url: `<?= base_url('reservation/show'); ?>/${id_user}/${id_package}/${request_date}`,
+            url: `<?= base_url('reservation/show'); ?>/${id}`,
             type: "GET",
             async: false,
             contentType: "application/json",
@@ -301,10 +302,10 @@
     }
 
 
-    function showInfoReservation(id_user, id_package, request_date) {
+    function showInfoReservation(id) {
         let result
         $.ajax({
-            url: `<?= base_url('reservation/show'); ?>/${id_user}/${id_package}/${request_date}`,
+            url: `<?= base_url('reservation/show'); ?>/${id}`,
             type: "GET",
             async: false,
             contentType: "application/json",
@@ -318,7 +319,7 @@
         });
         let reservationStatus = result['id_reservation_status']
         let buttonDelete =
-            reservationStatus == '1' ? `<a class="btn btn-outline-danger" onclick="deleteReservation('${id_user}','${id_package}','${request_date}')"> Abort booking</a>` : '';
+            reservationStatus == '1' ? `<a class="btn btn-outline-danger" onclick="deleteReservation('${id}')"> Abort booking</a>` : '';
 
         $('#modalTitle').html("Booking Info")
         $('#modalBody').html(`
@@ -402,7 +403,7 @@
                 <p ></p>
                 <p>Note <br><span class="text-danger">*</span> You must pay before <span class="text-primary"> ${dat} </span> ( H-3 )</span>  or booking will be cancel by the system<br><span class="text-danger">*</span> Before uploading proof of deposit, make sure the payment amount is the same as the invoice, please print the invoice to see the deposit amount</p>
                 <div class="text-start mb-4">
-                    <a class="btn btn-primary" onclick="openInvoice('${id_user}','${id_package}','${request_date}')" > <i class="fa fa-print"> </i> print invoice</a>
+                    <a class="btn btn-primary" onclick="openInvoice('${id}')" > <i class="fa fa-print"> </i> print invoice</a>
                 </div>
                 <div class="form-group mb-4">
                    <label for="deposit" class="mb-2"> Deposit <span class="text-danger">*</span></label>
@@ -416,7 +417,7 @@
                     <input class="form-control" accept="image/*" type="file" name="gallery[]" id="gallery">
                 </div>
                 <div class="text-end">
-                    <a class="btn btn-success" onclick="saveDeposit('${id_user}','${id_package}','${request_date}')" > save</a>
+                    <a class="btn btn-success" onclick="saveDeposit('${id}')" > save</a>
                 </div>
            
             `)
@@ -476,7 +477,7 @@
 
         // user refund information
         if (reservationStatus == '4' && result['payment_accepted_date'] != null) {
-            $("#buttonRefund").html(`<a class="btn btn-outline-danger" onclick="openModalCancelAndRefund('${id_user}','${id_package}','${request_date}')">Cancel and Refund</a>`)
+            $("#buttonRefund").html(`<a class="btn btn-outline-danger" onclick="openModalCancelAndRefund('${id}')">Cancel and Refund</a>`)
         }
         // admin refund info
         if (reservationStatus == '3' && result['proof_of_refund'] != null) {
@@ -500,7 +501,7 @@
             $("#userTicket").addClass("background-effect mb-2 shadow-sm p-4 rounded border border-warning")
             $("#userTicket").css('height', '250px');
             $("#userTicket").html(`
-                <a class="btn" onclick="printTicket('${id_user}','${id_package}','${request_date}')">
+                <a class="btn" onclick="printTicket('${id}')">
                     <h1 class=" gold text-center fw-bold text-dark"> Print Your Ticket Here </h1>
                 </a>
             `)
@@ -538,7 +539,7 @@
         }).format(number);
     }
 
-    function openModalCancelAndRefund(id_user, id_package, request_date) {
+    function openModalCancelAndRefund(id) {
         Swal.fire({
             title: "Are you sure to canceled and refund it?",
             text: "Your refund only 50% of your payment",
@@ -549,13 +550,13 @@
             confirmButtonText: "Yes, cancel and refund 50%"
         }).then((result) => {
             if (result.isConfirmed) {
-                cancelAndRefundReservation(id_user, id_package, request_date)
+                cancelAndRefundReservation(id)
 
             }
         });
     }
 
-    function cancelAndRefundReservation(id_user, id_package, request_date) {
+    function cancelAndRefundReservation(id) {
         let requestData = {
             id_reservation_status: 3,
             canceled_at: "true",
@@ -563,7 +564,7 @@
         }
 
         $.ajax({
-            url: `<?= base_url('reservation/update'); ?>/${id_user}/${id_package}/${request_date}`,
+            url: `<?= base_url('reservation/update'); ?>/${id}`,
             type: "PUT",
             data: requestData,
             async: false,
@@ -583,16 +584,14 @@
 
     }
 
-    function printTicket(id_user, id_package, request_date) {
+    function printTicket(id) {
 
         $.ajax({
             url: '<?= base_url("pdf/ticket-data") ?>',
             type: "POST",
             dataType: "json",
             data: {
-                id_user: id_user,
-                id_package: id_package,
-                request_date: request_date
+                id: id,
             },
             success: function(response) {
                 window.open('<?= base_url('pdf/ticket'); ?>' + '/' + JSON.stringify(response));
@@ -603,7 +602,7 @@
         })
     }
 
-    function saveDeposit(id_user, id_package, request_date) {
+    function saveDeposit(id) {
         let deposit = $("#deposit").val()
         let proofDeposit = galleryValue
         if (deposit <= 0) {
@@ -624,7 +623,7 @@
                 proof_of_deposit: proofDeposit
             }
             $.ajax({
-                url: `<?= base_url('reservation/update'); ?>/${id_user}/${id_package}/${request_date}`,
+                url: `<?= base_url('reservation/update'); ?>/${id}`,
                 type: "PUT",
                 data: requestData,
                 async: false,
@@ -664,7 +663,7 @@
         $("#modalFooter").html()
     }
 
-    function openModalRatingReservation(id_user, id_package, request_date) {
+    function openModalRatingReservation(id) {
         let url = `<?= base_url('review/package') ?>`
         $('#modalTitle').html("Please rate and review")
         $("#modalBody").html(`
@@ -678,9 +677,7 @@
                         <i class="fa-solid fa-star fs-4" id="star-4" onclick="setStar('4');"></i>
                         <i class="fa-solid fa-star fs-4" id="star-5" onclick="setStar('5');"></i>
                         <input type="hidden" id="star-rating" value="0" name="rating">
-                        <input type="hidden" value="${id_user}" name="id_user">
-                        <input type="hidden" value="${id_package}" name="id_package">
-                        <input type="hidden" value="${request_date}" name="request_date">
+                        <input type="hidden" value="${id}" name="id_user">
                     </div>
                     <div class="col-12 mb-3">
                         <div class="form-floating">
@@ -733,15 +730,15 @@
     }
 
 
-    function showModalDelete(id_user, id_package, request_date) {
+    function showModalDelete(id) {
         $('#modalTitle').html("Abort booking")
         $('#modalBody').html(`Are you sure delete this booking?`)
-        $('#modalFooter').html(`<a class="btn btn-danger" onclick="deleteReservation('${id_user}','${id_package}','${request_date}')"> Delete </a>`)
+        $('#modalFooter').html(`<a class="btn btn-danger" onclick="deleteReservation('${id}')"> Delete </a>`)
     }
 
-    function deleteReservation(id_user, id_package, request_date) {
+    function deleteReservation(id) {
         $.ajax({
-            url: `<?= base_url('reservation/delete') ?>/${id_user}/${id_package}/${request_date}`,
+            url: `<?= base_url('reservation/delete') ?>/${id}`,
             type: "DELETE",
             async: false,
             contentType: "application/json",
@@ -760,15 +757,13 @@
         });
     }
 
-    function openInvoice(id_user = null, id_package = null, request_date = null) {
+    function openInvoice(id) {
         $.ajax({
             url: '<?= base_url("pdf/invoice-data") ?>',
             type: "POST",
             dataType: "json",
             data: {
-                id_user: id_user,
-                id_package: id_package,
-                request_date: request_date
+                id: id
             },
             success: function(response) {
                 console.log(response)

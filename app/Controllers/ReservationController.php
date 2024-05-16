@@ -27,9 +27,9 @@ class ReservationController extends BaseController
         $this->userModel = new usersModel();
     }
 
-    public function show($id_user = null, $id_package = null, $request_date = null)
+    public function show($id)
     {
-        $reservationData = $this->reservationModel->get_r_by_id_api($id_user, $id_package, $request_date)->getRowArray();
+        $reservationData = $this->reservationModel->get_r_by_id_api($id)->getRowArray();
         // reservation status dan paket
         $reservationData['status'] = $this->reservationStatusModel->get_s_by_id_api($reservationData['id_reservation_status'])->getRowArray()['status'];
 
@@ -51,8 +51,9 @@ class ReservationController extends BaseController
     public function create()
     {
         $request = $this->request->getRawInput();
-
+        $id = $this->reservationModel->get_new_id_api();
         $requestData = [
+            'id' =>  $id,
             'id_user' => $request['id_user'],
             'id_package' => $request['id_package'],
             'id_reservation_status' => $request['id_reservation_status'],
@@ -71,7 +72,7 @@ class ReservationController extends BaseController
     }
 
 
-    public function update($id_user = null, $id_package = null, $request_date = null)
+    public function update($id)
     {
         $request = $this->request->getRawInput();
 
@@ -121,7 +122,7 @@ class ReservationController extends BaseController
             $request['proof_of_deposit'] = $fileImg->getFilename();
             $request['deposit_date'] = Time::now("Asia/Jakarta");
         }
-        $updateFC = $this->reservationModel->update_r_api($id_user, $id_package, $request_date, $request);
+        $updateFC = $this->reservationModel->update_r_api($id, $request);
         if ($updateFC) {
             $response = [
                 'status' => 200,
@@ -141,9 +142,9 @@ class ReservationController extends BaseController
         }
     }
 
-    public function delete($id_user = null, $id_package = null, $request_date = null)
+    public function delete($id)
     {
-        $delete = $this->reservationModel->delete_r_api($id_user, $id_package, $request_date);
+        $delete = $this->reservationModel->delete_r_api($id);
         return json_encode($delete);
     }
     public function check($user_id, $package_id, $date)

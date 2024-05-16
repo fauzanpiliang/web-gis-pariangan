@@ -253,7 +253,9 @@ class packageController extends BaseController
         // create reservation
         $addR = true;
         if (isset($request['reservationData'])) {
+            $id = $this->reservationModel->get_new_id_api();
             $requestData = [
+                'id' => $id,
                 'id_user' => $request['id_user'],
                 'id_package' => $id_package,
                 'request_date' => $request['reservationData']['reservation_date'],
@@ -415,7 +417,9 @@ class packageController extends BaseController
         // create reservation
         $addR = true;
         if (isset($request['reservationData'])) {
+            $id = $this->reservationModel->get_new_id_api();
             $requestData = [
+                'id' => $id,
                 'id_user' => $request['id_user'],
                 'id_package' => $id_package,
                 'request_date' => $request['reservationData']['reservation_date'],

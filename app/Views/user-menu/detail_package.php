@@ -579,10 +579,10 @@
         let package_id = '<?= $data['id'] ?>';
         let numberCheckResult = checkNumberPeople(numberPeople)
         let dateCheckResult = checkIsDateExpired(reservationDate)
-        let sameDateCheckResult = "true"
-        if (reservationDate) {
-            sameDateCheckResult = checkIsDateDuplicate(user_id, package_id, reservationDate)
-        }
+        // let sameDateCheckResult = "true"
+        // if (reservationDate) {
+        //     sameDateCheckResult = checkIsDateDuplicate(user_id, package_id, reservationDate)
+        // }
 
         if (!reservationDate) {
             Swal.fire('Please select booking date', '', 'warning');
@@ -592,9 +592,11 @@
             Swal.fire('Out of capacity, maksimal ' + '<?= $data['capacity'] ?>' + 'people', '', 'warning');
         } else if (dateCheckResult == false) {
             Swal.fire('Cannot booking, out of date, maksimal H-7 booking', '', 'warning');
-        } else if (sameDateCheckResult == "true") {
-            Swal.fire('Already chose the same date! please select another date', '', 'warning');
-        } else {
+        }
+        // else if (sameDateCheckResult == "true") {
+        //     Swal.fire('Already chose the same date! please select another date', '', 'warning');
+        // } 
+        else {
             <?php if (in_groups('user')) : ?>
                 let requestData = {
                     reservation_date: reservationDate,
@@ -659,21 +661,21 @@
         return result
     }
 
-    function checkIsDateDuplicate(user_id, id_package, reservation_date) {
-        let result
-        $.ajax({
-            url: `<?= base_url('reservation') ?>/check/${user_id}/${id_package}/${reservation_date}`,
-            type: "GET",
-            async: false,
-            success: function(response) {
-                result = response
-            },
-            error: function(err) {
-                console.log(err.responseText)
-            }
-        })
-        return result
-    }
+    // function checkIsDateDuplicate(user_id, id_package, reservation_date) {
+    //     let result
+    //     $.ajax({
+    //         url: `<?= base_url('reservation') ?>/check/${user_id}/${id_package}/${reservation_date}`,
+    //         type: "GET",
+    //         async: false,
+    //         success: function(response) {
+    //             result = response
+    //         },
+    //         error: function(err) {
+    //             console.log(err.responseText)
+    //         }
+    //     })
+    //     return result
+    // }
 </script>
 
 <!-- Maps JS -->

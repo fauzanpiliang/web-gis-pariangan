@@ -36,13 +36,11 @@ class reservationModel extends Model
         return $query;
     }
 
-    public function get_r_by_id_api($id_user = null, $id_package = null, $request_date = null)
+    public function get_r_by_id_api($id)
     {
         $query = $this->db->table($this->table)
             ->select('*')
-            ->where('id_user', $id_user)
-            ->where('id_package', $id_package)
-            ->where('request_date', $request_date)
+            ->where('id', $id)
             ->orderBy('created_at', 'DESC')
             ->get();
         return $query;
@@ -95,7 +93,7 @@ class reservationModel extends Model
         return $insert;
     }
 
-    public function update_r_api($id_user = null, $id_package = null, $request_date = null, $data = null)
+    public function update_r_api($id, $data = null)
     {
         foreach ($data as $key => $value) {
             if (empty($value)) {
@@ -104,18 +102,14 @@ class reservationModel extends Model
         }
         $data['updated_at'] = Time::now();
         $query = $this->db->table($this->table)
-            ->where('id_user', $id_user)
-            ->where('id_package', $id_package)
-            ->where('request_date', $request_date)
+            ->where('id', $id)
             ->update($data);
         return $query;
     }
-    public function delete_r_api($id_user = null, $id_package = null, $request_date = null)
+    public function delete_r_api($id)
     {
         $query = $this->db->table($this->table)
-            ->where('id_user', $id_user)
-            ->where('id_package', $id_package)
-            ->where('request_date', $request_date)
+            ->where('id', $id)
             ->delete();
         return $query;
     }
