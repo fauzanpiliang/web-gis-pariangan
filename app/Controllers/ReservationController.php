@@ -27,7 +27,7 @@ class ReservationController extends BaseController
         $this->userModel = new usersModel();
     }
 
-    public function show($id)
+    public function show($id = null)
     {
         $reservationData = $this->reservationModel->get_r_by_id_api($id)->getRowArray();
         // reservation status dan paket
