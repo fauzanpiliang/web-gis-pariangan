@@ -340,7 +340,8 @@
 
             <tr>
                 <th> # </th>
-                <th colspan="2"> Package name / id</th>
+                <th> Id </th>
+                <th colspan="2"> Package name </th>
                 <th colspan="4"> Activities</th>
                 <th> Services </th>
                 <th> Capacity</th>
@@ -354,6 +355,7 @@
 
             <tr>
                 <td><?= $noPackage; ?></td>
+                <td><?= $packageData['reservation']['id'] ?> </td>
                 <td colspan="2"><?= $packageData['name']  ?> </td>
                 <td colspan="4">
                     <?php $noDay = 1; ?>

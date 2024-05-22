@@ -52,11 +52,13 @@
                         <?php $no = 1; ?>
                         <tr>
                             <th>No</th>
+                            <th>Id</th>
                             <th>Request Package Name</th>
                             <th>Username</th>
                             <th>Request date</th>
+                            <th>Booking date</th>
                             <th>Status</th>
-                            <th class="text-start"> Progress </th>
+                            <th class="text-start"> Message </th>
                             <th class="text-center">Action</th>
                         </tr>
                     </thead>
@@ -66,6 +68,7 @@
                             $id = $reservation['id'];
                             $userId = $reservation['id_user'];
                             $packageId = $reservation['id_package'];
+                            $createdAt = $reservation['created_at'];
                             $request_date = $reservation['request_date'];
                             $packageName = $reservation['package_name'];
                             $username = $reservation['username'];
@@ -102,8 +105,12 @@
 
                             <tr>
                                 <td><?= $no++; ?></td>
+                                <td><?= $id ?></td>
                                 <td><?= $packageName; ?></td>
                                 <td><?= $username; ?></td>
+                                <td>
+                                    <?= $createdAt; ?>
+                                </td>
                                 <td>
                                     <?= $requestDate; ?>
                                 </td>
@@ -215,6 +222,10 @@
                     <p class="text-center fw-bold text-dark"> Reservation Information </p>
                     <table class="table table-borderless text-dark ">
                         <tbody>
+                            <tr>
+                                <td class="fw-bold">Id</td>
+                                <td>${id}</td>
+                            </tr>
                             <tr>
                                 <td class="fw-bold">Request By</td>
                                 <td>${result['username']}</td>

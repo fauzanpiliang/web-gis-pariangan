@@ -72,10 +72,12 @@
                     <thead>
                         <tr>
                             <th class="text-start"> #</th>
-                            <th class="text-start"> Tourism package name / ID </th>
+                            <th class="text-start"> Id </th>
+                            <th class="text-start"> Tourism package name </th>
+                            <th class="text-start"> Request date </th>
                             <th class="text-start"> Booking date </th>
                             <th class="text-start"> Booking status </th>
-                            <th class="text-start"> Progress detail</th>
+                            <th class="text-start"> Message</th>
                             <th class="text-center  checkSingle"> Action </th>
                             <th class="text-center  d-none checkAll"> Action</th>
 
@@ -90,6 +92,7 @@
                                 $id = $item['id'];
                                 $userId = $item['id_user'];
                                 $packageId = $item['id_package'];
+                                $createdAt = $item['created_at'];
                                 $requestDate = $item['request_date'];
                                 $packageName = $item['package_name'];
                                 $numberPeople = $item['number_people'];
@@ -127,41 +130,24 @@
                                 ?>
                                 <tr>
                                     <td class="text-start text-sm"> <?= $no; ?> </td>
+                                    <td class="text-start text-sm"> <?= $id; ?></td>
                                     <td class="text-start text-sm"> <?= $packageName; ?></td>
+                                    <td class="text-start text-sm"> <?= $createdAt; ?> </td>
                                     <td class="text-start text-sm"> <?= $requestDate; ?> </td>
                                     <td class="text-start text-sm" style="min-width: 250px;">
-                                        <a class="btn  btn-sm text-sm">
-                                            <?= $reservationIdStatus == 1  ?  '<i class="fa fa-check-circle text-primary" aria-hidden="true"></i>' : '' ?>
-                                            Pending
-                                        </a>
-                                        <i class="fa fa-arrow-right fa-sm" aria-hidden="true"></i>
-                                        <?php if ($reservationIdStatus == 3) : ?>
-                                            <a class="btn btn-sm text-sm">
-                                                <?= $reservationIdStatus == 3  ?  '<i class="fa fa-x text-danger" aria-hidden="true"></i> ' : '' ?>
-                                                Cancel
-                                            </a>
-                                            <i class="fa fa-arrow-right fa-sm" aria-hidden="true"></i>
-                                        <?php else : ?>
-                                            <a class="btn btn-sm text-sm">
-                                                <?= $reservationIdStatus == 2  ?  '<i class="fa fa-check-circle text-primary" aria-hidden="true"></i> ' : '' ?>
-                                                Commit
-                                            </a>
-                                            <i class="fa fa-arrow-right fa-sm" aria-hidden="true"></i>
-                                        <?php endif; ?>
-                                        <a class="btn btn-sm text-sm">
-                                            <?= $reservationIdStatus == 4  ?  '<i class="fa fa-check-circle text-primary" aria-hidden="true"></i>' : '' ?>
-                                            Paid
-                                        </a>
-                                        <i class="fa fa-arrow-right fa-sm" aria-hidden="true"></i>
-                                        <a class="btn btn-sm">
-                                            <?= $reservationIdStatus == 5  ?  '<i class="fa fa-check-circle text-primary" aria-hidden="true"></i>' : '' ?>
-                                            Finish
-                                        </a>
-                                        <i class="fa fa-arrow-right fa-sm" aria-hidden="true"></i>
-                                        <a class="btn btn-sm">
-                                            <?= $reservationIdStatus == 6  ?  '<i class="fa fa-check-circle text-primary" aria-hidden="true"></i>' : '' ?>
-                                            Close
-                                        </a>
+                                        <span class="badge bg-<?php if ($reservationIdStatus == 1) {
+                                                                    echo "warning";
+                                                                } else if ($reservationIdStatus == 2) {
+                                                                    echo "primary";
+                                                                } else if ($reservationIdStatus == 3) {
+                                                                    echo "danger";
+                                                                } else if ($reservationIdStatus == 4) {
+                                                                    echo "success";
+                                                                } else if ($reservationIdStatus == 5) {
+                                                                    echo "secondary";
+                                                                } else if ($reservationIdStatus == 6) {
+                                                                    echo "dark";
+                                                                }; ?>"> <?= $statusReservation; ?></span>
 
                                     </td>
                                     <td class="text-start text-sm">
@@ -347,6 +333,10 @@
                             <tr>
                                 <td class="fw-bold">${buttonDelete}</td>
                                 <td></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Id</td>
+                                <td>${id}</td>
                             </tr>
                             <tr>
                                 <td class="fw-bold">Your booking status</td>
