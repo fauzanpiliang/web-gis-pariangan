@@ -223,10 +223,20 @@
             servicePackageForm.empty()
             services.forEach(service => {
                 let serviceParsed = JSON.parse(service)
+                let price = serviceParsed.price
                 if (serviceParsed.is_group == "0") {
-                    servicePrice += parseInt(serviceParsed.price) * numberPeople
+                    if (price) {
+                        servicePrice += parseInt(price) * numberPeople
+                    } else {
+                        servicePrice += 0 * numberPeople
+                    }
                 } else {
-                    servicePrice += parseInt(serviceParsed.price)
+                    if (price) {
+                        servicePrice += parseInt(price)
+                    } else {
+                        servicePrice += 0
+                    }
+
                 }
                 servicePackageForm.append(`<input type="hidden" name="service_package[]" value="${serviceParsed.id}" />`)
             });
@@ -234,9 +244,13 @@
             // count object price
             let objectPrice = 0
             arrayPrice.forEach(element => {
-                console.log(element)
+                let elementPrice = element.price
+                if (elementPrice) {
+                    objectPrice += parseInt(elementPrice) * numberPeople
+                } else {
+                    objectPrice += 0 * numberPeople
+                }
 
-                objectPrice += element.price * numberPeople
             })
 
             // sum service and object price
