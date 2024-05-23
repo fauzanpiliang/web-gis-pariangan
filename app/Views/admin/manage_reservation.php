@@ -133,7 +133,7 @@
                                     <?= $proggres ?>
                                 </td>
                                 <td class="text-center">
-                                    <a class="btn btn-outline-success btn-sm " title="confirm" data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="showInfoReservation('<?= $id ?>')">
+                                    <a class="btn btn-outline-success btn-sm " title="confirm" data-bs-toggle="modal" data-bs-target="#reservationModal" onclick="showInfoReservation('<?= $id ?>','<?= $packageId ?>')">
                                         <i class="fa fa-info"></i>
                                     </a>
                                 </td>
@@ -161,7 +161,7 @@
     new DataTable("#dataTable")
     let photo, pond, galleryValue
 
-    function showInfoReservation(id) {
+    function showInfoReservation(id, id_package) {
         let statusData = JSON.parse('<?= json_encode($statusData) ?>')
         let result
         let reservationStatus, reservationInfo, reservationPrice
